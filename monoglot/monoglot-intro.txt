@@ -1,0 +1,298 @@
+Introduction to Monoglot
+####
+
+
+    .toc
+
+Overview
+========
+
+Monoglot is a platform for developing lightweight, deployable, scalable
+network applications in Lua.  The resulting applications can be easily
+deployed as standalone executables, or integrated into existing executables.
+
+Those familiar with Node.js will recognize many similarities with Monoglot,
+although Monoglot is much smaller and easier to use.
+
+Those familiar with Ruby-based web environments will find Monoglot's
+programming model similar, but without the installation, configuration, and
+deployment hassles.
+
+
+Technical Details
+====
+
+Core Components
+----
+
+Monoglot combines the Lua interpreter with a set of libraries that support:
+
+  - TCP/IP sockets and inter-process I/O
+  - creation and management of child processes.
+  - manipulation of HTML and URIs
+  - HTTP server protocol
+  - source-level debugging
+
+
+Event-Driven I/O
+----
+
+Monoglot uses an event-driven networking model. Each instance of the Lua VM
+inhabits a single kernel thread, but that thread can handle many network
+connections.  (In this respect, Monoglot is much like Node.js.)
+
+
+Synchronous Programming Model
+----
+
+Although the underlying kernel APIs it uses are event-driven, Monoglot
+presents the Lua programmer with a "synchronous" or "threaded" usage
+model. Lua's support for coroutines is used to implement cooperative
+(non-preemptive) threads of execution.
+
+This differs from Node.js and in-browser JavaScript development, in which
+programmers pass callbacks to functions that can trigger long-lived
+operations.
+
+
+Zero Installation
+----
+
+Monoglot avoids dependencies on system configuration.  A Monoglot-based
+project typically includes all of its dependencies in a single source
+tree. The application can then be deployed along with its dependencies as a
+single executable.
+
+Hybrid configurations can also be employed, where some amount of the scripts
+are embedded in the applications while others are loaded at run time from
+the file system.
+
+
+Benefits
+====
+
+Footprint
+----
+
+     *"... get a simpler language. Lua is much simpler than JS. This means
+     you can make a simple interpreter that runs fast enough ..." -- Brendan
+     Eich, creator of JavaScript. \[[link]
+     (http://lambda-the-ultimate.org/node/3851#comment-57671)]*
+
+
+Code Size
+....
+
+A smaller executable means that it can run in resource-constrained
+environments, leaving more room for applications and data.
+
+A smaller source base makes it easier to fully understand Monoglot and audit
+the source for security issues.
+
+The following table summarizes Monoglot and Node.js (v0.10.16).
+
++----------------------+--------------+--------------+--------+
+|                      | Monoglot     | Node.js      | Ratio  |
++----------------------+==============+==============+========+
+| Binary (MB)          | 0.25         | 12           | 48x    |
++----------------------+--------------+--------------+--------+
+| C/C++ sources (KLOC) | 19           | 806          | 42x    |
++----------------------+--------------+--------------+--------+
+| C/C++ sources (KB)   | 479          | 26,770       | 56x    |
++----------------------+--------------+--------------+--------+
+| Other sources (KLOC) | 10           | 363          | 38x    |
++----------------------+--------------+--------------+--------+
+| Other sources (KB)   | 249          | 14,308       | 58x    |
++----------------------+--------------+--------------+--------+
+
+The code sizes listed above exclude tests. The binary sizes are release-mode
+builds on MacOS including statically linked versions of dependencies except
+the C and C++ standard libraries, which are not included.
+
+It should be noted that Node.js builds in a number of libraries that may or
+may not be required for different applications. Monoglot includes a minimal
+set of libraries, and makes it easy for applications to build in only the
+libraries they need. Most notably, Monoglot does not yet include SSL,
+which would be important for most use cases.
+
+
+RAM Footprint
+....
+
+Monoglot's tiny executable size reduces memory footprint when executing.
+
+Also, the event-driven model can result in significantly lower resource
+usage than models that require a thread per connection (e.g. Python or
+Ruby). Each kernel thread occupies space in kernel data structures and
+requires memory to be allocated for stacks.
+
+
+Performance
+----
+
+[tooltree/bench] (/bhk/tooltree/blob/master/bench) compares minimalist
+web servers based on [Monoglot]
+(/bhk/tooltree/blob/master/bench/web.lua) and [Node.js]
+(/bhk/tooltree/blob/master/bench/web.js).
+
++--------------+--------------+
+| Platform     | Transactions |
+|              | per second   |
++==============+==============+
+| Monoglot     | 18,239       |
++--------------+--------------+
+| Node.js      | 13,380       |
++--------------+--------------+
+
+LuaJIT offers the possibility of significantly boosting Monoglot performance
+on supported acrhitectures (ARM, x86 and x86-64).  Monoglot currently uses
+the Lua.org interpreter, which supports many more architectures than LuaJIT
+or Node.js.
+
+The performance difference may be more pronounced on a single-core processor
+or in a high-load multi-process deployment, since Node.js appears to make
+more use of other threads, resulting in higher total CPU loading than
+Monoglot in the above test scenario.
+
+
+Synchronous Coding Style
+----
+
+Monoglot's synchronous/threaded programming model affords a number of
+benefits over the "callback-based" or "asynchronous" style of programming
+used in Node.js. (We have experienced these firsthand while developing
+Node.js-based software.)
+
+The most obvious drawback to asynchronous programming is that it does not
+compose well with language features. The programmer cannot make use of `for`
+and `while` loops, recursive function calls, and exception handling, when
+these constructs would have to wrap long-lived operations. The programmer is
+forced into a more primitive style of programming, resulting in tedious,
+difficult to read code.
+
+The lack of composability with exception handling, in particular, poses a
+challenge for robustness. In Node.js, for example, any exception occurring in
+any callback can leave the server in a corrupted state if it is not
+caught. Exhaustively guarding against this possibility by trapping all
+exceptions and cascading them appropriately is an onerous burden.
+
+Another problem relates to the difficulty of cancellation of operations.  In
+many environments, including Node.js, cancellation of pending operations is
+not always possible. When it is, the mechanisms are *ad hoc* -- each
+scheduling API provides its own corresponding cancellation API.
+
+
+Lua
+----
+
+Lua is a more powerful language than JavaScript, yet easier to learn.
+
+Aside from coroutines, which allow the scalable implementation of threads,
+Lua offers many other benefits over JavaScript:
+
+ * Lua's data description features allow it to represent structures in a
+   natural, inline form that, in other environments, would require use of a
+   separate "templating" language. [demo.lua]
+   (/bhk/tooltree/blob/master/webdemo/demo.lua#L91) provides a good
+   example of how this is used to dynamically construct HTML responses.
+
+ * Strings are sequences of bytes. By contrast, JavaScript strings are
+   sequences of 16-bit values that are treated as characters by many library
+   functions.  This makes them not well suited for dealing with binary
+   data. Two competing approaches for dealing with binary data are available
+   in JavaScript (one originating with Node, the other originating in Web
+   standards).
+
+ * Lua tables are more versatile than JavaScript objects or arrays. In Lua,
+   arbitrary values can be used as keys. In JavaScript, keys are always
+   string values, and not all string values can be used as indices,
+   depending on the underlying platform.
+
+ * Metamathods allow implementation of operator overloading. A common use
+   case is the `__index` metamethod, which is called when an undefined table
+   member is requested.
+
+ * Lua has semantics for garbage collection. Lua code can create weak
+   references, define finalizers, and query the amount of memory used, and
+   control garbage collector settings.
+
+ * Lua provides a debugging API to Lua programs.
+
+ * JavaScript is riddled with [unnecessary complexity, idiosyncrasies, and
+   defects] (http://www.bhk.com/docs/javascript.html) that make life
+   difficult for programmers.
+
+
+Portability
+----
+
+Monoglot currently supports Linux, MacOS, and Android.
+
+Windows support could be added without much difficulty.
+
+
+Ease of Deployment
+----
+
+The [[Zero Installation]] approach allows easy deployment of an application
+along with its dependencies. This can be contrasted with packages that have
+uncontrolled external dependencies, expecting them to be installed on the
+host, which can experience the following problems:
+
+ * Per-host deployment costs.
+
+ * Version conflicts and uncertainties.
+
+ * Obstacles to migration.
+
+
+Potential Applications
+====
+
+* On-device server for browser debugging and profiling
+
+  Monoglot is already being used in this capacity.
+
+* Implementing Cloud Services
+
+  Implementations of a couple of different cloud services could supplement
+  our Snapdragon Web Engine and browser efforts, both for demonstration
+  purposes and as reference source for OEMs:
+
+  1. A server to support bookmark synchronization.
+
+  2. A proxy to support accelerated browsing, with a SPDY-enabled client
+     link and/or with content transformation.
+
+* Remote Control of Mobile Devices
+
+  A device-resident Monoglot application could expose as web API to access
+  phone features, such as pictures and documents stored on the device, test
+  messaging capabilities, and sensors.
+
+* Remote Access
+
+  A web application server hosting terminal sessions. GUI environment for
+  interactive shells, accessible from any web browser. One could think of
+  this as a web-enabled alternative to SSH and `screen`.
+
+* Embedding Large-Screen UI into Mobile Applications
+
+  In one vision for the future of mobile computing, mobile devices supplant
+  PCs as the hub of the user's interaction with their data. Mobile devices
+  are neither PC companions or second-class terminals. Large screens and
+  keyboards remain important for many use cases, but will be thought of as
+  just different input and output devices for use with your mobile device.
+
+  One current limitation is that smartphone applications understand only
+  smartphone UI. Experiments in dockable mobile devices, such at the
+  Motorola Atrix, offer a blown-up picture of the touch screen UI, which is
+  not compelling. If an app were to effectively make use of a large screen,
+  keyboard, and mouse, it would need an appropriate UI framework.
+
+  One obvious candidate to fill this vacuum is web technologies. In this
+  case, the application on the mobile becomes an app *server* and thereby
+  can take advantage of any browser-enabled large screen devices. This
+  bypasses the potential hurdles of hardware and software compatibility with
+  client devices.
+

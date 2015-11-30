@@ -1,0 +1,6 @@
+deps = crank luau crank-lua lua monoglot lpeg crank-js jsu
+crank-js := ../crank-js/.crank/release/ship
+conf = .config
+make = make V='$v'
+clean = rm -rf .crank out
+result = out/$v

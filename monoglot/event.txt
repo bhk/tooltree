@@ -1,0 +1,43 @@
+Event Objects
+#############
+
+Contents
+--------
+
+    .toc
+
+Overview
+--------
+
+    The `event` module returns an object that constructs Event objects.
+
+    . local Event = require "event"
+
+    Event objects perform "edge-triggered" notifications. Any number of
+    threads may wait on an event object. When the event object is signaled,
+    all waiting threads will be awakened.
+
+
+Functions
+---------
+
+`Event:new()`
+.............
+
+     Create and return a new event object.
+
+     . local event = Event:new()
+
+`event:wait()`
+..............
+
+    Suspend execution of the current thread. The thread will remain
+    suspended until the next time `event:signal()` is called.
+
+
+`event:signal()`
+...............
+
+    Resume execution of all threads that are currently waiting on the event
+    object.
+

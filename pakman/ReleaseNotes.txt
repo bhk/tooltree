@@ -1,0 +1,534 @@
+Pakman Release Notes
+====================
+
+Installation
+------------
+
+Copy the pakman executable (pakman.exe on Windows systems) into a directory
+in your command path.  For documentation, see [The Pakman User's Guide]
+(UsersGuide.html).
+
+Change History
+--------------
+
+New in ???:
+
+ * added `pakman show` command
+
+ * added weak revision specifier `@have` for a URI B that is inside an other
+   URI A. Requesting `B@have` takes the changelist from URI A.
+
+ * In `file:` URLs for Windows, recognize ":" in addition to "|" to signify
+   a device, and canonicalize to ":".
+
+   E.g.:  `file:///c:/p4/path/package/pak`
+
+New in 0.996:
+
+ * Added `pakman make` command.
+
+ * When default p4 server does not match URI, attempt to connect by appending
+   `"-p <SERVER>:1666"` to the P4 command, unless the command already includes
+   a "-p" argument.
+
+ * When p4 server uses p4broker, pakman is now configured using the
+   "Broker address" instead of the "Server address".
+
+ * Set environment variable "describe_v=1" to get verbose output from
+   `pakman describe`.
+
+ * Added `pmlib.hash` function.
+
+New in 0.995:
+
+ * Fixed: Pakfiles with circular dependencies would cause "pakman get" to
+   exit with error.  (Circular dependencies should be eliminated anyway, but
+   currently pakman only warns.)
+
+New in 0.994:
+
+ * Smaller binary (using cfromlua --minify).
+
+New in 0.993:
+
+ * `package.commands.*` and `package.glue` may be supplied as functions
+   (returning string or table) instead of a string or table.  These
+   functions are evaluated after child packages have been processed.
+
+ * `package.message` allows a pakfile to customize the build instructions to
+   be displayed to the user.  `package.commands.maketree` allows a pakfile
+   to replace the command for building the package tree that is displayed as
+   part of the default `package.message`.
+
+ * For glue MAK files, "neat" is now the default.  Use "verbose=true" to
+   construct a MAK file that is always verbose (as with "make VERBOSE=1").
+
+ * On the command line, Perforce-style "//path" addresses are now accepted
+   in addition to URIs or file paths.  Note that this form is not valid for
+   dependency locations in pakfiles, where only URIs are accepted.
+
+ * `package.shared` is a table shared by instances of the same pakfile.
+
+ * Fixed: Glue 'mak' files passed incorrect relative paths to "cd" when the
+   path traversed the root directory.
+
+ * MIN file template changes:
+
+   1. Added __pkg_result to default template.  This avoids double-entry; the
+      pak file can be the one place where `result` is defined.
+
+   2. __pkg_root points to the package's root directory and is defined only
+      for the top-level makefile.
+
+ * `pakman describe` generates better short names for packages.
+
+ * Tolerate extraneous trailing slashes in directories (previously pakman
+   warned about root directories with trailing slashes).
+
+ * Fix problem parsing 'p4 where' result when it returns multiple lines,
+   all but one of which begin with "-".  (This happens when two client view
+   lines conflict, resulting in one shadowing the other.)
+
+ * Updated 'pakman help options' command to include --p4-sync.
+
+New in 0.992:
+
+ * Pakman prints "pakman exited with error." when returning an error code.
+
+New in 0.991:
+
+ * Better error reporting when package files return invalid values.
+
+New in 0.99:
+
+ * Pakfiles can use the variable `self` to obtain a reference to the package
+   object they are constructing.
+
+ * Pakfiles may return a table that describes the package instead of
+   assigning global variables.
+
+ * "--version" option (same as "version" sub-command).
+
+ * "--force" options overrides errors and forces Pakman to proceed when a
+   package is mapped but partially excluded or remapped.
+
+ * Warns when glue array contains a non-numeric key (easy mistake).
+
+New in 0.981:
+
+ * Changes to parameter validation (feature introduced in 0.98).  See
+   [package.params] (UsersGuide.html#package.params) in the manual.
+
+ * Bug fix: deleted pakfiles in Perforce were being treated as zero-byte
+   extant files.
+
+New in 0.98:
+
+ * Package normalization by pakfiles: changes made to package.params are
+   reflected in <package>.uri.  package.params provides a function for
+   normalizing parameter values.  See [package.params]
+   (UsersGuide.html#package.params) in the manual.
+
+ * Pakman will recognize local files that are not yet checked in.  When
+   reading "p4:" files, if there is a mapped local copy, the local file will
+   be used if it is writable *or* if there is no version in the server.
+   Directories that exist locally but not in the server are also recognized.
+
+ * Handling of special characters: pakman now supports all file names that
+   Perforce supports.
+
+ * Alternate roots in p4 clients are now supported.
+
+ * Pakman warns when the root directory for a p4 client is not valid.
+
+ * Bug fix: Edge case in multi-client projects: if multiple entries in
+   vcs.p4.command were to identify the same server *and* client, and if a
+   single 'pakman get/map' invocation were to create mappings for files
+   matched by more than one of those entries, then only a subset set of the
+   added mappings have been applied (requiring you to re-run pakman get).
+
+New in 0.97:
+
+ * Fragments ("#..." at the end of a URI)
+
+    - pmlib.uriGen/uriParse support fragments
+
+    - Fragments applied to a package location adjust the 'result' directory
+      of the package.  This allows nested roots to be avoided when
+      dependencies are pulled from large component-unaware source trees:
+         p4://acme123/yaddayadda/...#platform
+
+ * Variable substitution escapes "#" with "\" as per makefile syntax.
+
+ * An error is reported when infinitely repeating dependency chain (e.g. a?x
+   -> a?xx -> a?xxx ...) is encountered.
+
+ * Mapping conflicts that caused by nested roots within a single package
+   will be automatically resolved.  For example, if "//a/b" and "//a/b/c"
+   are both specified as roots, "//a/b/..." will be mapped first.
+
+ * In 'mak' glue files, redundant compile commands are issued only once
+   (when two packages have the same root directory and the same commands).
+
+ * New warnings:
+
+   - A warning is printed when deprecated syntax is used.
+
+   - A warning is printed when circular dependencies exist.
+
+   - A warning is printed when nested roots are present (one package root
+     directory underneath another's).
+
+   - Glue file conflicts (when two packages write different contents into
+     the same glue file) are detected and a warning is printed.
+
+ * Bug fix: When variable expansion is used in commands.make or clean, and
+   when generating a mak glue file, commands for child packages were
+   expanded using the top-level package's context, not the child package's
+   context.
+
+ * Minor changes to variable expansion in templates:
+
+    - "#{#}" evaluates to "#".
+
+    - All occurrences of "#{<expr>}" are treated as variable expansions, as
+      long as <expr> contains no braces or balanced braces.  This means that
+      "#{a{b}c}" will cause an error, where previously it was ignored.
+
+New in 0.96:
+
+ * Bug fix: If "<dir>/..." was explicitly named as a dependency and "<dir>"
+   was later encountered as a dependency, then "<dir>/pak" (if it existed)
+   was not properly auto-detected.
+
+ * Bug fix: When a "file:" package included a "p4:" package as a dependency,
+   its glue mak file would have erroneous 'cd' commands for child packages.
+
+New in 0.95:
+
+ * Experimental feature: Package files may assign a 'redir' property
+   to a URI in order to redirect to another package.  Example:
+
+   .    redir = "../../sources/foo/pak"
+
+ * Experimental feature: 'result' property may use Ruby-style variables
+   substitution to refer to the result directories of child packages.
+   ``paths`` and ``pkg`` are available (as defined for MIN file templates).
+   Example:
+
+   .    result = "#{paths.A}"
+
+ * commands.make and .clean can include variable expansions: E.g.:
+
+   . commands.make = "#{paths.Rake}/rake"
+
+ * New feature: Package Parameters
+
+ * URIs for dependencies may be specified as strings or tables (the table
+   form defined for pmlib.uriGen/uriParse).  E.g.:
+
+        . deps = {
+        .    B = { path="../b", params = { V = params.V } }
+        . }
+
+ * pmlib.uriParse, pmlib.uriGen
+
+ * Processing of relative URI's has changed internally to be more consistent
+   with standard URI handling.  This should not affect PAK files, but hook
+   functions that examine root directory URIs /after/ the PAK files have
+   been processed may observe that root paths now end with a "/" character.
+
+ * Improved error message: "cannot connect to host" now prints the 'p4'
+   command and indicates that the observed p4 configuration points to a
+   different host.
+
+ * Improved URI normalization: now handles equivalent percent-encodings.
+
+ * Canonical P4 URI's omit ":1666" from host field for readability.
+
+ * Bug fix: Templates should recognize tokens that contain "_" and digits
+   (e.g. #{paths.LUA_DIR} or #{paths.Lua51Dir}).  [reported by gregf
+   5-Aug-2010]
+
+ * Bug fix: Error reading PAK files ending in a single-line comment;
+   introduced in 0.94; test in pmload:parsing:a [reported by gregf
+   30-Jul-2010]
+
+ * New MIN file variable: __pkg_uri
+
+New in 0.94:
+
+ * ``require``, ``loadfile`` and ``readfile`` can be called by PAK files,
+   passing pakman URIs as the addresses of the files to be loaded.
+
+New in 0.93:
+
+ * Multi-client operation: vcs.p4.command
+
+ * Modifications to multi-server support: use vcs.p4.command instead
+   of vcs.p4.servers
+
+New in 0.92:
+
+ * Multi-server projects:  vcs.p4.servers config file option.
+
+ * "--mapshort" sets default mapping to pmlib.mapShort
+
+ * "mapping = ..." in config file specifies default mapping rule for user
+
+New in 0.91:
+
+ * In MIN files, __pkg_dir is assigned with ":=".  This will cause it to
+   remain valid after other makefiles have been included [including another
+   pakman-generated MIN file will override it, of course].
+
+ * 'pakman describe' marks packages that have build steps with `*`.
+
+ * __pkg_version is assigned using "?=", so sub-packages will not clobber
+   the version value.  This is typically desirable for version stamping.
+
+New in 0.90:
+
+ * Fixed problem with root URI being assigned to a different URI scheme than
+   the package file URI.
+
+ * "--p4-sync=<flags>" can be used to pass flags through to "p4 sync".
+
+ * Now documented & tested: overlay mappings are ignored by pakman.
+
+ * New hook for user-defined functions: "onVisit".  Also, "onMap", and
+   "onGet" are implemented as unsupported, experimental features.
+
+ * New "pakman visit <loc>" command processes package descriptions and runs
+   hooks but does not map files, get sources, or create glue files.
+
+ * The ``mapping`` property for packages allows packages to specify
+   preferences for how they and their descendants are mapped to local file
+   paths.  ``pmlib.mapShort`` and ``pmlib.mapLong`` are built-in mapping
+   functions made available to package files.
+
+ * vcs.p4.mapPackage is deprecated and removed from the documentation in
+   anticipation of removing the feature from future releases.
+
+ * 'pakman describe' shows only the project tree graph [more detailed output
+   may return as an option in later versions]
+
+ * To append text to the default MIN template, specify a custom template
+   beginning with the character "+".
+
+ * When retrieving files, Pakman always requests a specific version.  If no
+   version is specified in the URI, the latest changelist on the server is
+   used.  This avoids version skew between packages (i.e., changes submitted
+   between individual sync operations will not corrupt the result).  The
+   package "version" property reflects the retrieved version, so the
+   __pkg_version MIN file variable is now guaranteed to be a non-empty
+   string.
+
+ * Properly parses P4 client views with file patterns that include special
+   characters or whitespace.  E.g.: //d/a%25b/... "//c/a b./..."
+
+ * Prints more informative error messages for unusable/partial maps and for
+   client path conflicts: displays conflicting lines from the current view.
+
+New in 0.89:
+
+ * Support local package files that are not under the Perforce client root.
+
+ * 'neat=true' option for MAK glue files
+
+ * MAK files are now tested in non-Cygwin Windows environments.
+
+ * Removed sys.machine.
+
+New in 0.88:
+
+ * Better reporting of client path conflicts in package mapping (was
+   "failure to map ... no good", now "Client path conflict ..."
+
+New in 0.87:
+
+ * Glue files matching "[Mm]akefile" default to type "mak".
+
+ * Misc. improved error message handling.
+
+ * Added "describe" command; "pakman describe <uri>" displays an overview
+   of the project tree.
+
+ * Shortened "mapping" status messages.
+
+ * Show local path for retrieved package even when it has no build step
+   (build instructions are already printed for packages with build steps).
+
+ * Detects and warns when the Perforce client spec has not been created.
+
+ * Change history is now in README.txt, and no longer available via 'pakman
+   history' command.
+
+ * Pakman prints a warning when the p4 client is compiled for CYGWIN.  If
+   the client root directory reported by p4 does not exist and it is a
+   CYGWIN client, pakman exits with an error message.
+
+New in 0.86:
+
+ * Supports "file:" URIs for "local" packages.  File names passed to "get"
+   that are not within the current P4 workspace view will be translated
+   to "file:" URIs.  There is no mapping or syncing done for local files,
+   but glue files are generated.  Version specifiers are ignored.
+
+ * When specifying glue files as a table, 'type' will default to the
+   extension of 'path'.
+
+ * In .pakman, 'p4' is initialized to an empty table at start of execution.
+
+New in 0.85:
+
+ * Fixed: was using local directory names beginning "c://" when
+   P4 client root was "c:/".
+
+ * Display relative paths in "To build:" instructions.
+
+New in 0.84:
+
+ * MAK files: "this" and "this_clean" are now "tree" and "tree_clean".
+
+ * Added 'map' subcommand.
+
+ * More validation of glue files.
+
+ * No longer defaults commands.make; no longer complains about it.
+
+ * "sys.version" exposes version of pakman to .pakman and pak files.
+
+ * 'pakman version' reports the build date and synced changelist number
+    (leveraging its own __pkg_version feature).
+
+ * Output __pkg_dir, __pkg_version, and __pkg_deps in MIN files
+
+ * User-specified templates for MIN file generation.
+
+ * MIN files no longer prepend "./" to dependencies when the MIN dir == CWD
+
+ * Output __pkg_dir, __pkg_ver, and __pkg_deps in MIN files
+
+ * Improved error reporting when validating package contents.
+
+New in 0.82:
+
+ * Improved pak file handling: Syntax and run-time errors are reported more
+   cleanly.  New global variable assignments are detected and reported as
+   warnings.
+
+ * When generating glue files (e.g. .min or .mak), parent directories are
+   created if necessary.
+
+ * Package root property: "root = <str>" can be used to change the root of a
+   package.  If relative, it will be interpreted as relative to the
+   directory containing the pak file.  It defaults to ".".  This allows
+   package files to live outside of the directory that contains the sources.
+
+ * Package result property: "result = <str>" can be used to specify the
+   result of a package build.  If relative, it is treated as relative to the
+   root directory.  It defaults to ".".
+
+ * 'packageGlue' hook: In a .pakman, "addHook('packageGlue', <function>)"
+   registers a function to be called once for each package, after it is
+   retrieved and immediately before its glue files are written out.
+
+ * Package files property: "files = <arrayOfStrings>" can be used to specify
+   the set of files to be synced.  Each string is a path relative to the
+   package root, and may not contain and ".." elements.  Strings may end
+   with the Perforce-style "..."  wildcard.  It defaults to {"..."}.
+
+ * Package conflicts are now based on individual sync expressions as
+   specified by the file property of each package, and not on the root
+   directory of each package.  Packages will conflict only when their sync
+   patterns overlap and when those patterns specify different versions for
+   the files.
+
+New in 0.81:
+
+ * Recognize pak files that exist only in the local file system.
+
+   This allows a newly constructed tree to be tested before it is submitted.
+   Older versions of pakman would honor local copies of pak files if they
+   had been submitted to Perforce and opened for edit, but not files pending
+   an 'add' or 'submit'.  [The current implementation simply checks the
+   owner-writable bit (or readonly status in Windows) to determine whether
+   the file has been locally edited.  As a result, this honors edited files
+   that Perforce has not been informed about.]
+
+ * Package locations can name package files, not just directories.
+
+   The plan is to make this the endorsed way of including packages that have
+   package description files.  For backwards compatibility, pakman still
+   handles <dir>/pak when only <dir> is specified, but the preferred way
+   will minimize the number of VCS transactions when performing a 'get'.
+
+ * Package locations ending "/..." identify plain (dumb) packages.
+
+   Pakman will not look for a default package file name in a plain package;
+   it will simply retrieve all the files under the root directory.  The plan
+   is to make this the endorsed way of including plain packages.  For
+   backwards compatibility, pakman still accepts package locations that
+   identify a directory without a trailing "/", but including a trailing
+   slash will minimize the number of VCS transactions when performing a
+   'get'.
+
+ * Relative URIs can be used on the command line or in pak files.
+
+   On the command line, relative paths are first resolved as relative file
+   paths, and then mapped to repository locations.  In package files they
+   are always relative to the package URI.
+
+   Examples:
+
+      get { BAR = "../bar/pak" }   -- example pak file line
+
+      $ pakman get pak             # refresh package in current directory
+
+ * Pakman's package location syntax gives special status to P4-style "@xxx"
+   version specifiers.  A parent's version specifier is inherited by its
+   dependencies unless the package file specifies an explicit version for a
+   dependency.  This is similar to the way relative URIs inherit unspecified
+   scheme and host fields.  A solitary version specifier is a valid relative
+   URI, but this can only be used on the command line (no package can
+   include itself).
+
+      $ pakman get @99            #  same as ".@99"
+
+ * 'pakman get' defaults to 'pakman get .'
+
+ * Removed assertion that package descriptions with dependencies must also
+   include a "cmd" command.
+
+ * Pakman now recognizes host names in p4 URIs.  Only the default server can
+   be used, but including a host name is recommended to detect mismatches.
+   URIs that omit the host name will inherit the host of the parent package.
+   URIs that include a portion of the domain name will inherit the parent
+   package's domain name if the corresponding portion matches.  For example,
+   if the p4 client's default host is "acme123.com:1666", the
+   following host strings will be considered matches:
+
+      (empty string)
+      acme123
+      acme123.com
+
+   Since 1666 is the default port, "x" and "x:1666" are considered equivalent.
+
+ * p4.mapPackage allows users to control where auto-mapped packages land in
+   their client workspace (see 'pakman help config').  This can help
+   automate constructing a flat project mapping, ensuring short relative
+   paths between all packages.
+
+New in 0.71:
+
+ * Workaround bug in recent P4 client implementation of "p4 -s print
+   <file>": file contents are not tagged with "text:" or any other tag.
+   Problem was observed in rev P4/NTX86/2009.1/205670 (2009/06/29), and
+   may be more widespread.
+
+New in 0.7:
+
+ * MIN files: paths are relative to MIN file directory, so MIN files
+   in locations other than the top level can be used.
+

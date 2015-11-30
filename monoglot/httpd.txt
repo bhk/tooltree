@@ -1,0 +1,52 @@
+HTTPD
+####
+
+Contents
+----
+
+    .toc
+
+Overview
+----
+
+The `httpd` module provides a class that implements an HTTP server.
+
+     . local HTTPD = require "httpd"
+
+
+Functions
+----
+
+
+`HTTPD.new(addr)`
+....
+
+    Create a new instance of an HTTP server.
+
+      * `addr` : the IP address and port to which the listening socket
+        should be bound. This is provided in the format specified in
+        [`xpio`] (xpio.html#Address Format).
+
+
+`HTTPD.start(handler)`
+....
+
+    Begin serving incoming connections. This function creates a thread for
+    accepting connections and returns immediately to the caller.
+
+     * `handler` : a [Stack] (stack.html) handler. This is a function that
+       will be called once with each HTTP request, and which returns values
+       that describe the response to be sent to the client.
+
+    The server will create a thread for each incoming connection. These
+    connection threads handle one or more transaction sequentially. Handler
+    functions are called on connection threads.
+
+
+`HTTPD.stop()`
+....
+
+    Terminate the accepting thread and all connection threads.
+
+
+

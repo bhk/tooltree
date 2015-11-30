@@ -1,0 +1,70 @@
+PSArray
+####
+
+
+Overview
+====
+
+`PSArray` (Persistent Structure Array) implements an array as a persistent
+data structure.  "Persistent data structure" means that each instance is
+immutable.  "Modifications" instead return a new instance.
+
+Unlike a native JavaScript Array, accessing an item in a PSArray requires
+use of the `get` method.
+
+In the descriptions below, `psa` is the name of a PSArray instance.
+
+
+Functions
+====
+
+`PSArray.create()`
+....
+
+    Create a new PSArray.
+
+
+`psa.length`
+....-
+
+    The number of elements in the arrary [data property].
+
+
+`psa.get(index)`
+....
+
+    Return the item at index `index`, or `undefined` if the entry is empty.
+
+
+`psa.push(item1, ...)`
+....
+
+    Return a new PSArray that contains all of the items in `psa`, followed
+    by all of the arguments (item1, ...).
+
+
+`psa.forEach(fn [,thisArg])`
+....
+
+    Call `fn(value, index)` with each element in the array.
+
+
+`psa.diff(psaOld)`
+....
+
+    Return a "diff" object describing the changes from `psaOld` to `psa`.
+
+     * `diff.index` = where the change starts.  This is the number of
+       initial items in `psaOld` that remain in `psa`.
+
+     * `diff.numDel` = number of items deleted.  These values exist in
+       `psaOld` starting at `diff.index` but not in `psa`.
+
+     * `diff.numIns` = number of items inserted.  These values exist in
+       `psa` starting at `diff.index` but not in `psaOld`.
+
+    Any remaining items in `psaOld` after index `diff.index + diff.numDel`
+    appear in `psa` starting at `diff.index + diff.numIns`.
+
+    Note that when `diff.index == psaOld.length` is true, `diff.numDel` must
+    be `0`, and the diff describes a simple `append` operation.

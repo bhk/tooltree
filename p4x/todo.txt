@@ -1,0 +1,29 @@
+
+
+ * Mysterious missing file: sync won't work when file opened for edit, so
+   'p4x scrub' doesn't work.
+
+     p4x status       -->   ! foo
+     p4 sync -f foo   -->   foo - file(s) up-to-date.
+     ls foo           -->   no such file
+     p4 opened foo    -->   foo#14 - edit default change (text)
+     p4 fstat foo
+        ... headAction edit
+        ... action edit
+        ... actionOwner bhk
+
+ * Output error messages to stderr
+ * "p4x scrub" when current dir contains new file & edited file: no changes?
+      media/imagedecoders/main/latest : edit Makefile
+ * "p4x unedit" = remove from changelist, but do not overwrite
+ * "p4x diff" ... because "p4 diff" does not work when the local file has
+   not been edited.
+
+----------------------------------------------------------------
+
+fstat mysteries
+   ... action <action>       -- the current user/client's action on this file
+   ... headAction <action>   -- reflects other users
+   ... ... otherOpen0 <user>@<client>
+   ... ... otherAction0 <action>
+

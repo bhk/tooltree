@@ -1,0 +1,45 @@
+Monoglot
+####
+
+
+See [Introduction to Monoglot] (monoglot-intro.html) for an in-depth look at
+Monoglot's features and benefits.
+
+Documentation
+====
+
+ * [`httpd`] (httpd.html) : an HTTP 1.1 server implementation.
+
+ * [`dino`] (dino.html) : a library that simplifies constructing HTTP
+   request handlers.
+
+ * [`stack`] (stack.html) : an interface for HTTP request handlers.
+
+ * [`json`] (json.html) : JSON encoding/decoding.
+
+ * [`utf8utils`] (utf8utils.html) : UTF-8 utilities.
+
+ * [`xml`] (xml.html) : XML parser.
+
+ * [`xpio`] (xpio.html) : OS bindings that support networking and creation
+   and management of sub-processes.
+
+ * [`xpfs`] (xpfs.html) : file system access.
+
+ * [`event`] (event.html) : "event" objects for synchronization of threads.
+
+ * [`futex`] (futex.html) : lightweight synchronization primitive.
+
+ * [`thread`] (thread.html) : cooperative multitasking primitives.
+
+ * [`object`] (object.html) : simple object system.
+
+ * [`mdb`] (mdb.html) : Monoglot Debugger (MDB)
+
+
+Example
+===
+
+[Here]
+(https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua)
+is a simple web server based on monoglot.

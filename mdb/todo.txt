@@ -1,0 +1,75 @@
+ * Inspect coroutines
+
+   The UI should provide a way to access and inspect running coroutines
+   (aside from the currently stopped one). It would be nice to keep this
+   hidden until a coroutine is created.
+
+ * UI for network status
+
+   Network errors are not always indicated in the UI.
+
+ * Enhanced Security
+
+   The debugger allows the user to execute arbitrary code on the target
+   machine. It currently defaults to listening on the loopback interface,
+   limiting incoming connections to the local machine.
+
+   For multi-user machines this may be inadequate. Also, limiting to
+   localhost may be an undesirable restriction.  Password protection would
+   be better. The debugger, when launching the browser, could pass the
+   password as part of the URL (when launching with `--ui`) and it could
+   display the password on stdout for the user type into a browser.
+   Persisting login state with a cookie (and persisting on the server side
+   with a ~/.mdb file) would be nice.  You could get very elaborate here...
+
+ * Browse file
+
+   The user should be able to view source files that are not currently in
+   the call stack, in order to set breakpoints.
+
+ * Persist slider position & console visible state [cookies / local
+   storage].
+
+ * Preserve breakpoints across sessions [mdb could read/write `.mdb` file]
+
+
+
+MDB As Lua Interpreter Replacement
+====
+
+Goal: Build MDB intoa binary compatible with the Lua Standalone Interpreter,
+but adding a `--debug` flag that runs the target program under the debugger.
+It should run without any external dependencies (e.g. C and Lua dependencies
+must be bundled).
+
+ 1. `crank-lua/interpreter.lua` already handles standalone functionality,
+    and that could be included.
+
+ 2. `spawn` functionality would allow one instance of the program to run the
+    target program while another instance acts as the debugger.
+
+ 3. Bundling must be altered so that the target program will not see bundled
+    dependencies, while the debugger instance and the debugger agent *will*.
+
+Bundling Rework
+----
+
+ 1. Replace `requirefile` with a new `requiredata`.  This will use a
+    `LUA_DATAPATH` search path modeled after `LUA_PATH` and `LUA_CPATH`, and
+    avoid the `module/relativepath` approach of `requirefile`.
+
+    . local xml = require "xml"
+    . local xmlSource = requiredata "xml.lua"
+
+    This leads to a bundling and deployment model more consistent with
+    `LUA_PATH`.
+
+ 3. The bundler (cfromlua) creates a parallel global environment for
+    bundling, '_GBundled'.  In this environment, `require`, `load, etc., are
+    modified so that loaded code will also see bundled dependencies.  Other
+    globals will differ from the original environment (e.g. `_G`, `package`,
+    etc.).
+
+    The original enviroment is available as `_GBundled._GOrig`.  Code loaded
+    in this environment will not see bundled code. `_GOrig._GBundled` might
+    also be made available.

@@ -1,0 +1,189 @@
+crank-lua
+#########
+
+Overview
+========
+
+`crank-lua` is a package that exports a `.min` file that implements a set of
+[`crank`] (crank.html) generators.  It also includes
+[`cfromlua`](cfromlua.html), a tool that bundles a Lua source file with its
+dependencies into a single C or Lua file.
+
+
+Including `crank-lua`
+=====================
+
+To use `crank-lua` in your crank-based package:
+
+  1. In your `Package` file, add `crank-lua` as a dependency. For example:
+
+     . deps = crank crank-lua ...
+
+     `crank-lua` will in turn reference the `lua` package as a dependency.
+     The `lua` package supplies a Lua interpreter that is the default
+     executable used to run Lua unit tests, and it supplies headers and
+     libraries required to build Lua-based executables.
+
+  2. In your `Makefile`, after including `crank.min`, include the
+     `crank-lua.min` from the crank-lua package. For example:
+
+     . include .config
+     . include $(crank)/crank.min
+     . include $(crank-lua)/crank-lua.min
+
+  3. In your `Makefile`, add items to one of the crank-lua generator classes
+     (subclass them). For example:
+
+     . LuaExe += myprog.lua
+
+
+Classes
+=======
+
+This section introduces the generator classes or base classes and their
+intended usage. Refer to `crank-lua.min` file for details on default
+values and interdependencies between properties.
+
+LuaExe
+------
+
+`LuaExe` bundles a Lua script and its dependencies into a deployable binary.
+Run-time dependencies of the script will be detected (as described in
+[cfromlua] (cfromlua.html#Dependency Scanning)) and bundled along with it.
+
+Properties:
+
+  * `in` = the Lua source file. This defaults to the item name (typically a
+    Lua source file). If this is empty, `interpreter.lua` (from the
+    crank-lua directory) will be used, which emulates the Lua standalone
+    interpreter.
+
+  * `out` = path to the executable file to be generated. (By default this is
+    derived from the item name.)
+
+  * `preloads`: a set of Lua modules to be `require`d before the main module
+    is executed, similarly to how "-l" works in the Lua interpreter.
+
+`LuaExe` inherits properties from `LuaEnv` that may influence construction
+of the binary, including:
+
+  - `LUA_PATH`
+  - `LUA_CPATH`
+  - `luaPathDirs`
+  - `preloads`
+
+Usage Example:
+
+    . LuaEnv.luaPathDirs = . $(luau)
+    . LuaExe += myprog.lua
+
+This will generate a file called `myprog` in `.crank/release/LuaExe`.
+
+Intermediate Files
+..................
+
+Similarly to the `Exe` class, `LuaExe` infers instances of other classes to
+generate intermediate object files.  These instances do not appear in your
+Makefile, but `LuaExe` causes their rules to be generated anyway.
+
+ 1. One intermediate `.c` file is generated, using [cfromlua]
+    (cfromlua.html). This contains all Lua sources as string literals, and
+    it also contains an implementation of the `main()` function for the
+    program.
+
+    The `LuaToC` class is used to generate this rule, and its item name is
+    the same as the `LuaExe` item name. The `.options` property can be
+    assigned here to pass additional flags to cfromlua.
+
+ 2. An intermediate `.o` is generated from the `.c` file, using the
+    `LuaCompile` class, which inherits from `Compile`.
+
+
+LuaTest
+-------
+
+`LuaTest` runs Lua unit tests written as Lua source files. These are expected
+to exit with 0 on success and non-zero on failure.
+
+On success, a `".ok"` file is updated, so subsequent invocations of make
+will not have to re-run the test unnecessarily. Dependencies are
+auto-generated, so if test execution uses other Lua modules, changes to
+those modules will trigger a re-run of the test.
+
+Properties:
+
+ * `in` = name of the Lua file to invoke as a test. This defaults to the
+   item name.
+
+ * `exports` = environment variables to export to the interpreter.
+
+ * `OUTDIR` = directory of the ".ok" file. By default, this is exported as
+   an environment variable and intended for use by unit tests that create
+   temporary files.
+
+ * `args` = command line arguments to the test; the default is empty.
+
+`LuaTest` inherits other properties from [[`LuaEnv`]].
+
+Usage examples:
+
+    . LuaTest =  mytest.lua   # run one test
+
+    . LuaTest = $(wildcard *_q.lua)  # run all unit tests
+
+
+LuaEnv
+-------
+
+`LuaEnv` is a base class that specifies an environment for invoking a Lua
+script. The environment controls what dependencies a script will see.
+Modifications to `LuaEnv` properties will affect the results of `LuaTest`,
+`LuaExe`, and `LuaRun` similarly.
+
+Properties:
+
+ * `luaPathDirs`: a set of directories from which to generate LUA_PATH and
+   LUA_CPATH environment variables. The default is `.`.
+
+ * `LUA_PATH`: this property is exported as an environment variable to be
+   used by the Lua interpreter as it executes. By default, it will be
+   computed from `.luaPathDirs`.
+
+ * `LUA_CPATH`: this property is exported as an environment variable to be
+   used by the Lua interpreter as it executes. By default, it will be
+   computed from `.luaPathDirs`.
+
+ * `exports`: a set of properties to be exported as environment variables.
+   It defaults to `LUA_PATH LUA_CPATH`.
+
+ * `preloads`: a set of modules that are to be `require`d before the script
+   is executed.
+
+
+LuaRun
+------
+
+Each `LuaRun` instance specifies a Lua script to be executed in the
+environment described by `LuaEnv`.  `LuaRun` is not designed for usage
+directly from the command line. For example, the following will run
+`main.lua`:
+
+    . $ make LuaRun=main
+
+To pass arguments:
+
+    . $ make LuaRun=main LuaRun.args='a b c d'
+
+
+LuaShell
+--------
+
+Each `LuaShell` instance specifies a command to be executed with `LUA_PATH`
+and `LUA_CPATH` set according to `LuaEnv` properties, and with the directory
+containing the Lua executable in `PATH`.
+
+For example:
+
+    . $ make LuaShell=bash  # open interactive bash shell
+    .
+    . $ make LuaShell=lua   # open interactive Lua interpreter

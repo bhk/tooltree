@@ -1,0 +1,87 @@
+class.js
+####
+
+Overview
+====
+
+This module exports an object called `Class` that simplifies defining objects.
+
+The name "class" is admittedly a misnomer, but the name "Object" is already
+taken, and the name "Prototype" would probably add confusion given its use
+in JavaScript.  We try use the following terms consistently:
+
+ - A "class" is an object that is defined for the purpose of having its
+   properties inherited by instances or subclasses.
+
+ - A "subclass" is a class that derives from another class. It is created
+   using the `subclass` method of its parent class, and inherits properties
+   from its parent (and its parent, and so on).
+
+ - An "instance" is an object that is not used as a parent for other objects.
+   It is created using the `create` method of its parent class, and inherits
+   properties from its parent (and its parent, and so on).
+
+API
+====
+
+
+`Class.subclass(...)`
+....
+
+    Create a new object that inherits from `this`.
+
+    If a `subclassInitialize` method is defined, it will be called with all
+    the arguments that were passed to `subclass`.
+
+`Class.create(...)`
+....
+
+    Create a new object that inherits from `this`.
+
+    If an `initialize` method is defined, it will be called with all the
+    arguments that were passed to `create`.
+
+
+`Class.initialize(...)`
+....
+
+    Initialize instance `this`.
+
+
+`Class.subclassInitialize(...)`
+....
+
+    Initialize subclass `this`.
+
+
+Usage
+====
+
+. var Child = Parent.subclass();
+.
+. Child.initialize = function () { /* construct */ };
+.
+. Child.funca = function () { /* do something */ };
+.
+. var obj = Child.create();
+
+Here the inheritance chain is:
+
+:  obj --> Child --> Class
+
+
+For comparison, here is how we would implement this inheritance chain with
+JavaScript's "stock" constructor-based approach:
+
+. function Child(uri) { /* construct */ };
+.
+. // note: avoid `new Parent` because it will create instance members
+. Child.prototype = Object.create(Parent.prototype);
+.
+. Child.prototype.funca = function () { /* do something */ };
+.
+. var obj = new Child();
+
+Here the inheritance chain is:
+
+:  obj --> Child.prototype --> Parent.prototype

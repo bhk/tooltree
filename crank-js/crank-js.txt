@@ -1,0 +1,59 @@
+crank-js
+####
+
+
+Example Usage
+====
+
+. include .config
+. include $(crank)/crank.min
+. include $(crank-js)/crank-js.min
+.
+. ...rules...
+.
+.  $(build)
+
+
+Generator Classes
+====
+
+`JSTest`
+----
+
+Each item names a JavaScript test script that should exit without error on
+success.  An empty `.ok` file (the `.out` property) is generated when the
+test succeeds.
+
+`JSTest` requires Node.js.  It expects to find an executable named `node` in
+the path at build time, and will warn otherwise.
+
+Files that end in `_q.js` are considered "qualifying" tests for the
+corresponding `.js` file.  This convention is used to ensure optimal
+ordering of the test runs.  Qualifying tests are run before other tests that
+use the tested JavaScript file.
+
+Example:
+
+.  JSTest += $(wildcard *_q.js)
+
+
+`JSBundle`
+----
+
+Each item names a JavaScript script that is to be bundled with its
+dependencies.
+
+The output file name ends in `.bundle.js`.
+
+Example:
+
+.  JSBundle += ui.js
+
+
+`JSToHTML`
+----
+
+This is the same as JSBundle except an HTML file is generated, containing
+the bundled JavaScript in a `script` element.
+
+. JSToHTML += ui.js

@@ -1,0 +1,108 @@
+################################################################
+# VC7 toolchain generators for Crank.
+
+
+# VC7 is an abstract base class that supports Compile-vc7 and Exe-vc7.
+
+VC7.command     = $(call .,exe) $(call .,mode) $(call .,outFlag)$@ $(call .,options) $^
+VC7.includes    = $(INCLUDES)
+VC7.vcDir      ?= $(subst \,/,$(call <assertVar>,VC7INSTALLDIR))
+VC7.cdep       ?= $(crank-c.cdep)
+VC7.flagAliases = debug=DEBUG_symbols_noopt_debugOpt_debugLib
+
+# Note on environment vars: cl uses TMP as a temporary output directory when
+# it is non-empty. I haven't found a way to override this on the command
+# line. MinGW make treats TMP as special, so we cannot assign it to "".
+# Therefore, all Makefiles must avoid exporting TMP. (Even rule-specific
+# assignments will affect CL when they list an object file as a
+# pre-requisite.)
+
+VC7.flag-nodfltlib = -Zl
+
+<VC7INSTALLDIR_desc> = required for VC7 toolchain (crank-VC7.min)
+
+
+#----------------------------------------------------------------
+# Compile-vc7: compile C/C++
+#----------------------------------------------------------------
+#
+# MSC-specific flags:
+#
+#    nodynCRT
+#    RTTI
+#    syncEH
+#    nodfltlib
+#    stdinc
+#    misc
+
+Compile-vc7.parent      = VC7
+Compile-vc7.exe         = $(call .,vcDir)/bin/cl.exe
+Compile-vc7.ext         = .obj
+Compile-vc7.mode        = -c
+Compile-vc7.outFlag     = -Fo
+
+Compile-vc7.flags          = nodynCRT RTTI syncEH nodfltlib stdinc misc $(call inherit)
+
+Compile-vc7.flag-DEBUG     = -D_DEBUG
+Compile-vc7.flag-symbols   = -Z7
+Compile-vc7.flag-warn      = -W3
+Compile-vc7.flag-error     = -WX
+Compile-vc7.flag-opt       = -O2
+Compile-vc7.flag-debugOpt  = -Od -Ob1 -RTC1
+Compile-vc7.flag-protect   = -GS
+Compile-vc7.flag-includes  = $(addprefix -I,$(call .,includes))
+
+Compile-vc7.flag-dynCRT    = -MD$(if $(call vFlags,debugLib),d)
+Compile-vc7.flag-nodynCRT  = -MT$(if $(call vFlags,debugLib),d)#     static CRT
+Compile-vc7.flag-RTTI      = -GR#         enable RTTI
+Compile-vc7.flag-syncEH    = -EHsc
+Compile-vc7.flag-stdinc    = -I"$(call .,vcDir)/Include" -I"$(call .,vcDir)/PlatformSDK/Include"
+Compile-vc7.flag-misc      = -nologo -D_WIN32_WINNT_=0x400
+
+# auto-generate header dependencies
+Compile-vc7.depFile     = $@.dep
+Compile-vc7.command     = $(call inherit)$(\n)$(call .,depCmd)
+Compile-vc7.depCmd      = $(call .,cdep) -M+ $< -o $@ $(call .,flag-includes) > $(call .,depFile)
+
+
+#----------------------------------------------------------------
+# Exe-vc7: link executable
+#----------------------------------------------------------------
+
+Exe-vc7.parent  = VC7
+Exe-vc7.exe     = $(call .,vcDir)/bin/link.exe
+Exe-vc7.ext     = .exe
+Exe-vc7.mode    = -nologo
+Exe-vc7.outFlag = -out:
+
+# Our default for EXE's and DLL's is to link static versions of the C
+# runtimes in order to avoid troublesome external dependencies. This could
+# be a problem if such a DLL were to be used by such an EXE *and* one of
+# them calls free() on memory allocated by the other. In such a case, both
+# EXE and DLL will have to be built using the *same* dynamic runtime DLL.
+
+Exe-vc7.flags = nodfltlib
+Exe-vc7.flag-nodfltlib = -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcprt -NODEFAULTLIB:msvcrtd -NODEFAULTLIB:msvcprtd -DEFAULTLIB:libcmtd -DEFAULTLIB:libcpmtd -DEFAULTLIB:uuid -DEFAULTLIB:oldnames -LIBPATH:"$(call .,vcDir)/PlatformSDK/Lib" -LIBPATH:"$(call .,vcDir)/Lib"
+
+#----------------------------------------------------------------
+# Lib-vc7: generate static library
+#----------------------------------------------------------------
+
+Lib-vc7.parent  = VC7
+Lib-vc7.ext     = .lib
+Lib-vc7.command = $(call .,exe) $(call .,_flags) -out:$@ $^
+Lib-vc7.exe     = $(call .,vcDir)/bin/link.exe
+Lib-vc7._flags  = -LIB -nologo -NODEFAULTLIB
+
+#----------------------------------------------------------------
+# SharedLib-vc7: generate dynamic library
+#----------------------------------------------------------------
+
+SharedLib-vc7.parent       = Exe-vc7
+SharedLib-vc7.ext          = .dll
+SharedLib-vc7.flags        = dll $(call inherit)
+SharedLib-vc7.flag-dll     = -DLL -IMPLIB:$(call .,implib) $(addprefix -DEF:,$(call .,defFile))
+SharedLib-vc7.implib       = $(call .,dir)$(call .,name).implib
+SharedLib-vc7.dlib         = $(call .,dir)$(call .,name).dll
+SharedLib-vc7.out          = $(call .,dlib) $(call .,implib)
+SharedLib-vc7.defFile      = $(wildcard $I.def)

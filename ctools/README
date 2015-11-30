@@ -1,0 +1,8 @@
+This project builds two code coverage tools:
+
+ * `ccov` reads code coverage files in one of several different formats,
+   merges them, and writes it out into a common format.
+
+ * `cmet` reads ccov output files and displays tables of statistics.
+
+Each tool contains its own documentation (pass `-h` to see it).

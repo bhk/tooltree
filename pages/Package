@@ -1,0 +1,8 @@
+# Docs are pulled directly from the source trees (not the build results)
+deps = crank smark=smark?... pakman?... monoglot?... crank-lua?... smarkResult=smark?$(call v.,host) luau?... mdb?... crank-js?... jsu?...
+conf = .config
+make = make
+result = $(call v.,buildDir)/Pages
+
+# no sense building mulitple variants
+v = $(V.default)

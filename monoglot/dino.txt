@@ -1,0 +1,233 @@
+Dino
+####
+
+Dino is a class that simplifies construction of [Stack] (stack.html)
+handlers.
+
+Example
+=======
+
+Here is an example that constructs a Dino instance:
+
+. local Dino = require "dino"
+. local dino = Dino:new()
+. local GET, POST = dino.method.GET, dino.method.POST
+.
+. GET["/path"] = function (req)
+.    return "This is a test"
+. end
+.
+. PUT["/show/{name}"] = function (req, w)
+.    return w.name
+. end
+
+Dino instances implement `__call` so they can be invoked as Stack handler
+functions:
+
+. local HTTPD = require "httpd"
+. local thread = require "thread"
+.
+. local function main()
+.    HTTPD:new("127.0.0.1:8888"):start(dino)
+. end
+.
+. thread.dispatch(main)
+
+
+Routes
+======
+
+"Routes" register an action to be taken when the HTTP request matches a
+particular method name and the path matches a pattern.
+
+To match a method, select a constructor from the `method` table. For
+example, `dino.method.GET` will construct routes for the `GET` HTTP
+method.
+
+. local GET = dino.method.GET
+
+Route constructors can be invoked in two different ways:
+
+. GET(<pattern>, <function>)
+. GET[<pattern>] = <function>
+
+Both forms behave identically: they add a route to the list of routes.
+
+Order is significant. The first route matching the request will be taken.
+
+
+Conditions
+==========
+
+Handler functions can be associated with arbitrary conditions:
+
+. local function isDNT(req)
+.    return req.headers.dnt == "1"
+. end
+.
+. dino.when[isDNT] = function (req)
+.    return "DNT = 1"
+. end
+
+The following handler will always run (as long as no previous routes or
+conditions have matched):
+
+. dino.when[true] = function (req)
+.    return 404, { "Not found: ", req.path }
+. end
+
+
+Patterns
+========
+
+Two kinds of patterns are supported.
+
+If the pattern begins with a `^` character, it is treated as an ordinary
+[Lua pattern]
+(file:///Users/bhk/git/tooltree/opensource/lua-5.2.3/doc/manual.html#6.4.1).
+In this case, all captures are passed to the handler function (following the
+`request` parameter).
+
+. GET["^/a/([^/]*)/([^/]*)"] = function (request, a, b)
+.    return a .. ":" .. b
+. end
+
+Otherwise, the pattern is treated as a simple "globbing" pattern. These must
+exactly match the path, except for wildcards, which match a path element. (A
+path element is a sequence of characters delimited by `/`). A table
+containing all wildcard matches will be passed to the handler.
+
+An asterisk -- `*` -- denotes an unnamed wildcard. Matches for these will
+assume ordinal positions in the table (1, 2, ...). These are also passed as
+arguments after the wildcard table.
+
+. GET["/info/*/*"] = function (request, w, a, b)
+.    assert(w[1] == a)
+.    assert(w[2] == b)
+.    return a .. ":" .. b
+. end
+
+Curly braces enclosing a name -- *`{name}`* -- denote a named
+wildcard. Matches for these wildcards will be stored under the supplied name
+in the wildcard table. Both named and unnamed wildcards can appear in a
+globbing pattern.
+
+. GET["/x/{a}/{b}/*"] = function (request, w, c)
+.    assert(w[1] == c)
+.    return w.a .. ":" .. w.b .. ":" .. c
+. end
+
+Each wildcard will match all characters up to the next `/` or the end of
+the string.  Therefore, a pattern like `*.*` never succeed.
+
+
+Requests
+========
+
+The `request` parameters passed to handler functions are [Stack]
+(stack.html#Request) request tables with the following additional field:
+
++----------+-------------------------------+------------------------------+
+| Field    | Description                   | Example                      |
++==========+===============================+==============================+
+| params   | Parsed URI query string       | `{ id = "123" }`             |
+|          |                               |                              |
++----------+-------------------------------+------------------------------+
+
+`params` will be `nil` unless the requested URI included a query portion
+(`"?..."`). It maps names to values and contains array entries for unnamed
+fields. See `xuri.lua` for more information.
+
+
+Return Values
+=============
+
+Handlers return up to three values that describe the response to the web
+request:
+
+. [status,] [headers,] body
+
+ * `status` is a number. If omitted, `200` will be used.
+
+ * `headers` is a table that maps HTTP header names (all lower-case) to
+   strings. If omitted, and empty table will be used.
+
+   If the `content-type` header is not present, it will default to
+   "text/html".
+
+ * `body` is a string or a tree of document elements (see `doctree.lua`).
+
+   When `content-type` is (or defaults to) "text/html" and `body` is a table,
+   it will be serialized using `htmlgen.lua`. The following example uses
+   `doctree.lua` to construct a document tree:
+
+   . GET["/index"] = function (req)
+   .    return E.table {
+   .       E.tr{  E.th{ "A" }, E.td{ "a" } },
+   .    }
+   . end
+
+
+
+; Sinatra is unclear about defaulting and requirements. What about
+; "content-type"? What if only a response code is returned?
+;
+;
+; TODO
+; ====
+;
+;  * Redirection
+;  * Aliasing
+;
+; . ...response... =
+; .    status, headers, body
+; .    status, body
+; .    body
+; .    status
+; .
+; . Where:
+; .    status: number
+; .    headers: array
+; .    body: doctree | function | string
+;
+; ... return value is rarely HTML.
+;
+;
+; Non-Local Returns
+; ----
+;
+; . halt(...response...)
+; . pass()
+;
+;
+; Streams
+; ----
+;
+; . stream(function(write) ... end)
+;
+;
+; Logging
+; ----
+;
+; Generating URLs
+; ----
+;
+; taking reverse proxies and routers into account
+;
+;
+; Filters
+; ----
+;
+; "before filters" and "after filters"
+;
+; Conditions?
+; ----
+;
+; This can be achieved outside of the Dino handler.
+;
+; .    when(fnMatch, fnHandle)
+; .    when[fnMatch] = fnHandle
+; .    local function fnMatch(req)
+; .       return req.headers["auth"] == "xxx"
+; .    end
+; .    local fnMatch = d.headerIs("host-name", "^example.com$")

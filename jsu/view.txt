@@ -1,0 +1,256 @@
+View
+####
+
+    .toc
+
+Overview
+====
+
+The `View` class provides a way for JavaScript scripts to style DOM elements
+with CSS in a modular, composable manner.  It also aids portability by
+masking some browser implementation differences, and provides some other
+conveniences commonly needed by view objects.
+
+The `create` method creates an instance, which has an associated DOM
+element.  This will call `initialize`, if defined.
+
+The `subclass` method creates a subclass that can later be used to create
+instances.  Calls to `subclass` optionally assign or override properties
+using [[Property Description]] objects.  These can customize behavior by
+assigning CSS properties or by assigning `$...` properties that are
+recognized later during `create`.
+
+Some more complex classes may override `subclass` or `subclassInit` and
+document different behavior for `subclass`.
+
+
+API
+====
+
+
+`View.subclass(props)`
+....
+
+    Create a new `View` [subclass] (class.html).
+
+    `props` is a [[Property Description]] to be applied to the new class,
+    augmenting or overriding properties of the base class (`this`).  These
+    properties will apply to DOM elements created by this class.
+
+    CSS properties in `props` will be associated with a stylesheet rule that
+    uses a class-based selector.
+
+
+`View.create(items...)`
+....
+
+    Create a DOM element. Returns an instance of View whose `e` property holds
+    a reference to the DOM element.
+
+    Any number of "items" may be provided as arguments.  Each item may be one
+    of:
+
+     - A DOM node to be inserted into the element.
+     - An instance of View, whose `.e` member is to be inserted.
+     - An array of items to be processed.
+     - A string that will be inserted into the element (as a text node).
+     - A [[Property Description]]
+
+    Property description items will override any properties associated with
+    the class.  CSS properties will be applied directly to the element's
+    `style` property.
+
+
+`View.append(items...)`
+....
+
+    Apply items to the view instance.  Any content items are appended to the
+    DOM element. Any properties assign or override existing properties.
+
+
+`View.setContent(items...)`
+....
+
+    Replace existing content with content items in `items...`.  Any
+    properties in `items...` assign or override existing properties.
+
+
+`View.enableClass(className, isOn)`
+....
+
+    Add or remove a class name to/from the set of classes associated
+    with the element held in `this.e`.
+
+    When one parameter is passed, `isOn` is treated as `true`.
+
+
+`View.activate(args...)`
+....
+
+    Activates an observable function.  Activation maintains the observable in
+    a valid state.  The function will be called immediately and then later
+    whenever any of its inputs change.
+
+    `args...` can be either:
+
+      - An observable function.
+
+      - A function and inputs used to construct an observable function.  In
+        this case the arguments are passed directly to
+        `observable.Func.create()`.
+
+    The return value is a function that, when called, "undoes" the activation.
+
+
+`View.destroy(obs)`
+....
+
+    Deactivate everything that has been activated using `this.activate`,
+    except for those that have since been individually deactivated.
+
+
+; `View.expandProps(string)`
+; ....
+;
+;     Convert JavaScript notation for CSS properties within `string` to CSS
+;     syntax recognized by the current browser.  Each property to be converted
+;     must be enclosed between `#{` and `}`.
+;
+;     If the current browser does not understand the property, a generic
+;     "-"-delimited form will be returned.
+;
+;     Example:
+;
+;     . View.expandProps("a #{boxSizing} b")  --> "a -moz-box-sizing b"  (on Mozilla)
+;     . View.expandProps("a #{notSupported} b")  --> "a not-supported b"
+
+
+Property Description
+====
+
+A property description is a JavaScript object that describes CSS properties
+and/or element properties.  These can be passed to `View.subclass` when
+constructing a new View object, or to `View.create` when creating
+an individual DOM element.
+
+Generally, each key/value pair in the object names a CSS property and a
+value to be assigned to it.  There are other "special" properties, however,
+that have different meanings:
+
+ - Names beginning with `"$"` are treated as names of JavaScript properties
+   that are to be assigned on the newly created subclass or instance.  Some
+   of these have special significance:
+
+    - `"$tag"` provides a tag name to be used for DOM elements when they are
+      created.  The default is `"div"`.
+
+    - `"$class"` provides a class name to be associated with the subclass
+      (when passed to `View.subclass`).  This will be used to construct a
+      selector for any style sheet rules that will be created for the
+      subclass. This is optional and only for debugging.  When used, a CSS
+      class name will be constructed from this name by prepending a prefix
+      ("_") and a suffix, if necessary, to avoid naming conflicts.
+
+    - `"$id"` provides an ID to be assigned to an element.  *Note: This has
+      effect only when a property description containing modifiers is passed
+      to `View.create`.*  If the element already has an ID, this will not be
+      used.
+
+ - Any name containing `?` is taken as a "modifier", which describes a
+   more specific CSS selector.  The value bound to this name must be a
+   [[Property Description]] containing CSS properties that shall be in
+   effect when the more specific selector is matched.  Any `$` properties
+   that occur in a modifier description are ignored.
+
+   In the modifier name, the character `?` represents the element being
+   created, or, when passed to `View.subclass`, any future instance of that
+   class.  Here are some examples:
+
+   +------------+--------------------------------------------------+
+   | Modifier   | Applies when...                                  |
+   +============+==================================================+
+   | `?:hover`  | ... the mouse pointer hovers over the element    |
+   +------------+--------------------------------------------------+
+   | `?.on`     | ... the `on` class is listed in the element's    |
+   |            | `class` attribute                                |
+   +------------+--------------------------------------------------+
+   | `P ?`      | ... the element is a descendant of a P element   |
+   +------------+--------------------------------------------------+
+   | `P > ?`    | ... the element is a child of a P element        |
+   +------------+--------------------------------------------------+
+
+
+**JavaScript names vs. CSS syntax:** Property description keys that name a
+CSS property are expressed in JavaScript form, not as in CSS syntax. For
+example, `"marginLeft"` is used instead of `"margin-left"`.  Either
+`"cssFloat'` or `"float"` can be used to assign the CSS syntax `"float"`
+property.
+
+**Ordering:** Note that JavaScript objects are *unordered* pairings of names
+and values.  In order to provide deterministic behavior, the keys in a
+property description are sorted before they are applied. As a result,
+shorthand properties within a property description will be applied before,
+and be overridden by, more specific properties --- which is presumably what
+is desired when both are used together.  Likewise, pseudo-class modifiers
+will override class modifiers.
+
+**Browser portability:** In some cases, different browsers use different
+names for the same CSS property. When applying a property that is not
+supported by the underlying implementation, different prefixes will be
+tried.  This allows your code to use generic, unprefixed names and work on
+multiple browsers.
+
+Alongside generic names you may also use browser-specific names in order to
+intentionally introduce browser-specific behavior. When using both, be
+careful of ordering.
+
+**Property Value Normalization**: When the provided value is a string, each
+occurrence of `#{propertyName}` will be replaced by the browser-specific CSS
+syntax for that property name.  Numeric values are converted to CSS lengths
+by appending "px". For the rare cases where other units or numbers are
+desired, such as `opacity` or `z-index`, pass a string value.
+
+
+Here are a few examples of how property keys and values will be normalized
+for different browsers:
+
++-----------------+-----------------------+------------------------+
+| Key / \         | Chrome JS / \         | Firefox JS / \         |
+| Value           | Chroms CSS            | Firefox CSS            |
++=================+=======================+========================+
+| transform \     | webkitTransform \     | transform \            |
+| "#{transform}"  | "-webkit-transform"   | "transform"            |
++-----------------+-----------------------+------------------------+
+| boxSixing \     | boxSizing \           | MozBoxSizing \         |
+| "#{boxSiging}"  | "box-sizing"          | "-moz-box-sizing"      |
++-----------------+-----------------------+------------------------+
+
+
+Examples
+====
+
+. var Msg = View.subclass({
+.    $class: 'Msg',
+.    $tag: 'span',
+.    color: 'green',
+.    '?.error': { color: 'red' }
+. });
+.
+. var msg1 = Msg.create('hello');
+. document.body.appendChild(msg1.e);
+
+Text in this element will be green.  After calling
+`msg1.enableClass('error', true)`, the text will become red.
+
+. var msg2 = Msg.create({
+.     ':hover': {
+.        color: 'blue'
+.        '?.enabled': { color: 'black' }
+.     }
+. }, "Hello, world!");
+. document.body.appendChild(msg2.e);
+
+As with `msg1`, text in `msg2` will ordinarily appear green or blue,
+depending on whether the `error` class is enabled.  However, when the mouse
+pointer hovers over the `msg2` element, its text will change to blue or
+black, depending on whether `error` is enabled.

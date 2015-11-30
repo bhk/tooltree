@@ -1,0 +1,565 @@
+Observables
+####
+
+Synopsis
+====
+
+.    var O = require('observable.js');
+.
+.    var v1 = O.slot(1);
+.    var v2 = O.slot(2);
+.    var f1 = O.func(function (a, b, c) { return a + b + c; },
+.                    v1, v2, 5);
+.    O.activate(console.log.bind(console), f1);
+.    // console: 8
+.    v1.setValue(2);
+.    // console: 9
+
+
+Overview
+====
+
+`observable.js` provides a minimal FRP framework.  In FRP we construct our
+program in a functional style, wherein each output is determined by its
+inputs.  FRP adds the notion of time-variant values, so even when a function
+gets "called" once its return value can vary over time with its inputs.
+
+In order to accomplish this in JavaScript, we use JavaScript function values
+that actually get called whenever inputs change. However, the management of
+the dependency chain and recalculation is "under the hood", so we can write
+a program as if we were constructing it once, functionally.  For example, we
+can construct a UI as if we were displaying a constant set of values, yet
+the resulting UI will dynamically respond to changes in inputs.
+
+Our program deals with two kinds of values:
+
+ - Static values are ordinary JavaScript values.  These values do not change
+   over time.
+
+ - *Observables* are objects that represent time-variant values.  These are
+   differentiated from "ordinary" values by inheriting from `O.Observable`.
+   At any one point in time, an observable "holds" a specific static value.
+
+And we write two kinds of code:
+
+ - *Imperative* code runs in "ordinary" JavaScript contexts such as event
+   handlers or timer callbacks.  We control when this code executes by
+   setting handlers or scheduling callbacks or placing it at the top level
+   of scripts.
+
+ - *Reactive* code consists of JavaScript functions that have been passed to
+   `O.func` to create observables that "watch" zero or more inputs.  We
+   don't explicitly invoke this code, but it gets invoked *as necessary* to
+   update its output value as its inputs change. Reactive code is generally
+   purely functional, describing how its result is a function of its inputs.
+
+While the reactive code is invoked at specific points in time and only sees
+static values, we can read it as if it applies at all times.  It describes
+relationships that are always true, whereas the ordinary imperative code
+prescribes what to do only in specific situations or at specific points in
+time.
+
+
+API
+====
+
+
+`O.slot(value) --> slot`
+....
+
+    Return an observable that holds static value `value`.
+
+    Unlike other observables, the returned slot implements a method called
+    `setValue`, which replaces the held value.  If the new value is
+    different (`!==`) from the previous value, the observable will be
+    invalidated, triggering recalculation of all active downstream
+    observables.
+
+    This is typically used by the imperative portions of your program to
+    contribute values to the reactive domain.  Do not call `o.setValue()`
+    from within the reactive domain -- i.e. from within one of the functions
+    passed to `O.func()`.
+
+
+`O.func(fn, value...) --> ofn`
+....
+
+    Apply the reactive function `fn` to a set of arguments (`value...`),
+    constructing a new value.
+
+    The input values *may* be observable or static, and depending on the
+    inputs the result `ofn` will be observable or static.
+
+    If any input values are observable, `ofn` will be an observable that
+    treats those inputs as dependencies, and a change to *any* of those
+    inputs will cause `fn` to be called again.  When `fn` is called, it will
+    be passed the static value held by the observable.
+
+    If all input values are static, non-function values, `ofn` will be a
+    static value, and `fn` will be called exactly once (before `O.func`
+    returns).
+
+    **Lazy Evaluation**: Function arguments are used for lazy evaluation.
+    These, when and if they are called, may return either static or
+    observable values.
+
+    As with non-lazy observable arguments, lazily-evaluated observables are
+    hidden from `fn`.  When `fn` is called, it is not given a direct
+    reference the to function arguments that were passed to `O.func()`.
+    Instead, each function argument `fa` is wrapped with another function
+    that inspects its return values.  When value returned by `fa` is an
+    observable, the wrapper tracks the observable as a dependency and
+    returns the current static value held by that observable.  Any static
+    return value will be returned unchanged.
+
+    Function arguments are called *only* if the corresponding wrapper is
+    called.  When not called, there will be no observable to track.  For
+    this reason, lazy evaluation can be useful to avoid false dependencies.
+    Observables that are conditionally (perhaps rarely) evaluated can be
+    wrapped in functions so that changes to those inputs do not generate
+    needless recalculations.
+
+    Function arguments can accept any number of arguments. This allows `fn`
+    to access an unlimited number of potential observable values.
+
+        For example, consider a function named "observeURI" that accepts a
+        URI and returns and observable that monitors an HTTP transaction.
+        The URIs mentioned by `fn` will be tracked as dependencies.
+
+    **Memoization**: Calls to function arguments are memoized.  The scope of
+    the memoization cache is limited to the previous update cycle.  In other
+    words, when `fn` calls a wrapper with the same arguments as it did in the
+    previous invocation of `fn`, the previous result will be used and the
+    wrapped function will not be called.  This helps ensure "constancy" when
+    calls to the function argument would normally construct a new
+    observable.
+
+        Consider the "observeURI" example described above, which would be
+        created in a pending state and later transition to a completed
+        state, triggering a recalculation and a new invocation of `fn`.  If
+        this invocation were to construct *another* HTTP transaction, the
+        previously completed transaction would be discarded, and
+        recalculation would repeat indefinitely.
+
+    **Constancy**: During each recalculation (that is, each call to `fn`)
+    the set of lazy dependencies is refreshed.  Only the lazy dependencies
+    from the most recent invocation of `fn` will remain tracked.  If, on
+    subsequent calls to `fn`, a lazy observable is returned both times, no
+    subscribe/unsubscribe operations will be generated.  This allows a lazy
+    dependency to remain "live" during repeated invalidate/update cycles.
+
+        Consider the "observeURI" example described above: If a
+        recalculation were to cycle the observable through a non-live state
+        and back to a live state, it would restart the transaction,
+        resulting indefinite repetition.  Instead, the observable remains in
+        a live state as long as `fn` continues to request the same URI.
+
+
+`O.createActivator(sched) --> act`
+....
+
+    Create an activator.
+
+    `sched` is an object that implements the `delay` method (see
+    `scheduler.js`).
+
+
+`act.activate(fn, value...)  --> dereg`
+....
+
+    Activate a side-effect-producing function.
+
+    `fn` will be called immediately, and then again as soon as possible
+    after a change to any of the input values.
+
+    . Rcx.activate = function () {
+    .     return this.track(this.act.activate.apply(this.act, arguments));
+    . }
+
+    . Rcx.assign = function (obj, field, value) {
+    .     return this.activate(function (o, f, v) {
+    .        o[f] = v;
+    .     }, obj, field, value));
+    . }
+
+
+
+Memoization
+====
+
+Functions provided to `O.func` are subject to memoization.  Lazy input
+values are always memoized, and the initial function parameter will be
+memoized when all the other parameters are static values.
+
+Memoizing a function means cacheing the arguments and the result of an
+invocation, and re-using the result on the next invocation if all of the
+arguments are the same.  `observable.js` compares arguments using the `===`
+comparator.
+
+One issue to be aware of when dealing with JavaScript object values is that
+an object will be `===` only to itself.  This means that equivalent objects
+will not be seen as the same, and this will defeat caching, which may impact
+performance.
+
+Another issue is that changes *within* an object are not visible to the
+caching mechanism. When an input value is the object as it was on a previous
+invocation, the cached result may be used even if the contents of the object
+have changed.  Using immutable complex data types is a generic solution to
+this problem.
+
+
+Theory of Operation
+====
+
+Aside from holding a current static value, Observables allow other objects
+to **subscribe** to them.  Subscribers receive notifications when the
+observable is **invalidated**.  The specifics of subscription and
+notification are implementation details private to the observable library.
+
+The subscription relationships form a graph, and if we flip the direction of
+the arrows it becomes a data flow graph:
+
+:         +-------+     +-------+
+:         |       |     |       |
+:         |   A   +---->+   D   +--,
+:         |       |  ,->+       |  |
+:         +-------+  |  +-------+  |
+:                    |             |
+:         +-------+  |             |  +-------+
+:         |       +--`             `->+       |
+:         |   B   +------------------>+   E   +---->
+:         |       |                ,->+       |
+:         +-------+                |  +-------+
+:                                  |
+:         +-------+                |
+:         |       |                |
+:         |   C   +----------------`
+:         |       |
+:         +-------+
+
+In this example, A, B, and C are slots, while D and E are observable
+functions.  D subscribes to A and B, while E subscribes to D, B, and C.  A
+change to A will result in recalculation of D and E, whereas change to C
+results only in a recalculation of E.
+
+
+Invalidation and Update Phases
+====
+
+Notification works in a way that allows updates to be deferred.
+
+During an invalidation phase, any number of observable variables may be
+modified, and any subscribed observers are notified.  These notifications
+propagate downstream until they reach a node that has already been
+invalidated.  Invalidation does not recalculate and update downstream nodes
+-- it only marks them invalid.  Invalidations are coalesced, which is to say
+that during an invalidation phase multiple changes to an observer will
+result in a single notification to its observers.
+
+Updates occur after invalidation, typically driven by a timer. Importantly,
+the update does not occur synchronously during invalidation.  Updates
+evaluate each of the invalidated nodes, in a bottom-up fashion, so that each
+node gets evaluated only once.
+
+The reasons for deferring updates are performance and scalability.  There are
+few different factors at play:
+
+ - Modifications can be redundant.  If updates were synchronous, N changes
+   to a single variable would result in N recalculations of all of its
+   downstream nodes.  Deferring updates allows us to recalculate each node
+   just once.
+
+ - Nodes can have multiple inputs.  When a node observes N different inputs,
+   deferred recalculation allows us to recalculate the node once instead of
+   N times.
+
+ - Nodes can have multiple outputs.  When a node is observed by N other
+   nodes, a single change could cascade to an exponential number of updates
+   if we were to synchronously and immediately traverse all paths
+   downstream.  With deferred updates, we recalculate each node at most
+   once.
+
+
+Immutable Values
+====
+
+Since updates are deferred, observers cannot rely on "seeing" every value
+that each input holds.  Observers are not force-fed a sequence of
+changes. Instead, when they are invoked they see only the "current" value of
+their inputs.
+
+This then brings up the question of how to handle incremental updates.  For
+example, a small addition to an array might result in a small change to a UI
+component, instead of a complete recalculation of the UI component's state.
+
+To deal with this, we treat all values held by observables as immutable. Any
+observer can hold on to a value provided by an input and use it in the
+future without fear of its contents changing.
+
+Each change of state must therefore produce a *different* value. For complex
+data types, this requires the usage of "persistent" (versioned) data
+structures.
+
+In order to obtain an efficient description of a change, we can compute it
+as a *function* of two states (the old state and the new state).  For
+example, we could define a very simple diff operation on persistent arrays
+that succeeds only when an "append array" operation completely describes the
+change:
+
+  .  a = newValue.diffAsAppend(oldValue);
+  .  if (a) {
+  .     a.forEach(appendItem);     // append these items
+  .  } else {
+  .     replaceContents(newValue); // start from scratch
+  .  }
+
+
+This diff-based approach may seem to require more code and complexity than
+synchronously pushing change records, but consider the following:
+
+  - Synchronous push introduces potential performance issues (the ones that
+    are the reason for observables).
+
+  - There are potentially many different forms of changes that might allow
+    for optimizations, varying with use cases and underlying data types.
+
+  - Observers might differ in complexity and in which types of changes they
+    can easily support. For example, some may simply recalculate their
+    results from the entirety of the complex data structure.  Maybe no
+    optimization is possible, or the complexity is undesired.
+
+  - "Changers" (clients that modify an observable variable) can likewise
+    differ in complexity and in which types of changes they know when to
+    apply.
+
+  - Changers and observers might have a mismatch in the forms of change
+    records they understand.
+
+  - Many consecutive changes might occur between two observed versions of a
+    data structure.  Delivering many changes will be more expensive than
+    delivering the new state, even when the changer and the observer are in
+    synch on the types of changes they prefer. Undelivered change records
+    might even exhaust memory.
+
+  - While the observable framework communicates only snapshots of state, not
+    queues of changes, an implementation of a persistent data structure may
+    very well employ change records internally to optimize common cases for
+    its `diff` operation.  For example, version B could know that it is
+    equal to version A plus one "append" change.  In fact, data model that
+    consists entirely of change records would be valid, and the "diff"
+    implementation for such a model would be trivial.
+
+Using "diff" keeps observables free from the concerns of change
+representation and queueing.
+
+The observed data objects decide which modification operations to expose,
+how to represent changes internally, and which change records to make
+available via "diff" operations.
+
+A persistent data type could bridge the gap between changers and observers
+that understand different forms of changes. In fact, it allows incremental
+update to be applied to operations that one would not normally think of as a
+candidate for such optimizations.  For example: an SQL SELECT operation
+produces a subset of a table. A persistent implementation of this could
+describe the SELECT results in terms of the original table. If an observer
+sees the whole table as the old value, and the SELECT results as the new
+table, the result of `newTable.diff(oldTable)` might be a list of rows to
+delete (perhaps empty). If this observer's role is populating a UI view with
+the contents of a table, it will not have to construct any new UI elements.
+
+
+Events
+====
+
+Observables created with `O.slot` and `O.func` deal with "current values",
+and do not directly address the concept of events, but we can build event
+support on top of them in various ways.
+
+We can observe objects that describe sequences of events, and these objects
+could support a diff operation that returns a sequence of events that
+occurred since a given older state.
+
+A simpler special case is a binary edge-triggered event, for which we can
+use an observed counter value. To "signal" the event we increment the
+counter. The observer gets notification of the changed counter, and can
+ignore the value (considering only whether it changed).
+
+The case of level-triggered events is even simpler.  For these we can simply
+use an observed value.
+
+
+Activation and Liveness
+====
+
+**Activators** are objects that live at the downstream end of the data flow
+graph.  They subscribe to one or more observables.  When a notification is
+received, they schedule a callback that will evaluate the observables.
+
+The presence or absence of subscription is used as an indication of
+"activation" or "liveness".  When an object has one or more subscribers it
+is activated, and should subscribe to its inputs.  When an object has no
+subscribers, it is not activated and should not subscribe to its inputs.
+
+In this manner, indication of liveness is propagated through the call graph,
+allowing nodes to release resources when not live.  For example, a network
+observable could cease network activity when it is not activated.
+
+Activators expose the following methods:
+
+ - `activate()` adds an observable to its list of active objects.  As a
+   convenience, instead of an observable it can be passed a function and
+   arguments, in which case will construct an observable function.
+
+ - `deactivate()` removes an observable from its list of active objects.
+
+ - `destroy()` removes all objects from its list of active objects.
+
+Note that when an observable function is not activated, its `valid` bit and
+cached value can get stale, since it is not subscribing to its children.
+When in this state, observable functions assume they are invalid, and calls
+to `getValue` will query their inputs and recalculate.
+
+
+
+.comment
+
+  Issue: getValue() is called outside of ordinary update cycles
+  ====
+
+  This happens because we sometimes evaluate functions when `O.func` is
+  called in order to do constant folding at time of construction.
+
+  The benefit is that we can sidestep most of the work in constructing
+  the observable func, and in turn any functions that depend upon it.
+
+  The problem is that we don't want to call `getValue()` on an unsubscribed
+  object.  Liveness is necessary to track validity (and, in turn, to
+  optimize updates).  And liveness should be persist, not transiently appear
+  and disappear, or else observables like `OWeb.fetch` will get whipsawed.
+
+  To deal with this, we introduce a "pro tempore" activator to subscribe to
+  objects as necessary when outside of an update cycle, and unsubscribe
+  after then end of the next update cycle.
+
+  An alternate approach would be to do constant folding at evaluation time,
+  which might work like this:
+
+      Each observable exposes `isConst`.  When a function's static
+      dependency is const, we remove it from the set.  When lazy
+      dependencies are const, we keep their value but not subscribe to them.
+      When there are no subscribed dependencies, the function becomes const,
+      and getValue = "return this.value;".
+
+      This would allow non-const functions to become const at any future
+      time, at the cost of checking const on every live dependency at every
+      recalc ... but it's probably rare for something to begin as non-const
+      and later transition to const.
+
+      But it would still leave us with the construction-time overhead of
+      cataloging and subscribing and later unsubscribing to every const func
+      dependency.
+
+
+  Bidirectionality
+  ====
+
+  It can be convenient for an observable object to also provide a method for
+  pushing the value upstream.  For example, a UI component observes the
+  breakpoint data structure (which lives on the server), and also modifies it,
+  causing modifications to be pushed upstream to the server.
+
+  Conceptually, a "settable observable" would make sense in these cases:
+
+    a) an observable variable
+    b) a reversible function of settable observable
+
+  The latter case would include functions like utf8/utf16 conversion, or
+  functions that use communication APIs to talk to a remote settable
+  observable.
+
+  Recalculation
+  ====
+
+  Observable functions call the user-supplied function during a `getValue`
+  that follows invalidation -- whether or not their input values have actually
+  changed.
+
+  The user-supplied function may choose to detect this condition and optimize
+  for it.  Whether detecting that condition would be cheaper than
+  recalculation depends on the function, and what notion of equivalence to use
+  also depends on the function.
+
+
+  ObservableX
+  ----
+
+  Perhaps some meta-programming or reflection-based code would help with the
+  following.
+
+  For any persistent object implementing functional methods:
+
+  .  newValue = oldValue.makeModification(...);
+
+  We can derive an observable variable that implements mutating methods:
+
+  .  observable.makeModification(...);
+
+
+  Observable Buttons
+  ----
+
+  Instead of:
+
+    btn = Button.create(..., doClick);
+    btn.enable( true / false);
+    function doClick() { ... };
+
+  ... Button is an Observable:
+
+    btn = Button.create(..., isEnabled);
+    isEnabled = O.Var(...)
+    isEnabled.setValue(true / false);
+
+
+  Semantics
+  ----
+
+  Some nodes may make use of mutable state while remaining true to the
+  functional model.  The internal state can cache store the result of a
+  computation over all past states.  E.g. we can store a counter of network
+  packets as a mutable number instead of keeping an infinitely growing queue
+  and recalculating.
+
+  Each node can only update its state when it is evaluated, so when the
+  observed values that do not track a history (as an event stream does) the
+  mutable state's value is not deterministic (it depends on the rate of
+  recalculation).  So, for example, if we want a value to represent the "most
+  recent non-null value of observable X", we cannot exactly implement that.
+  On the other hand, if we want it to be "the most recently-rendered value of
+  observable X", where rendering is a side-effect that our code implements,
+  then we can implement that.
+
+  Similarly, for some streams, values could be coalesced into a smaller number
+  of values, or one (e.g. diffs).
+
+
+  WarppedObservableConstructor vs. Returned Observable
+  ----
+
+
+      var data = O.thunk(function (name, web) {
+          var data = web(name);
+          return data.toUpperCase();
+      }, o_name, oc_web);
+
+
+
+      var data = O.thunk(function (name, web) {
+          // return web(name);  -- return observable
+          return O.thunk(function (data) {
+              return data.toUpperCase();
+          }, web(name));
+      }, o_name, oc_web);
+
+      // creates a new thunk (in addition to new web observable)
+      // which will have its own set of subscriptions.

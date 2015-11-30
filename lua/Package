@@ -1,0 +1,21 @@
+# configuration properties
+#
+# `.luaReadline` includes the readline library in the lua interpreter.
+# Readline is big and slows down startup, and benefits only interactive
+# sessions in a terminal (i.e. not inside an editor).
+#
+#     make configure V.luaReadline=1        # use in all variants
+#     make configure V[x].luaReadline=1     # use in variant `x`
+#
+# `.luaTargetOS` is the target OS.
+
+V.luaSourcePackage ?= lua-5.2.3
+V.luaReadline      ?=
+
+# package description
+
+conf   = .config
+deps   = crank lua-distro=$(call v.,luaSourcePackage) crank-c
+result = out/$v
+make   = make V='$v'
+clean  = make V='$v' clean

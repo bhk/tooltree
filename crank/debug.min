@@ -1,0 +1,101 @@
+########################################
+# debugging and unit testing utilities
+########################################
+# dbg_flags is a list of patterns that enable different logging
+#   S   => display successful 'expect' results
+#   TV  => dbg_value
+#   TT  => dbg_trace
+#   TC  => dbg_call
+#   TCE => dbg_call on-entry tracing
+#   %   => everything
+#
+
+dbg_flags = T%
+
+# dbg_enc escapes spaces & "%";  dbg_dec undoes dbg_enc precisely
+
+dbg_enc = $(subst $(if ,,	),^t,$(subst $(if ,, ),^_,$(subst %,^p,$(subst ^,^=,$1))))
+dbg_dec = $(subst ^=,^,$(subst ^p,%,$(subst ^_, ,$(subst ^t,	,$1))))
+dbg_eq = $(if $(findstring $1,$(findstring $2,$1)),1,$(if $(or $1,$2),,1))
+
+define _dbg_expectMsg
+Test failure: $3
+ Expected: "$1"
+      Got: "$2"
+
+endef
+
+_dbg_args = $(subst $(if ,,,),<COMMA>,$1)$(if $2$3$4$5$6$7$8$9,$(if ,,,)$(call _dbg_args,$2,$3,$4,$5,$6,$7,$8,$9))
+
+# dbg_info: display message of a certain type (if its type is enabled by dbg_flags)
+#    $1 = message type
+#    $2 = string to display  ("%s" will be replaced with $3)
+#    $3 = value to return
+
+dbg_info = $(if $(filter $(dbg_flags),$1),$(info $(subst %s,$3,$2)))$3
+
+# dbg_expect: Check result of a computation.  $(error) on failure.
+#
+# $(call dbg_expect,<expected_value>,<value>[,<name>])  ->  ""
+
+dbg_expect = $(if $(call dbg_eq,$1,$2),$(call dbg_info,S,OK: $(if $3,$3 -> )"$1"),$(error $(call _dbg_expectMsg,$1,$2,$3)))
+
+# dbg_expects
+
+dbg_expects = $(call dbg_expect,$(strip $1),$2,$3)
+
+# dbg_eexpect:  Check result of an anonymous function (a string to be evaluated).
+#    The function definition is used as <name> for messages.
+#
+# $(call dbg_eexpect,<expected_value>,<escaped_value>)  ->  ""
+
+dbg_eexpect = $(call dbg_expect,$1,$(call or,$2),$2)
+
+# $(call dbg_value,<name>,<value>) : display and return a value
+
+dbg_value = $(call dbg_info,TV,$(if $1,$1 = )%s,$2)
+
+# $(dbg_trace) : display current function name & args
+#
+# Example:
+#    myfunc = $(dbg_trace) ...
+
+dbg_trace = $(call dbg_info,TT,at: $$(call $0,$(_dbg_args)))
+
+# $(call dbg_call,fn,...args...) : call fn and trace inputs/outputs
+#
+# To use, replace "$(call func,a,b,...)" with "$(call dbg_call,func,a,b,...)"
+
+dbg_call = $(call dbg_info,TCE,$$(call $(_dbg_args)) ...)$(call dbg_info,TC,$$(call $(_dbg_args)) -> %s,$(call $1,$2,$3,$4,$5,$6,$7,$8))
+dbg_eval = $(eval $(call dbg_info,E,eval: %s,$1))
+
+# $(call dbg_x1,fn,...args...) : call fn one time with up to 6 args
+# $(call dbg_x11,fn,...args...) : call fn eleven times, but return one value
+#    (time_for_11 - time_for_1) / 10 ~= amount of time spent in fn
+#    `fn` cannot recurse (that would distort performance measurements, anyway)
+
+dbg_x1 = $(call dbg_xx,$2,$3,$4,$5,$6,$7,$8,$1)
+dbg_x11 = $(call dbg_xx,$2,$3,$4,$5,$6,$7,$8,$1,1 2 3 4 5 6 7 8 9)
+dbg_xx = $(if $(foreach _,$9,$($8)),)$($8)
+
+
+# $(call dbg_fail,uid) : generate a shell command that identifies the
+# failing line and exits with an error.  uid = a unique error ID that should
+# occur nowhere else in the file.
+#
+# Example:
+#    test: ; @runprogram args || $(call dbg_fail,E001)
+
+dbg_arg = '$(subst ','\'',$1)'#'
+
+dbg_fail = ( grep -nH $(dbg_arg) $(firstword $(MAKEFILE_LIST)) && false )
+
+# $(call dbg_grep,regexp,uid,file) : generate a shell command that greps for
+# regexp, and identifies the failing line on failure. If file is not given,
+# grep from stdin.
+#
+# Example:
+#    test: ; @runprogram args | $(call dbg_grep,OUTPUT,E001)
+
+dbg_grep = ( grep -e $(call dbg_arg,$1) $3 > /dev/null || (echo $(call dbg_arg,Test failure: expected "$1") ; $(call dbg_fail,$2)) )
+

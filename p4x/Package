@@ -1,0 +1,5 @@
+deps = crank luau crank-lua simp4
+result = out/$v
+make = make V='$v'
+clean = make V='$v' clean
+conf = .config

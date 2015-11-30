@@ -1,0 +1,5 @@
+result = $(call v.,buildDir)
+deps = crank crank-c lua luaHost=lua?$(call v.,host)
+conf = .config
+make = make V='$v'
+clean = make clean V='$v'

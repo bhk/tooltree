@@ -1,0 +1,211 @@
+Stack
+#####
+
+Stack is not a module; it is an interface for HTTP transactions used by
+the [`httpd`] (httpd.html) module and others.
+
+    .toc
+
+Overview
+----
+
+Stack defines how HTTP requests and responses are described in Lua data
+structures.  It is intended to be simple and generic so that it might be
+consumed by components other than the web server, similarly to how Python's
+WSGI and Ruby's Rack enable "filter" and "middleware" components.
+
+
+:           ,...............,
+:           :     Client    :
+:           `..+.........+..`           -,
+:              |         ^               |
+:      request |         | response      +-- HTTP protocol
+:              v         |               |
+:           ,--+---------+--,           -`
+:           |               |
+:           |     HTTPD     |
+:           |               |
+:           `--+---------+--`           -,
+:              |         ^               |
+:      request |         | response      +-- Stack API
+:              v         |               |
+:           ,--+---------+--,           -`
+:           |  :         ^  |
+:           |  : Filter  :  |
+:           |  +........>+  |
+:           |  v         :  |
+:           `--+---------+--`           -,
+:              |         ^               |
+:      request |         | response      +-- Stack API
+:              v         |               |
+:           ,--+---------+--,           -`
+:           |  :         ^  |
+:           |  :   App   :  |
+:           |  `.........`  |
+:           `---------------`
+
+
+Handler
+----
+
+A handler function is passed one parameter describing the request, and it
+returns three values describing the response.
+
+    . status, headers, response = handler(request)
+
+Once the handler returns, the server can begin sending the response.
+
+
+Request
+----
+
+Each request is described by one parameter passed to the handler function. It
+is a table with the following fields:
+
+
++----------+-------------------------------+------------------------------+
+| Field    | Description                   | Example                      |
++==========+===============================+==============================+
+| method   | HTTP method                   | `"GET"`                      |
+|          |                               |                              |
++----------+-------------------------------+------------------------------+
+| server   | Scheme and authority portion  | `"http://foo.com"`           |
+|          | of the URI                    |                              |
++----------+-------------------------------+------------------------------+
+| root     | Absolute path to handler      | `"/cgi/foo"`                 |
+|          | (or `""`)                     |                              |
++----------+-------------------------------+------------------------------+
+| path     | Path portion of URI (not      | `"/index"`                   |
+|          | including the query)          |                              |
++----------+-------------------------------+------------------------------+
+| query    | Query string (if present)     | `"?idf=123"`                 |
+|          |                               |                              |
++----------+-------------------------------+------------------------------+
+| headers  | Table mapping header field    | `{ referer =                 |
+|          | names to values               | "http://example.com", ...}`  |
++----------+-------------------------------+------------------------------+
+| body     | Readable stream object        | `{ read = <function> }`      |
+|          |                               |                              |
++----------+-------------------------------+------------------------------+
+| context  | Table describing the context  | `{ client =                  |
+|          | of the transaction            | "74.128.39.120:3456" }`      |
++----------+-------------------------------+------------------------------+
+
+
+Notes:
+
+ * `server`, `root`, and `path` can be used to reconstruct the absolute
+   URI of the request:
+
+   . uri = request.server .. request.root .. request.path .. request.query
+
+   `root` and `path` together constitute the path portion of the URI.  These
+   are separated in order to decouple the handler from its location in the
+   server's namespace.
+
+   When a handler is called directly from the web server, the `root` will be
+   the empty string. When a handler is associated with a subtree of the
+   namespace, then root will be a string beginning with `"/"`.
+
+ * `query` will be the empty string unless a query portion was present in
+   the URI.
+
+ * The keys in the `headers` table are [[Internal Header Names]].
+
+   There is only one value associated with each header name. When a header
+   name appears more than once in the request message received by the HTTP
+   server, the server will concatenate the values, separating them with a
+   semicolon.
+
+ * `body` is an object that implements the [read]
+   (xpio.html#socket:read(size)) method as documented in [`xpio`]
+   (xpio.html).
+
+   When the HTTP request does not contain a body, `request.body:read()` will
+   immediately indicate an "end of stream" condition.
+
+   Handlers can consume the request body stream returning, or they may
+   retain a reference and use it during execution of the *response* body
+   [[Stream Function]].  After execution of the stream function, however,
+   the request body object will be unavailable (calls to `read` will
+   return an error indication).
+
+ * `context` is a table with the following fields:
+
+    - `client` : the address to which the peer (client) is bound, in the
+      [`xpio` address format] (xpio.html#Address Format).
+
+
+Response
+----
+
+Each response is described by three values returned by the handler:
+
+ * `status` is a number containing the HTTP response status code.
+
+ * `headers` is a map from [[Internal Header Names]] to values.
+
+ * `body` describes the response body. It is either a string or an [[Stream
+   Function]].
+
+Generally, the handler is responsible for ensuring that the response is
+correctly formed according to requirements of HTTP.
+
+Handlers are not responsible for the conformance with the lower-level HTTP
+requirements -- those required for proper delivery of the payload and
+headers to the client -- such as `Content-Length` and `Transfer-Encoding`
+headers, and whether or not the response will include a body.  Handlers
+should not generate these headers.
+
+
+Internal Header Names
+----
+
+As transmitted over the wire, HTTP header field names are
+case-insensitive. Each name can therefore be written many ways.
+
+Stack request and response structures use an internal, case-sensitive
+format, in which there is only one way to write a header name. This internal
+format is obtained by converting the over-the-air name to lower case, then
+removing each hyphen (`-`) that precedes a letter and capitalizing that
+letter. Here are some examples:
+
+   +--------------------+--------------------+--------------------+
+   | As received        | Internal           | As Sent            |
+   +====================+====================+====================+
+   | `Date`             | `date`             | `Date`             |
+   +--------------------+--------------------+--------------------+
+   | `Content-Length`   | `contentLength`    | `Content-Length`   |
+   +--------------------+--------------------+--------------------+
+   | `CoNtEnT-lEnGtH`   | `contentLength`    | `Content-Length`   |
+   +--------------------+--------------------+--------------------+
+   | `X--FOO-*`         | `x-Foo-*`          | `X--Foo-*`         |
+   +--------------------+--------------------+--------------------+
+
+`HTTPD.headerIn()` can be used to translate a wire format HTTP header to its
+internal representation.
+
+`HTTPD.headerOut()` returns the "as sent" form, given the internal form.
+
+
+Stream Function
+----
+
+A stream function generates the body of a request by calling an `emit`
+function. The `emit` function is passed as the first parameter to the stream
+function. `emit` accepts a single parameter: either a string or an array of
+strings.
+
+. local function stream(emit)
+.    emit("Hello ")
+.    emit("world!")
+. end
+
+When a body is provided as a stream function, any `content-length` header
+will be ignored.
+
+The `emit` function returns `true` on success and `nil` on failure (for
+example, when a peer closed the connection). This allows the stream function
+to complete early when such error conditions are encountered. (The stream
+function is allowed to run to completion so it may release any resources it
+holds.)

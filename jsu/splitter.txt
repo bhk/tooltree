@@ -1,0 +1,43 @@
+Splitter
+####
+
+Overview
+------
+
+A splitter is a view whose content area is divided either horizontally
+or vertically amongst two child views.  Splitters imbue their child
+views with absolute positioning by adding the Fill class to them.
+
+Example:
+
+.   var s = Splitter.create({
+.      $topSize: '32',
+.      $top: ToolbarView.create(),
+.      $bottom: CodeView.creeat()
+.   });
+.   document.body.appendChild(s.e);
+
+
+`Splitter.create(props)`
+....
+
+     Create and return a new [View] (view.html) instance.
+
+     `props` is a [property description] (view.html#Property Description)
+     that contains properties that describe the splitter.
+
+     For a vertical divider, supply `$left` and `$right` abd *either*
+     `$leftSize` *or* `$rightSize`.
+
+     For a horizontal divider, supply `$top` and `$bottom` abd *either*
+     `$topSize` *or* `$bottomSize`.
+
+     Values for left/right/top/bottom sizes are either numbers (treated as
+     CSS pixels) or CSS precentage sizes (e.g. `"50%"`).  These may be
+     supplied as observables.  If an observable is supplied and it has a
+     `setValue` member, the splitter will be resizsable by dragging an
+     invisible divider element.  When dragging computes a new size, it is
+     expressed in the same units as the pre-drag size value (a number
+     indicating pizels, or a string describing a CSS percentage size).
+
+     `$thickness` is the width/height of the divider. It defaults to 4.

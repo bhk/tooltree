@@ -1,0 +1,110 @@
+#----------------------------------------------------------------
+# GCC toolchain generators for Crank.
+#
+# "Gcc" is an abstract base class that supports Compile-gcc and Exe-gcc.
+#
+
+Gcc.exeName      = gcc
+Gcc.exe          = $(call v.,c-prefix)$(call .,exeName)
+Gcc.command      = $(call .,exe) $(call .,mode) -o $@ $(call .,options) $^
+Gcc.includes     = $(INCLUDES)
+Gcc.flagAliases  = debug=DEBUG;symbols;noopt cygwin=noPIC 32=32;no64 64=64;no32 dlopen=ldl;exportAll
+
+# options common to compiler and linker
+Gcc.flag-32       = -m32
+Gcc.flag-64       = -m64
+Gcc.flag-coverage = --coverage
+Gcc.flag-lc       = -lc
+Gcc.flag-lm       = -lm
+Gcc.flag-pthread  = $(if $(filter Linux,$(<uname>)),-pthread)
+Gcc.flag-android  = --sysroot=$(call <assertVar>,ANDROID_NDK_ROOT)/platforms/$(or $(call v.,c-targetPlatform),android-18)/arch-arm -fPIE
+Gcc.flag-coverage = --coverage
+
+#----------------------------------------------------------------
+# Compile-gcc: compile C or C++ to object file
+#----------------------------------------------------------------
+#
+# GCC-specific (and family) flags:
+#
+#    std         specify language standard to be `.std`
+#    pendantic   more warnings
+#    nostrict    do not enforce C99's strict aliasing rule
+#    PIC         Position-independent code
+
+Compile-gcc.parent   = Gcc
+Compile-gcc.ext      = .o
+Compile-gcc.exeName  = $(if $(filter c++,$(call .,lang)),g++,gcc)
+Compile-gcc.mode     = -c
+Compile-gcc.std      = $(call .,std-$(call .,lang))
+Compile-gcc.std-c    = c99
+Compile-gcc.std-c++  =
+
+# .lang = 'c' or 'c++' (default is choosen based on file extension)
+Compile-gcc.lang     = $(if $(filter %.cpp %.cxx %.cc %.c++,$I),c++,c)
+
+Compile-gcc.flags        = std nostrict PIC $(call .-,flags-$(<uname>)) $(call inherit)
+Compile-gcc.flags-WinNT  = noPIC# On Cygwin, avoid "error: -fPIC ignored for target (all code is position independent)"
+
+# generic compiler options
+Compile-gcc.flag-DEBUG    = -D_DEBUG
+Compile-gcc.flag-symbols  = -ggdb
+Compile-gcc.flag-warn     = $(call .,flag-warn-common) $(call .,flag-warn-$(call .,lang))
+Compile-gcc.flag-warn-common = -Wall -Wextra -pedantic -Wshadow -Wcast-qual -Wcast-align -Wno-unused-parameter
+Compile-gcc.flag-warn-c   = -Wstrict-prototypes -Wmissing-prototypes -Wold-style-definition -Wnested-externs -Wbad-function-cast -Winit-self
+Compile-gcc.flag-warn-c++ =
+Compile-gcc.flag-error    = -Werror
+Compile-gcc.flag-opt      = -$(lastword O2 $(filter O1 O2 O3,$(call .,activeFlags)))
+Compile-gcc.flag-protect  = -fstack-protector
+Compile-gcc.flag-includes = $(addprefix -I,$(call .,includes))
+Compile-gcc.flag-long-strings = -Wno-overlength-strings
+Compile-gcc.flag-size     = -Os
+# gcc-specific options
+Compile-gcc.flag-std      = $(filter-out -std=,-std=$(call .,std))
+Compile-gcc.flag-PIC      = -fPIC
+Compile-gcc.flag-nostrict = -fno-strict-aliasing
+
+# generate header dependency files
+
+Compile-gcc.depFile  = $@.d
+Compile-gcc.command  = $(call inherit) -MMD -MP -MF $(call .,depFile)
+
+
+#----------------------------------------------------------------
+# gcc-exe: link executable
+#----------------------------------------------------------------
+
+Exe-gcc.parent  = Exe-gcc-$(<uname>) Gcc
+Exe-gcc.command = $(call .,exe) -o $@ $^ $(call .,options)
+Exe-gcc.ext     = #
+Exe-gcc.exeName = $(if $(call .,link++),g++,gcc)
+
+Exe-gcc-Linux.flag-exportAll = -Wl,--export-dynamic
+Exe-gcc-Linux.flag-ldl       = -ldl
+Exe-gcc.flag-uddyl           = -undefined dynamic_lookup
+Exe-gcc-WinNT.flag-protect   = -lssp
+Exe-gcc.flag-android         = $(call inherit) -pie
+
+#----------------------------------------------------------------
+# Lib-gcc: build static library (archive)
+#----------------------------------------------------------------
+
+Lib-gcc.parent  = Gcc
+Lib-gcc.ext     = .lib
+Lib-gcc.command = $(call .,exe) -rsc $(call .,_flags) $@ $^
+Lib-gcc.exeName = ar
+Lib-gcc._flags  = #
+
+#----------------------------------------------------------------
+# SharedLib-gcc: build shared library
+#----------------------------------------------------------------
+
+SharedLib-gcc.parent = Exe-gcc
+SharedLib-gcc.ext = .so
+
+SharedLib-gcc.flags = $(call .,$(or $(call v.,c-llvmTarget),$(<uname>))-flags) $(call inherit)
+
+SharedLib-gcc.Darwin-flags                = -dynamiclib uddyl
+SharedLib-gcc.Linux-flags                 = -shared -Wl,-unresolved-symbols=ignore-all
+SharedLib-gcc.WinNT-flags                 = -shared -Wl,-unresolved-symbols=ignore-all
+SharedLib-gcc.arm-linux-androideabi-flags = -shared -Wl,-soname,$(notdir $(call .,out))
+SharedLib-gcc.arm-linux-gnueabi-flags     = -shared -Wl,-soname,$(notdir $(call .,out))

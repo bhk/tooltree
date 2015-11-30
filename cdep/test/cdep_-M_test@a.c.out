@@ -1,0 +1,2 @@
+test/a.c: test/a.h
+test/a.c: test/b.h

@@ -1,0 +1,32 @@
+ Lines   PLOC  iPLOC Name
+    32     13    194 AEEBase.c
+   205    123    n/a BufBound.c
+   229    146    799 CObject.c
+    90     59    744 CSkel.c
+   515    340    323 std.c
+   144     90    360 std_path.c
+   366    244    363 std_strlprintf.c
+   197     42    157 stdtime.c
+  1778   1057    n/a a: Total (8)
+   222    132    n/a a: Average
+
+    86     57    857 CStub.c
+    25     20    135 smath.c
+   170    120    322 std_SwapBytes.c
+    21      5    319 std_rand.c
+   302    202   1633 b: Total (4)
+    75     50    408 b: Average
+
+   193     88    319 std_scanul.c
+   193     88    319 c: Total (1)
+   193     88    319 c: Average
+
+ Lines   PLOC  iPLOC Name
+  2273   1347    n/a Overall Total (13)
+   174    103    n/a Overall Average
+
+     Lines = File size in lines (simple line count)
+      PLOC = Program Lines of Code (ignores blank and comment lines)
+     iPLOC = PLOC in all included header files
+      Name = Source file name
+

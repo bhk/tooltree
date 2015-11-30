@@ -1,0 +1,185 @@
+OWeb: Observable Web
+####
+
+This library allows for JavaScript running in a browser to observe state
+changes on a web server.
+
+Usage
+====
+
+First we require the appropriate modules and create an `OWeb` instance with
+the appropriate URI for the server's OWeb app.
+
+. var OWeb = require('oweb.js');
+. var xhttp = require('xhttp.js');
+. var oweb = OWeb.create(xhttp, "/observe/path");
+
+To create a `WebVar` instance, we specify an **entity name**, which
+identifies what server state we are watching.  This can be any string.
+
+. var webVar = oweb.observe('entityName');
+
+`webVar.getValue()` will return `undefined` until a value has been
+successfully retrieved.
+
+No network request will be made, however, until something subscribes to
+`webVar`.  At that point, any changes on the server side will update `webVar`
+and trigger notifications to its subscribers.  For example, the following
+code will begin monitoring the value over the network and write every new
+value to the console, given an instance, `a`, of `Activator` (see
+[Observables] (observables.html)):
+
+. dereg = a.activate(console.log.bind(console), webVar)};
+
+When the last subscribed unsubscribes to `webVar`, network requests will
+cease.  For example, this will stop the monitoring:
+
+. dereg();
+
+Errors are indicated by an object value whose `type` property is `error`.
+The `text` property may contain a human-readable description.
+
+
+Protocol
+====
+
+The protocol is based on HTTP long-polling: the server may delay its
+response until certain condition is met, as when an observed value changes.
+When a response is being delayed, we say the transaction is "pending".  Many
+servers and browsers enforce no time limits on connections, but proxies
+might.
+
+A single request can watch multiple entities.  A response is sent when there
+is data for any of the watched entities, and a response may include multiple
+entities.
+
+OWeb requests use the HTTP method `POLL`.
+
+The request URI identifies the server-side endpoint.  One web server could
+host different OWeb POLL URIs that operate entirely independently.  In this
+document, the term "server" when unqualified refers to the server-side OWeb
+endpoint, which will typically be embodied in a Web server application, not
+a web server or host machine.
+
+Requests and responses are JSON-encoded data structures.  Entity names are
+JSON strings, and entity values are arbitrary JSON values.
+
+. Request = {
+.    id: Value,            // optional
+.    add: [Name, ...],     // optional
+.    remove: [Name, ...]   // optional
+. }
+.
+. Response = {
+.    id: Value,            // optional
+.    values: { Name: Value, ... }
+. }
+.
+. Name = String
+. Value = <any JSON value>
+
+
+IDs
+----
+
+When a request incldues an `id` values, it is a "successor" transaction.
+The ID must match the ID of a previous response, its "predecessor". In this
+case, the set of entities being observed by a transaction is the set
+observed by its predecessor, minus any names in `remove`, plus any names in
+`add`.
+
+When the request does not contain an ID, the transaction observes only the
+entities named in `add`.
+
+An entity is considered "ready" when its value has changed since the
+predecessor, or if it has been added in that request.  The request remains
+pending until at least one entity is ready.
+
+Any removals are processed before any additions, so an entity named in both
+sets will be observed by the new transaction, *and* will be immediately sent
+in the response.
+
+When the set observed by a transaction is empty, the transaction responds
+immediately, with no `id` field.  This will happen when an initial request
+specifies no names to add, or when a non-initial request removes all of the
+previously subscribed names.
+
+
+Ordering Constraints
+----
+
+The client acknowledges a transaction by making another request that names
+it as a predecessor.
+
+When a transaction is acknowledged, the server discards transactions that
+precede it.  Once a transaction is discarded, it cannot be named as a
+predecessor by future transactions.
+
+For each completed transaction, there can be only one pending transaction
+that names it as a predecessor. If request B arrives while request A is still
+pending (A and B naming the same predecessor), request A will return an error
+result.
+
+For each completed transaction, there can be only one valid successor.  If
+request B arrives after the server has responded to request A has completed
+(A and B having the same predecessor), the server will discard transaction A.
+
+The above rules are intended to support the following use model:
+
+ * Nominally, the client issues a series of transactions, each one referring
+   to the previous as its predecessor.
+
+ * If a transaction fails, the client may automatically issue a new request,
+   which might differ from the previous request (since the client's set of
+   entities may have changed).  Note that when the client detects failure it
+   cannot distinguish between the following server-side conditions:
+
+    - The request was never seen.
+    - The request was in, or remains in, a pending state.
+    - A response was sent.
+
+
+Timeouts
+----
+
+Transactions may be discarded by the server when the remain unused for some
+amount of time.  A transaction is "used" when there is no transaction being
+handled or pending that names it as a predecessor.
+
+
+Errors
+----
+
+In the event of an error processing the request, an HTTP error response will
+be returned.
+
+ * 400 = error in JSON parsing of the request
+ * 409 = request was pre-empted by another request naming the same preecessor
+ * 410 = invalid predecessor ID specified
+
+Item-specific errors -- such as "unknown entity" -- are indicated by object
+values with an `error` field. These are returned by the server just as any
+observed JSON value is returned.
+
+. { error: String }
+
+ * `"unk"` = not found (entity does not exist)
+
+
+; Formats
+; ....
+;
+; Changes can be communicated as "diffs" or "deltas" if the client requests it
+; and the server supports it.  A format identifier is included with each
+; request item and response item to indicate the requested form and/or
+; response form.  All clients must support the "all" format, which returns the
+; complete contents as a single JSON value.
+
+
+Multiplexing
+====
+
+Each `OWeb` instance multiplexes all of its observation requests into a
+single HTTP transaction at a time.  When an observed entity becomes
+subscribed to, or becomes unsubscribed, any pending transaction is cancelled
+and a new one is launched.

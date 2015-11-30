@@ -1,0 +1,145 @@
+JSON Module
+####
+
+Contents
+----
+
+    .toc
+
+
+Overview
+----
+
+The `json` module returns a table of functions for encoding and decoding
+JSON BLOBs.
+
+    .  local json = require "json"
+
+
+The [[Type Mapping]] section, below, describes how Lua values are
+represented in JSON and vice-versa.
+
+
+Functions
+----
+
+
+`json.decode(blob, [nullValue])`
+....
+
+    Convert JSON BLOB to a Lua value, and return that value.
+
+    If `nullValue` is provided, it is the value to be used for JSON `null`
+    values.  If not provided, `json.null` is used.
+
+`json.encode(value)`
+....
+
+    Encode `value` as a JSON BLOB, and return the BLOB in a Lua string.
+
+
+`json.isArray(tbl)`
+....
+
+    Returns `true` if `tbl` represents a JSON array (versus an object). See
+    [[Type Mapping]], below.
+
+
+`json.makeArray(tbl)`
+....
+
+    Mark table `tbl` as an array, and return `tbl`.
+
+    This allows `json.encode` to distinguish an empty array from an empty
+    object. See [[Type Mapping]], below.
+
+    `json.makeArray` makes Lua's `table` functions available as methods, so,
+    for example, `tbl:concat` and `tbl:sort` can be used.
+
+
+`json.null`
+....
+
+    A special value that represents JSON 'null'.
+
+
+`json.toAscii(blob)`
+....
+
+    Convert any multi-byte UTF-8 sequences in `blob` to JSON `"\uXXXX"`
+    escape sequences. The result is an equivalent BLOB containing only ASCII
+    characters.
+
+    If you want to obtain an ASCII-only BLOB, apply this function the result
+    of `json.encode`.
+
+    `json.toAscii` is idempotent.
+
+
+Type Mapping
+------------
+
+ * Tables
+
+   Lua tables represent either JSON objects or JSON arrays.  Objects use
+   keys that are strings, and arrays use keys that are integers (starting
+   at 1).
+
+   Tables passed to `json.encode` will be treated as arrays if either [1]
+   is non-nil or the `__index` metamethod is non-nil. You can use
+   `json.makeArray` to set a table's `__index` metamethod to the
+   `table` global. This allows functions like `concat` and `sort` to be
+   used as methods, and it ensures it will be encoded as a JSON array.
+
+   Arrays returned from `json.decode` will have been marked as an array
+   using `json.makeArray`.  `json.isArray` can be used to test
+   whether the table represents an array.
+
+ * Strings
+
+   Lua strings represent JSON strings.  This is straightforward except
+   for character encoding issues (see below).
+
+ * Booleans and numbers map directly to JSON boolean and numbers.
+
+ * The value json.null represents a JSON 'null' value.
+
+ * Other Lua types (functions, userdata, etc.) are encoded as JSON 'null'
+   values.
+
+
+Character Encoding Issues
+-------------------------
+
+The simplest way to use JSON is to use UTF-8 encoding for both JSON BLOBs
+and Lua strings.
+
+ * If you present valid UTF-8-encoded character strings to `json.encode`, it
+   will return a valid UTF-8 JSON BLOB.
+
+   Any non-ASCII characters in the input strings will appear as non-ASCII
+   characters in the BLOB. You may then use [[`json.toAscii(blob)`]] to
+   convert non-ASCII sequences to equivalent character references
+   ("\uXXXX"), which employ only ASCII characters.
+
+ * If you present a valid UTF-8 JSON BLOB to `json.decode`, the resulting
+   strings will contains valid UTF-8-encoded character strings.
+
+   Any non-ASCII characters in the JSON BLOB will appear as non-ASCII
+   characters in the decoded strings. Also, numerical character references
+   ("\uXXXX") may result in non-ASCII (utf-8-encoded) characters.
+
+That said, `json.encode` is mostly agnostic to character encoding, since
+characters above 0x1F pass through unmodified to the resulting BLOB.  When
+given Lua strings encoded in some encoding other than UTF-8, it will produce
+a BLOB that is valid for that encoding, as long as that encoding is an ASCII
+superset (whic is the case for almost all multi-byte encodings in wide use,
+including UTF-8, Shift_JIS, and the euc-\* family).
+
+Whatever encoding is being used, if there are invalid byte sequences in the
+Lua strings they will pass through to the JSON BLOB, and vice versa.  You
+can use `utf8utils.validate` to check decoded strings or JSON BLOBs.
+
+In order to convey **binary data** through JSON, you must first convert the
+binary data to character data, which must then be properly character encoded
+into a Lua string.  See `utf8utils.binToChars` for more information.

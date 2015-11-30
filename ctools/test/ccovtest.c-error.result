@@ -1,0 +1,6 @@
+test/ccovtest.c:5: error: line not executed
+test/ccovtest.c:6: error: line not executed
+test/ccovtest.c:30: error: line not executed
+test/ccovtest.c:32: error: line not executed
+test/ccovtest.c:44: error: line not executed
+ccov: Coverage errors seen

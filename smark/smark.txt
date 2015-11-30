@@ -1,0 +1,1300 @@
+Smark
+#####
+
+.lua: return E.div{ style="text-align: center", os.date"%d-%b-%Y" }
+
+.lua
+    -- Indicate "code" markup in a more obvious style
+    function doc.macros.C(node)
+      return E.code{ node.text, class="codebox" }
+    end
+.end lua
+
+Contents
+================================================================
+
+    .toc
+
+Introduction
+================================================================
+
+**Smark** is a tool that converts plain text documents to HTML.  Like
+[Markdown] (http://daringfireball.net/projects/markdown/), Smark allows
+authors to describe markup in a way that is readable in the source form
+(plain text).  Smark also has an emphasis on the ability to convey rich
+document structure, like [YAML] (http://www.yaml.org/).  Finally, it offers
+extensibility and programmability.  Smark input can be thought of as
+*source code* for a document, written in a language intended to be readable
+in source form.
+
+Block-Level Markup
+================================================================
+
+There is a simple logic to Smark's handling of input text that underlies
+all of its operation.  It is worth familiarizing yourself with the basic
+syntax rules if you are going to be writing Smark documents.
+
+Block-Level Markup
+------------------
+
+1. **Paragraphs**
+
+   A blank line delimits two paragraphs.  Line breaks within a paragraph are
+   treated as ordinary spaces.  Sequences of more than one space are
+   equivalent to a single space.
+
+2. **Indentation**
+
+   Indentation of lines can be used to convey hierarchical structure.
+   Any change in indentation constitutes a paragraph break.
+
+3. **Lists**
+
+   Each paragraph may be preceded by a *tag* -- e.g. \C{1.} or \C{*} -- that
+   marks the paragraph as an item in a list.  When a list tag is found, the
+   indentation of *the text following the tag* defines the indentation of
+   the line, so subsequent lines of the same paragraph should be aligned
+   with the text that follows the tag.
+
+   Each tagged paragraph will either begin or continue a new list.  If its
+   indentation matches that of a list item earlier in the document, and
+   there have not been any intervening lines with *less* indentation, then
+   it continues a list.  Otherwise, it begins a new list.
+
+   Valid list tags:
+
+     * Bullets: \C{-} and \C{*} indicate bulleted items.
+
+     * Numeric: One or two decimal digits or hash characters \C{#} followed
+       by a period \C{.} or right parenthesis \C{)}.  Actual digits may be
+       used for readability in the source, but the numbering in the
+       formatted output will be auto-generated.
+
+     * Alpha: One or two ASCII letters followed by a right parenthesis.  The
+       letter's case is reflected in the rendering of the list.
+
+4. **Headings**
+
+   A paragraph consisting of two or more lines, the last of which is four or
+   more \C{#}, \C{=}, \C{-}, or \C{.} characters, is treated as a header
+   (level 1 through 4, respectively).  The contents of the first H1 are
+   treated as the document title.
+
+5. **Pre-formatted Paragraphs**
+
+   When all the lines of a paragraph begin with \C{.} or \C{:}, the
+   paragraph is treated as pre-formatted text.  When \C{:} is the initial
+   character, the pre-formatted block is treated as ASCII graphics and its
+   presentation will be "optimized" using graphics, where possible.  When
+   generating HTML, the graphics will take the form of HTML/CSS markup
+   embedded in the HTML file.
+
+6. **Tables**
+
+   Any paragraph whose lines all begin with \C{+} or \C{|} characters will
+   be treated as a [[`.table`]] macro invocation.
+
+7. **Horizontal Rules**
+
+   A paragraph consisting of nothing but a line of \C{-} or \C{=} characters
+   generates a horizontal rule.
+
+8. **Comments**
+
+   When all of the lines of a paragraph begin with \C{;}, that paragraph is
+   treated as a comment and will not appear in the formatted output.  These
+   can be used just like comments in source code.
+
+As a special case, a paragraph consisting of a single period (\C{.}) is also
+ignored.  This is particularly useful for closing an indented block without
+emitting any text.  For example, this can end a numbered list and start
+another without introducing any intervening text.
+
+
+
+   ;; :    ,-----------------------------------------------------,
+   ;; :    | +................................................+  +--- top block
+   ;; :    | : This is a line                                 :  |
+   ;; :    | : and a second line                              +..+... paragraph
+   ;; :    | +................................................+  |
+   ;; :    | ,------------------------------------------------,  |
+   ;; :    | |  +..........................................+  +--+--- inner block for
+   ;; :    | |  : This is indented                         :  |  |    indented region
+   ;; :    | |  +..........................................+  |  |
+   ;; :    | `------------------------------------------------`  |
+   ;; :    | +................................................+  |
+   ;; :    | : This is back at the top level                  :  |
+   ;; :    | +................................................+  |
+   ;; :    | ,------------------------------------------------,  |
+   ;; :    | |                                                +--+--- block for list
+   ;; :    | |  ,------------------------------------------,  |  |
+   ;; :    | |  |    +...................................+ +--+--+--- block for list
+   ;; :    | |  | 1. : This is a tagged paragraph        : |  |  |    item #1
+   ;; :    | |  |    +...................................+ |  |  |
+   ;; :    | |  |                                          |  |  |
+   ;; :    | |  |    +...................................+ |  |  |
+   ;; :    | |  |    : This is a second paragraph        : |  |  |
+   ;; :    | |  |    : in list item #1  .                : |  |  |
+   ;; :    | |  |    +...................................+ |  |  |
+   ;; :    | |  `------------------------------------------`  |  |
+   ;; :    | |                                                |  |
+   ;; :    | |  ,------------------------------------------,  |  |
+   ;; :    | |  |    +...................................+ |  |  |
+   ;; :    | |  | 2. : List item #2.                     : |  |  |
+   ;; :    | |  |    +...................................+ |  |  |
+   ;; :    | |  `------------------------------------------`  |  |
+   ;; :    | `------------------------------------------------`  |
+   ;; :    `-----------------------------------------------------`
+
+
+Inline Markup
+================================================================
+
+Bold and italicized text can be represented by enclosing it in pairs of
+"`**`" or "`*`" characters.  The beginning symbol in a pair must not be
+immediately followed by a space, and its corresponding closing symbol must
+not be immediately preceded by a space.  These rule allow Smark to detect
+markup mistakes and display warnings.  When a sequence of "`*`" characters
+appears with spaces on both sides the characters are treated as literal.
+
+One or more "backtick" characters ("`` ` ``") will begin a `<code>` section,
+which must be terminated by a matching sequence of the same length.
+
+The contents of italicized and bold sections may contain other markup (but
+not nested occurrences of themselves).  The contents of a backtick-quoted
+section are treated as literal character, so no markup can be embedded.  Use
+two backticks to enclose a single backtick, and so on.  A single space, if
+present, will be ignored after the opening sequence or before the closing
+sequence.
+
+
+.example
+
+     this is *italicized text*
+
+     this is **boldfaced text**
+
+     `code` is surrounded by (`` ` ``)
+
+     `in`**`tra`**word markup works
+
+
+To indicate an explicit line break, put a backslash ("`\`") character at the
+end of the line.  It does not matter whether whitespace characters follow
+the backslash.  (In general, invisible whitespace should never affect the
+meaning of a document.)
+
+.example
+        Roses are red \
+        Violets are blue
+
+
+There are multiple ways to introduce links or anchors.
+
+.example
+     <http://www.acme.com/> links to
+     an absolute URL.
+
+     [Acme] (http://www.acme.com) links to
+     an arbitrary URL.
+
+     [A similar syntax] (@anchor) creates an anchor.
+
+     [Relative URIs] (#anchor) can be used to
+     link to anchors or headers.
+
+     [[This]] is a shorthand for linking to
+     a header or anchor within the same document.
+
+     [[@This]] marks some text as an anchor.
+
+
+Special Symbols
+---------------
+
+Occurrences of the ASCII double quote character (`"`) are replaced with left
+and right double quote characters, alternately.  The alternation resets at
+the end of a paragraph.
+
+The following character sequences are also replaced with non-ASCII
+characters:
+
+.example
+    -- --> <-- ==> <== <=> != <= >=
+
+Quoting Special Characters
+--------------------------
+
+When a backslash is followed by any punctuation character, the backslash
+will be ignored and the following character will be included
+literally, and not as part of markup syntax or a special symbol.
+
+You may also quote characters using HTML [character references]
+(http://www.w3.org/TR/html4/sgml/entities.html).  Ampersands are treated as
+literal characters when the context does not match one of these patterns:
+"`&name;`", "`&#D;`", or "`&#xH;`", where `D` and `H` represent one or more
+decimal or hex digits.
+
+.example
+     \*  &#42;  &euro;  K&R
+
+
+Character Sets
+--------------
+
+Smark expects input files to contain text encoded in UTF-8.  When an invalid
+UTF-8 sequence is encountered, a warning is displayed and the characters are
+treated as ISO-Latin-1 characters.
+
+
+ASCII Graphics
+================================================================
+
+Smark can recognize lines and boxes in ASCII art, which represents shapes
+using the shapes of ASCII characters and the layout that fixed-width fonts
+provide.  Smark converts these shapes to graphics and text that can be
+rendered with proportional fonts, inline with the rest of the document.
+
+The [[`.art`]] macro and the \C{:} line prefix character can be used to
+indicate that text should be processed as ASCII graphics.
+
+Graphics Recognition
+--------------------
+
+Lines
+.....
+
+Sequences of certain ASCII characters are recognized as lines, according to
+the following rules:
+
+ * \C{-}, \C{|}, \C{.}, and \C{:} are characters that constitute portions of
+   a line.
+
+        \C{-}, \C{.} ==> horizontal \
+        \C{|}, \C{:} ==> vertical \
+        \C{-}, \C{|} ==> solid \
+        \C{.}, \C{:} ==> dotted
+
+ * \C{+} represents a *connecting point* at the center of the character
+   cell.  It can be part of either a vertical of horizontal line, connecting
+   with characters to the left, right, top, or bottom.  \C{+} can be used in
+   either dotted or solid lines.
+
+ * \C{>}, \C{<}, \C{^}, \C{v}, and \C{V} can be used as arrowheads.  A
+   lower-case letter \C{o} depicts a socket, which is drawn a small circle.
+
+ * \C{,} and \C{`} are connecting points, like \C{+}, but with special
+   properties:
+
+     1. \C{,} does not connect upwards.  \C{`} does not connect
+        downwards.
+
+     2. These characters, when they join two lines at a corner, indicate
+        that the corner should be rounded.
+
+ * \C{~} represents a solid horizontal line like \C{-}, but it disables
+   [shape recognition] (#Shapes) for that line.
+
+ * Characters will not be treated as graphics unless they form a line
+   consisting of at least two character cells.  The exception here is \C{|},
+   which is always treated as graphics.
+
+ * Letters (\C{o}, \C{v}, or \C{V}) and comma (\C{,}) will not be treated as
+   graphics if they appear horizontally adjacent to other letters or commas.
+   Furthermore, \C{o} must appear adjacent to \C{-} or \C{~}.
+
+Here are some examples of dotted and solid lines, connecting points, arrows,
+and rounded corners.  Rounded corners are not supported by all browsers, and
+few browsers render rounded dotted lines well, although it comes out nicely
+in print (see [[Printing Smark Documents]], below).
+
+.example
+    :      ,---,           |
+    :      |   |  +.......>|
+    :      `---|--+---+    |
+    :   o------`  :   +--->+
+    :             :        |
+    :   +-----....+....--->|
+    :                      |
+
+
+Shapes
+......
+
+After recognizing lines, Smark will try to recognize shapes circumscribed by
+those lines.  Shapes display with background colors and 3D effects as
+specified by the style sheet for the document.
+
+Shapes are recognized whenever a line forms a loop, *unless*:
+
+ 1. The line crosses over itself.
+ 2. One of the corners is a three- or four-way intersection.
+ 3. The line includes a \C{~} character, an arrowhead, or a socket (\C{o}).
+
+
+.example
+   :                 +,       +,     ,---,
+   :  +---,  ,-+    ,-+---,  ,-+-+   |   |
+   :  `,  `--` `-,    `,  `--` `-,   `---`
+   :  ,` ,--,  ,-`    ,` ,--,  ,-`   ,---,
+   :  +--`  `--+    ,-+--`  `--+-+   |   |
+   :                  `+      +`     `~--`
+
+
+When a shape lies entirely inside another shape, it will be drawn as if on
+top.  When two shapes have borders that intersect, the two shapes are drawn
+together as one larger shape at the same *layer*.
+
+.example
+   :  +------------+
+   :  |  ,---,   +-+---+
+   :  |  | ,-+--,| |   |
+   :  |  `-+-`  |+-+---+
+   :  |    `----`  |
+   :  +------------+
+
+Smark can recognize shapes that have one vertex partially obscured by other
+shapes.  Lines ending in a \C{-}, \C{|}, \C{:}, or \C{.} may extend
+underneath other shapes, and lines ending at a connecting point may connect
+to an obscured perpendicular line.
+
+.example
+    :         ,--------,     ,-----+
+    :     ,------,     |     |     |---+
+    :  ,--|   +----+   |     |   ,-+   |
+    :  |  `---|    |-, |     +---+ ,---+
+    :  |      +----+ | |       |   |
+    :  |        |    |-`       +---+
+    :  `--------`    |
+    :      `---------`
+
+
+Text Layout
+................................
+
+Graphical elements are sized and placed proportionally to their row and
+column indices in the pure ASCII representation.  Smark uses a character
+cell aspect ratio of 2:1 (height:width) when computing coordinates.
+This is close to that of typical monospaced fonts, and it makes it easy
+to produce graphics with predictable shapes, including perfect squares.
+
+Textual elements are also placed according to their row and column indices,
+but with some caveats.  One limitation is that font metrics -- in
+particular, character widths -- are generally unpredictable in a browser.
+Additionally, the author may want to choose a proportional font for improved
+readability or aesthetics, causing character placement to deviate even
+further from the monospaced ASCII source.
+
+In order to optimize text placement, Smark applies the following rules:
+
+  1. Sequential words of text on a line are considered "runs" of text, which
+     are drawn as a single text string.  Characters that are treated as
+     graphical elements divide one run from another.  Three or more
+     consecutive space characters also divide runs.
+
+  2. Text runs are drawn centered about the bounding box of the run unless
+     one of the following conditions applies:
+
+      a) If a run is "equidistant" from vertical lines to the left and
+         right, its text will be centered about an invisible line between
+         those lines.  "Equidistant" here means that the spacing on each
+         side is at most one space wider than the other.
+
+      b) If a run is "close" to a vertical line to its left (separated by at
+         most one space), its text will be left-aligned to the run's
+         left-most boundary.
+
+      c) If a run is "close" to a vertical line to its right, its text will
+         be right-aligned to the run's right-most boundary.
+
+      d) If a run begins at the same column as a run immediately above or
+         below it, its text will be left-aligned to its left-most boundary.
+
+      e) If a run ends at the same column as a run immediately above or below
+         it, its text will be right-aligned to its right-most boundary.
+
+  3. A single run can meet more than one (in fact all) of the conditions
+     listed above.  In that event, the rule coming first in the above list
+     will be used.
+
+The following example illustrates the alignment rules using narrow and wide
+characters to make the differences apparent.  The string `XXX` is adjusted
+to the center of the box, the word "label" is placed adjacent to graphics,
+and two apparent paragraphs have been assigned left and right alignment:
+
+.example
+  :                +------+
+  :          label | XXX  |
+  :                +------+
+  :   llll            llll
+  :   WWWW           WWWWW
+
+Smark Vector Graphics
+................................
+
+Smark outputs vector graphics as pure HTML without any external image files.
+The generated HTML file is therefore self-contained, and can be emailed or
+copied from one file system location to another without losing content.
+This also means that the graphics are resolution-independent, so when
+[[Printing Smark Documents]] the results will not be pixelated.
+
+The generated HTML employs ordinary HTML `div` elements and CSS properties
+that control positioning, colors, and border and background styles.  Chrome,
+Safari, Firefox, and Prince (see [[Printing Smark Documents]]) produce very
+good results.  When viewed using Internet Explorer 8, rounded corners will
+appear square and shadow effects will not be visible, but otherwise the
+documents should be quite readable.
+
+You may notice that when viewing a page on screen at a larger or smaller
+than ordinary scale -- with "Zoom In" or "Zoom Out" in Chrome or Safari --
+graphical elements may not meet precisely.  This results from the way
+browsers round coordinates to whole pixel sizes.  This does not affect
+Prince-generated PDFs, however, and in the default zoom (where one CSS
+pixel is the same as a physical pixel) Smark accounts for the effects of
+rounding.
+
+Customizing `.art` Rendering
+................................
+
+Style sheets can be used to customize a number of properties that affect
+appearance of a `.art` diagram.  The following CSS classes are attached to
+elements:
+
+.  art  = an element containing a .art diagram
+.  rect = a rectangle with a solid border
+.  drect = a rectangle with a dotted/dashed border
+.  round = a rectangle with rounded corners
+
+Custom style sheets may specify font properties, colors, and special
+effects.  The "border-color" property can be used to specify the color of
+lines and arrows as well as rectangle borders, and "border-style" controls
+line style and rectangle border style.  Avoid modifying rectangle sizes
+(border, padding, or margin) or positioning properties, because those would
+violate assumptions made by the rendering algorithms.  Font size may be
+specified.  Use "em" units for size because this will automatically adjust
+for the scaling of elements that is performed when large diagrams are
+encountered.
+
+The default style sheet does not assign a background or shadow effects to
+shapes with dotted outlines.  (Internet Explorer 8 does not support shadow
+effects, but other popular browsers do: Safari, Chrome, and Firefox.)
+
+Sequence Charts
+================================================================
+
+.msc
+   hscale = "0.5",
+   entities = "off",
+   float="right";
+
+   a, b;
+   a -> b [label = "a -> b"];
+   #a <- b [label = "a <- b"];
+   a => b [label = "a => b"];
+   #a <= b [label = "a <= b"];
+   a >> b [label = "a >> b"];
+   #a << b [label = "a << b"];
+   a =>> b [label = "a =>> b"];
+   #a <<= b [label = "a <<= b"];
+   a .> b [label = "a .> b"];
+   #a <. b [label = "a <. b"];
+   a :> b [label = "a :> b"];
+   #a <: b [label = "a <: b"];
+   a -x b [label = "a -x b"];
+   #a x- b [label = "a x- b"];
+   a <-> b [ label = "a <-> b" ];
+   a <=> b [ label = "a <=> b" ];
+   a <.> b [ label = "a <.> b" ];
+   a <<>> b [ label = "a <<>> b" ];
+   a <<=>> b [ label = "a <<=>> b" ];
+   a <:> b [ label = "a <:> b" ];
+   a -- b [ label = "a -- b" ];
+   a == b [ label = "a == b" ];
+   a .. b [ label = "a .. b" ];
+   a :: b [ label = "a :: b" ];
+
+The `.msc` macro allows sequence charts to be described concisely and
+abstractly in Smark source files.  Like `.art`, the charts use [[Smark
+Vector Graphics]] to generate pure HTML output.
+
+The syntax is intended to be compatible with [MSCGen]
+(http://en.wikipedia.org/wiki/MscGen), which is integrated with Doxygen.
+All of MSCGen's feature set is supported, as of its 30-Aug-2010 release, but
+MSCGen is a separate project so differences may emerge.
+
+The diagram to the right summarizes the supported arc styles.  For each
+uni-directional arrow indicator (e.g. "`=>`") there exists a complement
+pointing in the other direction ("`<=`").  Keywords are case-insensitive, as
+are option and attribute names.
+
+There are a few Smark-specific extensions:
+
+  * The `float` option can be set to `"right"` or `"left"` to display the
+    chart side-by-side with text.
+
+  * The `entities` option can be set to `"off"` to omit the entity names
+    from the chart.
+
+Rendering of arcs that slope (due to the `arcgradient` option or the
+`arcskip` arc attribute) employs "experimental" CSS features that are
+currently supported by Chrome, Safari, and Firefox.  In Internet Explorer 8
+and Prince, these lines display as horizontal, non-sloped lines.
+
+The chart below demonstrates a wide variety of the features available.
+Refer to the text source of this document for examples.
+
+.msc
+   # options
+   hscale = "0.75";
+
+   # entities (entity labels not standard?)
+   a [ linecolor = "#990", label="client"],
+   b [ arclinecolor="#00b", arctextcolor="#0aa", label="server 1"] ,
+   c [ linecolor="#0a0", label = "server 2"];
+
+   # arcs
+   b -> c [ label = "func(TRUE)" ] ;
+   a :> c [ label = "call(1)" ];
+   c=>c [ label = "work" ];
+   ... [ label = "...time passes...", idurl="#\\counter", id="2"];
+   c=>c [ label = "more work", textcolor="#d00", url="#ASCII Graphics" ];
+   c=>c [ label = "process(END)", textbgcolor="#ffd" ];
+   a -> b [ label = "ab()", linecolour = "#d00"];
+
+   a -> * [ label = "broadcast" ];
+   b -> * [ label = "broadcast" ];
+   * <- c [ label = "broadcast" ];
+
+   a<<=c [ label = "callback()"];
+   ---  [ label = "Horizontal Line", ID="*", linecolor="#d00" , textcolor="#080"];
+   a->a [ label = "next()"];
+   a->c [ label = "first line\nsecond"];
+   b<-c [ label = "right-to-left"];
+   b->b [ label = "middle"];
+   a<-b [ label = "RTL"];
+
+   a -> c [ label = "arcskip=1", arcskip=1 ];
+   a RBOX b [ label = " label=\"box\"\nlinecolor=\"blue\"\nthird line", url="#.msc" ];
+   a rbox b [ label = "rounded" ],    c rbox c [ label = "same line" ];
+   |||;
+
+Due to HTML vector graphics limitations, when `abox` (angle box) is used,
+all boxes are rendered without shadow effects.
+
+.msc
+   msc {  # wrapping between "msc {" and "}" is option
+     hscale = "0.5";
+     a, b;
+     |||;
+     a rbox b [ label = "box", linecolor="#444" ];
+     |||;
+     a box a [ label = "just a", linecolor="#444" ],
+     b abox b [ label = "just b", linecolor="#444" ];
+     |||;
+   }
+
+
+Macros
+================================================================
+
+Using Macros
+------------
+
+Macros can appear inside a paragraph ("inline macros") or outside the
+context of a paragraph ("block-level macros").
+
+Inline Macros
+...................
+
+Inline macro invocations conform to the following syntax:
+
+.    "\"  name "{" args "}"
+
+The `args` component is literal text.  It may contain "`{`" or "`}`"
+characters but only in balanced pairs.
+
+See [[`\counter`]] for an example.
+
+Block-Level Macros
+...................
+
+A paragraph that begins with a "." and a macro name is a block-level macro
+invocation.  There are two forms of block macro invocations: single line and
+multi-line.
+
+A single line macro is indicated by a colon ("`:`") and optional text
+following the name.  Spaces may appear between the name and the colon.
+
+.    .macroname: <text>
+
+A multi-line macro begins at a line consisting of nothing but the macro
+name.  Lines that follow and are indented /more than/ the first line are
+passed to the macro as its parameter.  An optional ending statement --
+"`.end macroname`" -- can be placed at the end of the macro.  This allows
+Smark to warn when accidentally introduced errors cause the macro's text
+block to close earlier or later.
+
+.    .macroname
+.        <text>
+.        <text>
+.    .end macroname
+
+
+An empty "." paragraph can also be used to terminate a multi-line macro
+invocation when the following text would not otherwise terminate it.
+
+.    .macroname
+.        <content>
+.    .
+.
+.        <next paragraph>
+
+
+Built-in Macros
+---------------
+
+
+`.art`
+......
+
+    `.art` processes text as ASCII graphics.  An alternative syntax for
+    `.art` is a series of lines prefixed by "`: `" (a colon and a space).
+    See the [[ASCII Graphics]] section for more information.
+
+    .example
+       :  ,--------,       ,--------,
+       :  | Client +--->o--+ Object |
+       :  `--------`       `--------`
+
+
+`.comment`
+......
+
+    `.comment` generates nothing.  It can be used to enclose a section of
+    text that should not appear in the output, just like comments in source
+    code.
+
+
+`\counter`
+......
+
+    `\counter{class item}` generates a unique number for `item` within a set
+    named `class`.  The first reference to an item assigns it a number --
+    the number of items in its set (including itself).  Subsequent
+    references to that item in that set within the same document return the
+    same number.  Any number of spaces may separate `class` from `item`.  If
+    class is not given, `""` is used.
+
+    .example
+       fA=\counter{fig a}, sA=\counter{sec a},
+       fB=\counter{fig b}, and again fA=\counter{fig a}.
+
+
+`.css`
+......
+
+     This macro includes a Cascading Style Sheet (CSS) in the generated
+     HTML.
+
+     .example
+       .css
+          .elided { text-decoration: line-through; }
+       .lua
+          return E.span { class="elided", "Hello world" }
+
+
+`.example`
+..........
+
+    The `example` macro illustrates the effects of Smark markup, which can
+    be useful for describing conventions for documentation.
+
+    .example
+       .example
+          : -->
+
+
+`.include`
+..........
+
+    The `include` macro parses a specified file as Smark source and replaces
+    itself with the result.  If the file name is a relative path, Smark will
+    try to find it relative to the including file and then relative to the
+    current working directory.
+
+    .example
+        .include: hello.txt
+
+
+`.lua`, `\lua`
+............
+
+    The `lua` macro executes lua and places its return value in the document
+    tree.  The following external variables are visible to the embedded Lua
+    code:
+      * `doc`: as documented below in [[Macro Modules]]
+      * `source`: the source object for the embedded Lua code.
+      * all of the members of [[`smarklib`]] (`E`, `TYPE`, ...)
+
+    .example
+       .lua
+          -- count the words in this document
+          local function cw(node)
+            if type(node) == "string" then
+               return select(2,node:gsub("[%w%-]+",""))
+            end
+            local w = 0
+            for _,c in ipairs(node) do w = w + cw(c) end
+            return w
+          end
+          return tostring( cw(doc.top) )
+
+    .example
+       .lua
+          local function draw(node, gc)
+             gc:setSize(100,100)
+             gc:path{ {10,50}, {90,50}, {90,10},
+                      {50,10}, {50,90}, radius=20,
+                      lineWidth=10, color="#dcb" }
+          end
+          return E._object{ render2D = draw }
+
+    When used inline, there is an implicit "return" statement:
+
+    .example
+       Today is \lua{os.date()}
+
+
+`.msc`
+......
+
+    Use the `.msc` macro to describe sequence charts.  See the [[Sequence
+    Charts]] section, below, for more details.  Here is a simple example:
+
+    .example
+      .msc
+         hscale = "0.5";
+         a, b, c;
+         a -> b [ label = "message 1" ];
+         b -> c [ label = "message 2" ];
+         c => a [ label = "message 3" ];
+      .end msc
+
+
+`.pre`
+......
+
+    The `.pre` macro includes its content as pre-formatted text, with
+    no additional formatting.  This is equivalent to prefixing each
+    line with a `. `, as described in [[Block-Level Markup]].
+
+    .example
+       .pre
+          This
+          is
+          *pre-formatted*
+
+
+`.table`
+........
+
+    Tables can be expressed in a format that is readable in plain-text by
+    drawing the cell boundaries in ASCII, similar to the conventions in
+    [[`.art`]].  Vertical lines are formed by \C{|} and \C{+}.  Horizontal
+    lines are formed by \C{-}, \C{=}, and \C{+}.  The presence of a \C{=}
+    character indicates the cell above is a header (a `TH` element, versus a
+    `TD` element).
+
+    Tables cells may contain arbitrary markup, including other tables.
+
+    When all lines of a paragraph begin with either \C{+} or \C{|} it is
+    treated as a `.table` invocation, so the ordinary macro syntax is not
+    necessary.
+
+    .example
+       +---------+-------------------+
+       |         | Source size       |
+       | Module  +=========+=========+
+       |         | Debug   | Release |
+       +=========+=========+=========+
+       |         | 1312              |
+       | `foo.c` +---------+---------+
+       |         | 5892    | 1181    |
+       +---------+---------+---------+
+       |         | 5749              |
+       | `bar.c` +---------+---------+
+       |         | 20947   | 4985    |
+       +---------+---------+---------+
+
+`.toc`
+......
+
+    `.toc` generates a table of contents.
+
+
+Implementing Macros
+-------------------
+
+Processing Model
+................
+
+When implementing a macro you can choose to generate either generic output
+or output that is specific to the type of document being generated.  The
+macro processing occurs in the 'expand' or 'render' phases.
+
+:                                                        ,---------,
+:                                                        | HTML    |
+:  ,---------,       ,---------,       ,---------,       |  ,---------,
+:  |         |       |         |       |         +------>+  | Wiki    |
+:  |  Smark  +------>|         |       |         |       |  |  ,---------,
+:  |  Source |       | DocTree +------>| DocTree +.......+.>+  | DITA    |
+:  |         |<......+         |       |         |       `--|  | plain   |
+:  |         |       |         |       |         +..........+.>+   text  |
+:  `---------`       `---------`       `---------`          `--| PDF     |
+:              parse            expand             render      | etc.    |
+:                                                              `---------`
+
+The **parse** step converts Smark source to an internal "DocTree" data
+structure.  This step is theoretically reversible, in that equivalent Smark
+source could be generated from the DocTree.
+
+DocTree conveys the logical structure of the document, divorced
+from the syntax of Smark source *and* from the syntax of HTML.  After
+parsing, macro invocations are represented in DocTree as a single node of
+type "`_macro`", with an attribute called `text` that contains the macro
+parameter in plain text format.
+
+During the **expand** step, the following actions are performed:
+
+ * Nodes of type "`_macro`" are converted to nodes of type `_object`.  The
+   macro module named by `node.macro` loaded to get a table of methods for
+   the node object. The macro module may return a function as shorthand for
+   returning `{ expand = <function> }`.
+
+ * Nodes of type `_object` are expanded by calling one of their methods, and
+   are then replaced with the results of that expansion.  The method
+   `render2D` is called, if present, and if not `expand` is called.
+
+ * Nodes of type `_defer` are replaced with their children, who will remain
+   unexpanded until the rest of the document tree is processed.  The expand
+   operation will be repeated until no more `_defer` nodes are found.
+
+The **render** step converts the DocTree representation to an exported
+document format.  For HTML, this involves only normalization and
+serialization of the data to HTML.  Other document formats *could be*
+generated directly from DocTree, but currently only HTML is supported.
+
+;; DocTree is a format (data type, technically) for representing documents in
+;; Lua data structures.  It is hierarchical, like XML or HTML, but divorced
+;; from their syntax.  It does, however, borrow its semantics largely from
+;; HTML.  Nodes in a DocTree data structure have types that correspond to
+;; many HTML element names.
+
+
+Macro Modules
+--------------------------------
+
+When Smark finds a macro name that is not one of the built-in macros, it
+looks for a Lua module named `smark_`*`<macroname>`*.  The environment
+variable `SMARK_PATH` describes where to look for the module.  It defaults
+to `"?.lua"`.  `SMARK_PATH` follows the conventions of `LUA_PATH` as
+described in the [Lua] (http://www.lua.org) documentation.
+
+Each macro module is expected return a table containing one of the following
+functions:
+
+`macro.expand(node, doc)`
+................
+
+        `node` is the DocTree node of the macro invocation.
+
+          * `node.text` contains the arguments (content) as a string.
+
+          * `node._source` is the data source object for the string.  This
+            can be used to report warnings, create sub-documents for
+            parsing, or to open files for inclusion.  Refer to `source.lua`
+            for details.
+
+        `doc` is a table with the following members:
+
+          * `top` : top node of the DocTree being expanded
+
+          * `macros` : the table of macros loaded for the current document.
+            This table maps macro names to the function and/or table that
+            defines the implementation.
+
+        `expand()` returns a value that will replace the macro node in the
+        DocTree.  This may be a another DocTree node (string or table) or
+        nil.
+
+`macro.render2D(node, gc)`
+................
+
+        `node` is as documented for [[`macro.expand(node, doc)`]].
+
+        `gc` is an Html2D instance.  This function is expected to set the
+        size of the Html2D instance and to render its contents into it
+        before returning.  Its return value is ignored.
+
+        Refer to html2d.lua for more information on Html2D objects.
+
+`smarklib`
+--------------------------------
+
+Macros can require the `"smarklib"` library to obtain a table of utility
+functions.  Lua embedded with the `lua` macro sees these functions as local
+variables (no need to call require).
+
+**`parse(text, source)`** : parses text, constructing a DocTree.
+
+**`expand(doctree)`** : expands macro references in a doctree.
+
+**`E`** : an element constructor factory.  For any string <name>, E.<name>
+yields a function that takes a table parameter and sets its "_type" field to
+<name>.  For example, `E.b{"word"}` constructs a DocTree node equivalent to
+the HTML "`<b>word</b>`".
+
+**`TYPE`**: the key that identifies an element's HTML tag name.  For
+example, when `node` represents a "pre" element, `node[TYPE] == "pre"`.
+
+**`visitNodes(topNode, matchType, fn)`**: perform in-order traversal of tree
+below `topNode`, calling `fn(node)` for every node for whose type matches
+`matchType`.  If `matchType` is nil or false, `fn` is called for all nodes.
+
+
+Printing Smark Documents
+================================================================
+
+Most browsers have mediocre to poor support for printing HTML.
+
+A commercial product, [Prince] (http://www.princexml.com/) produces high
+quality output from HTML/CSS documents.  It outputs PDF files, which can be
+distributed themselves or used for printing.
+
+Prince supports CSS features that differentiate printed output from screen
+output, so printed documents can have headers, footers, and other visual
+elements not visible in a browser, and *vice versa*.
+
+Command Syntax
+================================================================
+
+Usage:
+
+   . smark [infile |option]*
+
+Options may appear in any order. Option processing stops at \C{--}.
+
+
+`--output=`*`<file>`* \
+`-o` *`<file>`*
+................................
+
+    Specifies the output file.
+
+
+`--out`
+................................
+
+    Specifies that output should be written to stdout.  This option is
+    mutually exclusive with `--output`.
+
+
+`--in`
+................................
+
+    Specifies that input should be read from stdin.  This option is mutually
+    exclusive with an input file name.
+
+
+`--error`
+................................
+
+    Treat warnings as errors.  When this option is specified, warnings
+    indicative of syntax errors will cause Smark to exit with a non-zero
+    status code.
+
+
+`--deps=`*`<file>`*
+................................
+
+    Output a makefile that lists all input files as dependencies for the
+    output file.  The makefile also includes empty Make rules for all input
+    files except the main text file, so that Make will not error out when
+    input files are removed from the project.
+
+    `--deps` does not disable output file generation.  Smark will generate
+    an HTML file and the associated dependencies file in one invocation.
+
+    `--deps=XXX` is analogous to gcc's `-MD -MP -MF XXX`.
+
+    Dependencies will include files named on the command line, files named
+    by `.include` macros, as well as files read programmatically by macros
+    using the `source:newFile` method (see `source.lua` for more
+    information).
+
+`--css=`*`<file>`*
+................................
+
+    This specifies a file that contains a CSS style sheet to embed in the
+    generated HTML *following* the default style sheet.  This option can
+    appear more than once; all specified style sheets will be included in
+    the output file.
+
+`--no-default-css`
+................................
+
+    Do not embed the default style sheet in the generated HTML.
+
+`--config=`*`<file>`*
+................................
+
+    This specifies a configuration file.  Before the document is processed,
+    the configuration file is loaded and executed (as Lua source) with its
+    environment set to the "configuration table".  This configuration table
+    is subsequently available to macros in the `config` field of the `doc`
+    table.
+
+`--help` \
+`-h`
+................................
+
+    Display usage information.
+
+
+`--version` \
+`-v`
+................................
+
+    Display version information.
+
+Examples
+================================================================
+
+OO Notational Conventions
+-------------------------
+
+Objects are boxes.  Interfaces implemented by an object are depicted as
+"sockets", a line ending in a circle.  Pointer references are represented by
+an arrow to the object or interface:
+
+:                 +--------+          +---------+
+:                 | Object |  IFoo    | Client  |
+:                 |        +---o <----+         |
+:                 |        |  IBar    |         |
+:                 |        +---o      +---------+
+:                 |        |
+:                 +--------+
+
+A capacitor-like symbol between the interface socket and its object
+indicates that the interface only weakly references the object.  Any
+invocations on that interface will first attempt to acquire a strong
+reference to the object.  If that succeeds, the operation will be performed.
+Otherwise, an error code will be returned.
+
+:  +--------+                                 +--------+
+:  | Object |    IWeakRef   +----------+      |        |     ISignalHandler
+:  |   X    +--||--o<-------+ Client A |      | Object |  ||--o
+:  |        |               +----------+      |   Y    +--+| IWeakRef
+:  |        | ISignalHandler                  |        |  ||--o
+:  |        +---o                             |        |
+:  |        |                                 +--------+
+:  |        | ISupportsWeakRef
+:  |        +---o
+:  |        |
+:  |        | IFoo     +----------+
+:  |        +---o<-----+ Client B |
+:  +--------+          +----------+
+
+For example, in the above diagram client A holds a reference to IWeakRef,
+which only weakly references object X.  Client B holds a strong reference,
+which keeps object X alive.  If client B were to release IFoo, object X
+would be destructed and invocations on IWeakRef would subsequently fail.
+
+
+These are both centered:
+
+: -|-
+
+:                                                   -|-
+
+
+Call flows can be represented in ASCII art, and remain readable in plain
+text format.  [[`.msc`]] provides an easier to maintain solution that looks
+much better in HTML.
+
+:  ,--------,     ,---------,     ,--------,
+:  | Mobile |     |   BSC   |     |  MSC   |
+:  `---+----`     `----+----`     `---+----`
+:      |               |              |
+:      | Msg 0123      |              |
+:      +-------------->+              |
+:      |               +------------->+
+:      |               +<-------------+
+:      +<--------------+              |
+:      +---------------|------------->+
+:      |               +<-------------+
+:      |               +------------->+
+:      +-------------->+              |
+:      +<--------------+              |
+:      |               +------------->+
+:      |               |              |
+:      |               |              |
+
+
+:   v                                                                                                                                                       ^
+:   :                                                                                                                                                       :
+: + : +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+ : +
+: | : |   |           |               |                       |           |   |               |               |       |   |   |   |     +...............+ | : |
+: + : +   +---+   +---+---+---+   +---+   +   +---+---+---+---+---+---+   +   +   +---+   +---+---+   +---+---+---+   +   +   +   +---+ : +---+   +---+ : + : +
+: | :         |                   |       |           |                       |       |                   |       |   | +.......+ |   | +...+ |       | +...+ |
+: + : +---+---+---+   +---+   +---+---+---+---+   +   +---+---+   +---+   +   +---+   +---+---+---+---+   +   +   +   + : +---+ : +   +---+ : +---+---+   +---+
+: | +.......+ |       |   |           |           |   |       |       |   |   |   |   |   |   |   |       |   |       | +...+ | +...........+         |       |
+: +---+---+ : +---+---+   +---+   +   +   +---+---+---+   +---+   +---+---+---+   +   +   +   +   +---+---+---+---+   +---+ : +---+---+---+---+---+---+---+---+
+: |       | +...+ |               |                           |               |   |               |   |       |   |       | +...........+     |       |       |
+: +---+   +---+ : +---+---+---+---+---+   +---+   +---+---+---+---+   +---+---+   +---+---+   +---+   +---+   +   +---+   +---+   +---+ : +---+   +   +---+   +
+: |       |     +.......+ |   |               |           |   |                       |   |           |       |           |   |       | +...+ |   |           |
+: +---+   +   +---+   + : +   +   +   +---+   +   +   +   +   +---+---+---+   +   +---+   +---+---+   +   +---+---+---+   +   +   +---+---+ : +---+---+   +   +
+: |   |   |       |   | +.......+ |       |   |   |   |   |   |           |   |                   |                       |   |   |     +...+     |       |   |
+: +   +   +---+---+---+---+---+ : +---+---+---+---+---+---+   +---+   +---+---+   +   +---+---+   +---+---+---+   +   +---+   +---+---+ : +---+---+   +---+---+
+: |                   |       | : |   |   |       |           |           |       |   |               |   |   |   |           |       | +...+ |               |
+: +---+   +   +   +   +---+   + : +   +   +   +---+---+   +---+---+   +---+   +---+---+---+---+   +---+   +   +---+   +---+---+   +---+---+ : +---+   +   +   +
+: |   |   |   |   |       |     : |       |       |   |               |   |   |       |   |   |           |   |           |             +...+         |   |   |
+: +   +---+   +   +---+---+---+ : +   +---+---+   +   +---+---+---+   +   +---+---+   +   +   +   +   +---+   +---+---+   +---+   +---+ : +---+   +---+---+   +
+: |   |   |   |       |         +...+                                 | +...+ |           |       |   |   |       |   |       |       | :     |   |   |       |
+: +   +   +---+   +   +   +   +   + : +---+---+---+---+   +---+   +---+ : + : +---+---+   +   +---+---+   +---+   +   +---+   +   +---+ : +---+   +   +---+---+
+: |           |   |       |   |   | : |     +.......+ |       |       | : | +...+     |               |   |                   |       | : |   |   |   |       |
+: +   +---+   +   +   +---+---+   + : +---+ : +---+ : +---+---+---+---+ : +---+ : +---+---+---+---+   +   +---+---+---+---+   +---+   + : +   +---+   +---+   +
+: |       |       |       |       | :     | +...+ | +...................+     | +...............................+ | +...+ |   |       | +...................+ |
+: +---+---+   +   +   +   +   +---+ : +---+---+ : +---+---+---+---+---+   +---+   +---+   +---+---+---+   +---+ : + : + : +   +---+---+---+---+---+---+---+ : +
+: |           |   |   |   |       | +...........+         |               |           |               |   |     +...+ | +...................................+ |
+: +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+
+.comment
+
+   .lua
+      function doc.macros.mscexample(node)
+         for _, a in node.text:gmatch("[^\n]+") do
+            emit(a)
+            group("td")
+            emit( parse(".msc\n  a, b; " .. a) )
+            groud("td")
+            group("tr")
+         end
+         group("table")
+      end
+
+   .mscexample
+      ->
+      =>
+      >>
+      =>>
+      :>
+      -x
+      ...
+      ---
+      |||
+      box
+      rbox
+      abox
+
+
+
+   Maintainable plain text *source*, from which print-ready documents can be
+   produced.
+
+      There are two competing interests that contribute to maintainability:
+      readability and abstraction.
+
+      Readability is where many Wiki markup formats fall down.  Their plain
+      text source is not only unsuitable for consumption by readers, it also
+      difficult for the author to read.  After looking at some text in the
+      formatted version it can be frustratingly difficult to locate the
+      corresponding place in the plain text.  The more the source looks like
+      the formatted result, as in a WYSIWYG editor, the easier this is.
+
+      Abstraction allows the writer to express a graphic or textual construct
+      in a way that is more terse than the formatted result.  For example, a
+      dependency graph or sequence chart can represented concisely in a
+      domain-specific language that is much easier to enter and modify than an
+      equivalent diagram would be.
+
+      Since abstraction makes the makes the source look less and less like the
+      formatted result, it can be at odds with readability.  However, what is
+      most important for readability is that the high-level structure of the
+      document be visually evident in the source, particularly where textual
+      content is involved.  So Smark allows paragraphs, section headers, lists,
+      and indentation to be represented naturally in the source.
+
+    * Print-ready output to HTML (no jaggies)
+
+    * Readable text layout (vs. Wiki, can find place in the source)
+    * Embedded graphics
+      - ASCII art
+      - MSCGen format
+      - Dependency graphs
+    * Markup validation
+      - default to literal text
+      - print warnings so common errors can be caught
+
+   Motivation
+   ================================================================
+
+   Support collaborative document management and maintenance in a software
+   development environment.
+
+     * Multiple contributors
+     * Use VCS for tracking and auditing of changes
+
+   There are several reasons to support plain text as an input format.  It is
+   inherently cross-platform.  It is easy to communicate via email, forums, or
+   various other means.  Plain text diff and merge tools can be used to examine
+   file histories or integrate changes from one version controlled branch to
+   another.  It can be read and written without an expensive proprietary word
+   processor.  Further exacerbating the problems with proprietary word
+   processors is the fact that the one that happens to have market dominance
+   takes a long time to launch, consumes lots of memory, crashes often,
+   produces ridiculously large files, and obsoletes itself every few years
+   requiring upgrades to newer versions that are successively more bloated and
+   expensive.
+
+   There are several similar plain text formats, standardized to one degree
+   or another, including various Wiki markup conventions.  Smark differs
+   from Wiki formats in a couple of important ways:
+
+     1. It is much more readable in the plain text form, particularly in how
+        it retains the high-level structure of the document.
+
+     2. Embedded graphics are more easy to use in a read/write way.  A JPEG
+        or GIF that has been exported from a tool like Visio is not very
+        easily updated, especially by someone other than the original
+        author.
+
+.end comment
+
+
+Release Notes
+================================================================
+
+Version 0.6:
+
+ * New: `--in` and `--out`.
+
+Version 0.5:
+
+ * New: `[text](@anchor)`
+
+ * New: `[[@anchortext]]`
+
+ * New: `--deps=<file>` option
+
+ * Change: `.include: <file>` used to treat paths as relative to the current
+   working directory.  Now it will look for a file relative to the
+   *including file's directory* and then, if that fails, relative to the
+   current working directory.
+
+ * Fix: "Missing target for link ... " warnings would indicate the wrong
+   text column.
+
+ * Fix: `.toc` would not properly display hierarchy when there was only
+   one header at the top level of the hierarchy.

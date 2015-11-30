@@ -1,0 +1,88 @@
+anim.js
+####
+
+Synopsis
+====
+
+.    Anim.create(this.e, 'flash')
+.        .css({backgroundColor: null, transition: 'background-color 0.3s'})
+.        .delay(300)
+.        .move(from, to, callback)
+.        .start();
+
+
+API
+====
+
+
+`Anim = require("anim.js").newClass(scheduler)`
+....
+
+   `scheduler.js` provides a browser-based implementation of the scheduler interface.
+
+   `scheduler_emu.js` provides a test harness implementation.
+
+
+`a = Anim.create(elem, key)`
+....
+
+    Create a new animation object.
+
+    The `key` argument is a string used to group animations.  For each value
+    of `key`, only one animation can be running at a time.  Starting a second
+    animation with the same `key` will cancel the first.
+
+
+`a.css(props)`
+....
+
+    Append a task that will assign CSS properties to the element's style.
+
+    The `props` object is a [Property Description](e.html#Property Description).
+
+    Consecutive `css` tasks will be processed with an intervening delay that
+    should allow style computation and rendering so that the second should
+    be able to trigger CSS transition animations.
+
+
+`a.cssTransition(props, delayMS)`
+....
+
+    Append a task that assigns CSS properties just as `a.css()` does, and
+    also attaches a `transition` property that names the assigned properties,
+    and delays until the transition completes.
+
+    Note: Later in the animation sequence you may want to explicitly reset
+    the `transition` property to `"none"` or `""`.
+
+
+`a.delay(ms)`
+....
+
+    Append a task that delays the specified number of milliseconds.
+
+
+`a.move(from, to, fn)`
+....
+
+
+    Append a task that animates a transition between two positions on the
+    screen.  The values `from` to `to` are numbers that are interpreted as
+    pixel positions for the purpose of computing the overall duration of the
+    animation.  The function `fn` will be called one or more times with
+    values between `from` and `to`.  The last time `fn` is called it will be
+    passed the `to` value (exactly).
+
+
+`a.start()`
+....
+
+    Begin animation.  If an animation is in progress, it will be canceled.
+
+
+`a.cancel()`
+....
+
+    This advances to the final state of the animation.  All remaining tasks
+    will be performed synchronously without delay. For each remaining `move`
+    task, the callback will be called exactly once with the final value.

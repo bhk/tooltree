@@ -1,0 +1,11 @@
+# pakman
+
+deps = crank luau crank-lua lpeg simp4 smark=smark?$(call v.,host)
+
+conf = .config
+
+make = make V='$v'
+
+clean = rm -rf '$(call v.,buildDir)' out/$v
+
+result = out/$v

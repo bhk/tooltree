@@ -1,0 +1,167 @@
+tooltree
+########
+
+ToolTree is a collection of utilities, including all their dependencies, in
+one Git repository.
+
+Documentation
+====
+
+ * [`monoglot`](monoglot.html) is a platform for developing network
+   applications in Lua.
+
+ * [`JSU`](jsu.html) is a collection of JavaScript libraries that support
+   building Web apps from modular, testable components.  It complements
+   monoglot by making it easy to deliver rich JavaScript UIs with a small
+   payload.
+
+ * [`Smark`](smark.html) is a markdown-like text-to-HTML converter with
+   features for documenting software projects.
+
+ * [`Pakman`](pakman.html) is a package management tool that constructs
+   workspaces for Perforce users and supports reusable, self-describing
+   components.
+
+ * [`Crank`](crank.html) is a Make-based build tool that is used to build
+   each of the packages.  Included in the `crank` directory is
+   [`project.mak`](project.html), which is used to build the entire ToolTree
+   project.
+
+ * [`Crank-lua`](crank-lua.html) is a package that supports building
+   self-contained executables from Lua sources and C or C++ sources or
+   libraries.
+
+ * [`Crank-js`](crank-js.html) is a package that provides crank generator
+   classes for testing and bulding JavaScript modules.
+
+
+Building ToolTree
+====
+
+
+ToolTree consists of a number of composable software packages, each stored
+in a subdirectory. To build all configured packages:
+
+    . $ cd tooltree
+    . $ make
+
+You can also specify an individual package or a variant of a package as a
+target. For example:
+
+
+    . $ make smark          # rebuild Smark and its dependencies
+    . $ make smark@gcc      # rebuild the gcc variant of Smark
+
+See [`project.mak`] (project.html) for more details.
+
+
+System Dependencies
+----
+
+MacOS
+....
+
+The XCode Command Line Tools are expected to be in `$PATH`.
+
+Both clang (the default) and gcc (see [[Configuration]]) toolchains are supported.
+
+Linux
+....
+
+Tools are expected to be in `$PATH`.
+
+Both clang (the default) and gcc (see [[Configuration]]) toolchains are supported.
+
+On Unbuntu/Debian, you can install the clang and gcc toolchains with the
+following commands:
+
+    . $ sudo apt-get install clang
+    . $ sudo apt-get install gcc g++
+
+
+Windows
+....
+
+Windows builds assume the following:
+
+ * Cygwin (or similar package of POSIX tools)
+ * GNU Make
+ * Make's SHELL must be POSIX compatible
+ * MS Visual C 7
+
+The location of the Visual C 7 installation must be made known by setting
+the variable `VC7INSTALLDIR` to name the directory that contains the
+following sub-directories:
+
+    . bin
+    . include
+    . lib
+    . system32
+
+`VC7INSTALLDIR` can be set in the environment, or as a Make variable in a
+[`.userconfig`] (project.html#User Configuration Files) file.  When
+specifying this directory:
+
+ * Use `/` instead of `\`.
+
+ * Avoid drive letters (e.g. `C:`).  If the compiler and the source tree are
+   on different drives, you can *try* leaving it on, which may or may not
+   work.
+
+ * Avoid file names with spaces. To avoid this you can used 8.3 path
+   (`cygpath -d ...`) or create a symbolic link.
+
+The Cygwin path for the project directory should be a valid Windows path.
+You can construct this situation with an appropriate Cygwin mount.  For
+example: by default, `C:/git/tooltree` will have a Cygwin path of
+`/cygdrive/c/git/tooltree`, which is not a valid Windows path.  The command
+`mount c:/git /git` will make the Cygwin path `/git/tooltree`, which is a
+valid Windows path.
+
+Avoid `git` settings that transform line endings from LF to CRLF, because
+that will break some unit tests.
+
+
+Configuration
+----
+
+Before any output files can be built, configuration must be performed. This
+will automatically triggered by `make`, or it can be manually done by typing
+`make configure`.
+
+Variables defined in the top-level Makefile describe a set of packages to be
+built and how they should be built. In order to customize the build you can
+reconfigure while overriding variables on the command line, or you can
+modify the top-level makefile or create a [`.userconfig`] (project.html#User
+Configuration Files) file.
+
+For example:
+
+    . $ make configure                      # configure the default set of packages
+    .
+    . $ make configure Project=smark        # configure only Smark
+    .
+    . $ make configure Variants=gcc         # configure gcc-based variants
+
+In order to see the results of your configuration changes you can issue the
+following command to see a graph of all builds and the dependencies between
+them:
+
+    . $ make graph
+
+
+Working with Packages
+----
+
+After project-level configuration is performed, you can invoke the makefiles
+that reside in the individual package directories.
+
+Package makefiles are concerned only with the package's own build step. They
+do not recurse into the builds of their dependencies. Since most packages
+depend upon build results from other packages, you will probably want to
+perform a project-level `make` first.
+
+When inside a package directory, the following commands can be used:
+
+    . $ make             # rebuild all configured variants of this package
+    . $ make V=gcc       # rebuild just the gcc variant of this package

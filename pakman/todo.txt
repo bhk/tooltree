@@ -1,0 +1,153 @@
+TODO
+====
+
+ * Display "result = ..." along with how to make when 'pakman get' completes.
+
+ * Do not query p4 server until 'p4:' URI is encountered.
+
+ * Show "stack trace" on conflicts.
+
+ * When the default server name does not match the server identified in the
+   URI, pakman will attempt to contact a server using "<P4> -p <ServerAndPort>",
+   where <P4> is the default p4 command string and <ServerAndPort> is the
+   server name and port number from the URI.
+
+   Note that this will not yield the desired results when:
+     1. the default command includes a "-p <port>", or
+     2. a proxy server is in use
+
+ * command-line variable assignments
+      `describe` options (root, results, etc.)
+      global pakfile options (FROMSRC=1?)
+
+ * non-existent (empty) directories specified via "path/..." should trigger
+   a warning. (When/how?  Extra p4 transactions?)
+
+ * host -> auth or authority
+
+ * remove 'qtest' from release builds
+
+ * enable 'trace'
+
+ * onSync & manifests : get actual latest from changelist numbers returned
+   from sync & print commands for each file retrieved (and peeked)
+
+Feature requests:
+=================
+
+ * Avoid [[Local integrations unsubmitted]]
+
+ * Cygwin1.7 + Windows7 => read only bit is not set for P4-retrieved files
+   Pakman thinks they are all locally edited.  Could it use 'p4 fstat'
+   instead of local permissions to tell whether something is edited/un-added?
+
+Release Checklist
+=================
+
+ * VERSION_NUMBER in Makefile
+ * version number in pakman.txt
+ * list of changes in README.txt
+ * documentation
+
+To Think About
+==============
+
+Feature Ideas
+--------------
+
+ * REJECTED
+
+   "//IGNORE_GLUE_CONFLICT" allows individual lines of generated MIN files
+   to be excluded from conflict detection.  BUT:  better to enable pakfiles
+   to generate consistent content (e.g. #{shared.every_v}).
+
+   . local function minEqForm(txt)
+   .    return txt and txt:gsub("[^\n]*// *IGNORE_GLUE_CONFLICT[^\n*]\n?", "")
+   . end
+   . minEqForm = memoize.newTable(minEqForm, "k")
+
+ * pakfile may return a table describing its package (global vars would be
+   ignored)?
+
+ * Implications for 'pakman describe' of parametrized packages
+
+ * .mak files and "make -j":
+     # NO_NEST prevents MAKEFLAGS being propagated to sub-makes; useful for -j X
+     NO_NEST = $(if $W,,export MAKEFLAGS='' &&)
+
+ * Anonymous packages:  Package { root=..., files=..., result=... }
+   Obsoleted by fragments?
+
+Local integrations unsubmitted
+------------------------------
+
+Pakman does not recognize as edited...
+
+.     $ ls -l integrated.pak
+.     -r--r--r--  1 bhk  staff  376 Jun  2 17:50 integrated.pak
+.     $ p4 print integrated.pak
+.     integrated.pak - no such file(s).
+.     $ p4 fstat integrated.pak
+.     ... depotFile //depot/users/bhk/proto/pakman/integrated.pak
+.     ... clientFile /Users/bhk/p4/bhk/proto/pakman/integrated.pak
+.     ... action branch
+.     ... change default
+.     ... type text
+.     ... actionOwner bhk
+.     ... resolved
+
+Git Support
+-----------
+
+* URI must distinguish as git *and* identify:
+
+   - protocol (http, https, file, ssh, git)
+   - location of repository
+   - path within repository
+   - commit (version) to update the working tree to
+   - branch to switch to [create if it doesn't exist?]
+
+  git-https://domain:port/path/repo.git ;/path/proj @master [ID]
+
+  [Is ".git" necessarily present in each git URI and absent in all other
+  URIs?]
+
+
+* URI must describe way to retrieve (http or ssh) and also that it's git.
+  We could recognize, for example, "git-http", or assume "http" == "git".
+  File extensions could also be used in "typing" URLs.  [Using extensions
+  seems wrong since it breaks the layering: scheme => protocol (how to
+  retrieve an object).  In this case "http" or "ssh" do not completely
+  describe the *protocol* -- they just act as a lower level of the protocol.
+  *But*, OTOH, pakman uses scheme to determine not just how to retrieve but
+  how to locally manage, etc., so scheme + extension is not that bad.]
+
+* In the git URL "ssh://user@server/project.git", "user" may help specify
+  the location but *also* specify how an individual user authenticates [?]
+  (which does not belong, for example, in a pakfile intended to be used by
+  many user).  "ssh://server/~user/project.git" is the proper alternative
+  when a project resides in a user's home directory.
+
+* pakman must provide workspace management to keep track of locations of the
+  local clones.  Subsequent 'get' operations should use the existing clone.
+  One possible approach is to identify a "git root" in a .pakman file config
+  option.  Pakman could keep a log of retrieved repositories, or (better?)
+  enumerate the repositories (allows the user more freedom in manually
+  cloning / deleting repos).
+
+* Git phases are similar to Perforce phases:
+
+    * map = find local clone or create (with `-n`)
+    * sync = checkout
+
+  But the equivalent of "p4 print" may require a "map" first, in which case
+  "pakman describe" would require cloning.
+
+
+Tar/zip support
+--------------------------------
+
+* Similar to 'git'.
+
+* Auto-detection of roots would require a different approach (".origin"
+  dir analogous to ".git"?)

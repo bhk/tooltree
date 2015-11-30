@@ -1,0 +1,332 @@
+Project.mak
+####
+
+Project.mak builds projects that have been constructed from multiple
+packages.
+
+The project directory is typically the top directory of a repository.  The
+makefile in this directory configures the packages that constitute the
+project and invokes their build steps in the appropriate order.
+
+Each package lives in a separate directory, typically a subdirectory of the
+project directory.  Packages typically use [crank] (crank.html) as a build
+system, in which case typing "make" in the package directory will build all
+of the configured variants of that package, and "make V=<variant>" will
+build a specific variant.
+
+Usage
+====
+
+A project makefile can be invoked in the following ways:
+
+**`make [TARGETS...]`**
+
+    Each TARGET can be:
+      - `PACKAGE` : build all configured variants of a package
+      - `PACKAGE@VARIANT` : build a specific variant of a package
+
+    The package name `all` is a synthetic package that represents the
+    entire project. Its dependencies are listed in the `Package` variable
+    in the Makefile.
+
+    If no targets are given, `all` is the default.
+
+    If no configuration has been performed or the configuration is stale,
+    configuration is performed.
+
+    Only one line of output is written to the console for each package that
+    is built, unless there is an error.  Console output from package builds
+    is written to a log file (under `.built`), and on any failed package
+    build this log file is written to the console.
+
+**`make graph [ root=TARGET ] [ VAR=VALUE ... ]`**
+
+    Display dependency tree. This will describe the packages to be built
+    when a specified root target is built.  The default root is `all`.
+
+**`make configure [ VAR=VALUE ... ]`**
+
+    Generate configuration files. Command line variable assignments may be
+    used to modify the configuration; these assignments will remain in effect
+    during a later auto-reconfiguration (e.g. when a Package file changes).
+
+**`make clean`**
+**`make clean_PACKAGE`**
+**`make clean_PACKAGE@VARIANT`**
+**`make clean_configure`**
+
+    Remove build/configuration results.
+
+**`make help`**
+
+    Display this message.
+
+
+Makefile Contents
+====
+
+The "project makefile" assigns variables to describe the project contents
+and then includes the file `project.mak`.
+
+The following variables describe the contents of the project:
+
+ * `Project` is a list of all of the packages to be built. These will
+   be treated as dependencies of a synthetic package called `all`.
+
+ * `Variants` is a list of all variants of `all` that will be configured.
+
+The makefile can define properties of packages.
+
+ * `Package.dir` gives the location of the root directory for a package.
+   This defaults to `$I` (in other words, by default, the package name is
+   also the name of the directory containing the package).
+
+ * `Package.file` gives the name of the package file. This defaults to the
+   `dir` property followed by `/Package`.
+
+The project makefile also describes [*variants*](#Variants) by defining
+properties of the `V` class. Project.mak does not specify what variant names
+or variant properties a project can use. Individual packages, and some
+crank-based extensions, assign meaning to certain properties by using them
+in a certain way. For example, the `crank-c` package uses the `target`
+property of the current variant to locate the C/C++ compiler toolchain.
+
+Package and variant properties are defined according to the rules for
+[[Crank Classes]].
+
+
+Example Makefile
+....
+
+    . Project = foo bar
+    . Variants = dbg rel relv7
+    .
+    . Package.dir = $I
+    . Package[foo].dir = thirdparty/foo
+    .
+    . V.arch = ARM
+    . V[dbg].flags = debug warn error
+    . V[rel].flags = release warn error
+    . V[relv7].arch = ARMv7
+    .
+    . include crank/project.mak
+
+
+`.userconfig`
+----
+
+Local settings can be placed in a makefile file called `.userconfig`.
+Project.mak looks for this file in the top-level directory. If not found
+there, it will look in the parent directory of the top-level directory, and
+so on, up to a maximum of three levels up.
+
+Local settings are those that are specific to a build system or user, and
+are therefore not appropriate for the top-level Makefile.  For example, the
+location of a build tool on a particular system, or a tailored value of the
+`PATH` environment value.  Since the Makefile will be checked in, it should
+contain definitions that are valid for all build environments.
+
+When `.userconfig` is found, it is included by project.mak so that its
+variable definitions will be available during the configure step.  All
+generated `.config` files will also include the `.userconfig` file, so that
+its settings will be available when `make` is executed within a package
+directory (i.e. not at the top level).
+
+
+Configuration
+====
+
+When first invoked, project.mak will configure the build. This reads
+descriptions of each package to be built and traverses the tree of
+dependencies. It then generates package configuration files and a "tree"
+makefile.
+
+Package configuration files -- by convention named `.config` -- are intended
+to be included by the package's makefile. They define variables that
+describe the current project configuration (e.g. where other package lie).
+
+ * `V` : a list of all of the default variant names (those that will be
+   built by `make` or `make all`).
+
+ * `V[_v_].options`: for each variant name _v_, a list of options that
+   fully describe the variant.
+
+ * Dependency variables.  Each dependency variable listed in the `deps`
+   field of the [package file](#Packages) is assigned the location of the
+   result directory of the corresponding dependency.
+
+The tree makefile is invoked from the top-level makefile, and is responsible
+for building all of the project's packages in the proper order. Since it
+contains the entire dependency tree in one makefile, it avoids the
+performance problems associated with recursive make.
+
+
+Packages
+====
+
+In project.mak parlance, a "package" is a composable software component.
+Packages can be thought of as *functions* that generate their outputs (build
+results) from inputs (dependencies and build options), and that can be
+combined in various ways with other packages.
+
+Each package consists of a directory of source files. A package typically
+contains instructions (e.g. a makefile) for building output files, but some
+packages may have no build step and contain files that are simply used
+as-is.
+
+In order to treat a package as a function, we have to know how to invoke it,
+how to provide its inputs, and where it will write its outputs.  This is the
+purpose of the `Package` file.  Each package is described by a file called
+`Package` that assigns variables in GNU Make syntax.
+
+A missing Package file is treated the same as an empty package description
+(defaults are used for each variable). The default values are such that when
+a package without a `Package` file is encountered, it is presumed to have no
+build step, no dependencies, and no configuration file.
+
+Package File Variables
+----
+
+ * `deps`: a list of packages and associated variable names. A package's
+   dependencies are the packages that must be build before the package
+   itself is built.
+
+   `deps` is a space-delimited list of <varName>=<pkgName> pairs.  <pkgName>
+   is the name of the directory (relative to the project root) containing a
+   package. <varName> is the name that will be used in the generated
+   configuration file to identify the result directory of the
+   dependency.
+
+   If not specified, the set of dependencies is assumed to be empty.
+
+ * `result`: name of a directory containing the build results.
+
+   If not specified, this defaults to the top directory of the package.
+
+ * `make`: the command to be used to build the package.
+
+   If not specified, no build step is performed for the package.
+
+ * `clean`: the command to be used to clean the build results.
+
+   If not specified, no "clean" operation is performed for the package.
+
+ * `conf`: name of a configuration file to be generated.
+
+   If not specified, no configuration file is written.
+
+ * `configure`: name of a command to be executed during the configuration
+   phase. Like `make`, the command will be executed in the root directory of
+   the package. Analogously, it will be executed *after* the configure steps
+   of any dependencies (if any).
+
+   If not specified, no command will be executed.
+
+ * `v`: the name of the variant being built.  This is described in
+   [[Variants]], below.
+
+
+Variants
+----
+
+Some projects may support multiple "variants", meaning they can be built in
+different ways, producing different results.  In this case, we use the term
+"build" as a noun to refer to the result of building one variant of a
+package.
+
+In multi-variant projects, it is important to keep in mind the distinction
+between *build* and *package*:
+
+ * Dependencies are relationships between *builds*, not *packages*.  For
+   example, the "debug" build of package "A" may depend upon the "debug"
+   build of package "debugMalloc", whereas the "release" build of package
+   "A" might not depend on any variant of "debugMalloc".
+
+ * The `result` location may be different for different builds. For example,
+   debug and release build results should be segregated to avoid corruption
+   of one result when another is built. Keeping results separate also allows
+   consumers of the package to treat the two variants similarly.
+
+ * Likewise, the "make", "clean", and "configure" commands may evaluate to
+   different values depending on the variant being built.
+
+As a result, variables in a `Package` file (except `conf`) may be defined in
+terms of the "variant being built" using the following variables:
+
+ * `$v` is the name of the variant.
+
+ * `v.` is a function that returns a property value for the current
+   variant. For example:
+
+   . $(call v.,flags)
+
+   `$(call v.,buildDir)`, for example, gives the name of the output
+   directory for the current variant.
+
+   The [[Configuration]] section describes how variant definitions are
+   provided to a package, and the [[Makefile Contents]] section
+   describes how to specify variants for a project.
+
+Requesting Variants
+....
+
+When a package lists another package as a dependency, it can append a
+"query" (as in URI syntax) to the package name, as in:
+
+    . deps = foo?debug
+
+When a query suffix is omitted, it defaults to `?$v` (meaning: request the
+variant of the same name as the variant being built for the current
+package).
+
+A special query string -- `...` -- can be used to request a *plain* variant
+of a package. A plain variant ignores the contents of the `Package` file;
+there will be no build step and no dependencies, and the result will be
+simply the contents of the package directory.
+
+Responding to Requests
+....
+
+When a `Package` file is evaluated, the requested query string is made
+available as `$q`. The variable `v` (which describes the variant actually
+being built) defaults to `$q`, so by default each package will build the
+variant requested.
+
+However, a package file can specify a variant different from the requested
+variant. For example, some packages only support a finite number of
+variants, and can assign `v` to one of them.
+
+For example, the `crank` package consists only of makefiles and its build
+step does nothing but perform tests, so it specifies:
+
+     . v = release
+
+This will avoid invoking the package's build step multiple times when it is
+required by multiple other packages.
+
+
+Configuration Files and Variants
+....
+
+The `conf` variable should not reference `v` directly or indirectly, because
+configuration files are per-package, not per-build. Configuration files
+contain definitions that describe all variants.
+
+
+Crank Classes
+=============
+
+Properties are associated with classes and items. The values of these
+properties are defined by variables named according to certain conventions.
+
+ * `CLASS[ITEM].PROP` provides a value for the `PROP` property for item
+   `ITEM` in class `CLASS`.
+
+ * `CLASS.PROP` provides a definition that will be used when there is no
+   item-specific definition.
+
+ * The definitions of `CLASS.PROP` or `CLASS[ITEM].PROP` can refer to `$I`
+   to obtain the name of the current item, and can call the `.` function
+   to obtain the value of other properties of the same item.
+
+   For example: `Class.x = $(call .,dir)/$I`

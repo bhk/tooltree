@@ -1,0 +1,43 @@
+Futex
+#############
+
+Contents
+--------
+
+    .toc
+
+Overview
+--------
+
+    The `futex` library provides a lightweight synchronization mechanism,
+    much like a mutex.  Futexes do not need to be created before use; they
+    are identified by any non-nil Lua value (usually the object to which
+    access is being serialized).
+
+    Futexes are non-owned (non-reentrant).  This means that if a thread
+    calls tries to lock the same futex a second time without unlocking, it
+    will block on the second lock attempt.
+
+    . local futex = require "futex"
+    .
+    . ...
+    .
+    . futex.lock(value)
+    . ... do something ...
+    . futex.unlock(value)
+
+
+Functions
+---------
+
+`futex.lock(value)`
+.............
+
+     Acquire a lock.  If the lock is held, this will block until
+     `futex.unlock` is called with the same value.
+
+
+`futex.unlock(value)`
+..............
+
+    Release a lock acquired by `futex.lock`.

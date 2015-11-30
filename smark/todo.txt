@@ -1,0 +1,125 @@
+In 0.6:
+ * Echo
+
+TODO
+----
+
+  * Accidental list syndrome:
+
+      This a `(some lisp code
+      a)` that looks like a list.
+
+    Require blank line before list?
+
+  * validate that spaces on a blank line do not affect layout
+
+  * annotations
+
+      > Caption text <
+
+      .div {class='foo'}
+
+      {class="foo"}    [post-fix sentence or paragraph]
+
+      <p class=foo>....</p>
+
+  * Blockquotes:   > ...
+
+  * art: Allow escaping of characters:  "a-\\->b"  -->  "a-\->b"
+
+  * art: "C++" becomes "C-", and becomes solid line when all other
+    connectors are dashed. Classify based on adjacent cells?
+
+  * Generate Mediawiki (qwiki) format, plain text, normalized smark
+
+  * warn when macros assign undefined global variables
+
+  * '-' --> en-dash vs. hyphen (depending on surrounding space) [?]
+
+To consider
+===========
+
+  * Accept <tagname>...</tagname> for 'tagname' in some HTML subset
+    (em, strong, code, a + img, br, ...)
+
+  * Description lists:
+        Item
+        -->  |Description
+
+  * Accept markdown's inline image syntax:  ![...](...)
+
+  * Don't parg break just for indentation change.  Blank line or list
+    tag should be required.  This allows indented/outdented paragraphs
+    to be handled intuitively.
+
+  * Text objects:
+
+      new(string, func)         -> text object
+      textobj(evt, pos, ...)    -> __call: sends event to string
+      tostring(textobj)         -> returns string
+      #text                  -> __len: length of string
+      text .. text           -> __concat: concatenates (creates new text object)
+      text:sub(a,b)          -> substring (new text object)
+      text:splice(runs)      -> create new text object
+
+      text:<fn>(args)        -> calls string.<fn>(args), converting text objects to strings
+
+   * Big changes
+
+       - require blank line between indentation changes (error otherwise)
+       - process markup and backslashes inside of `...`, but not ``...``
+
+   * New layout algorithm: no layout structure
+
+     do
+       get line
+       if currentParg then
+          if lineIsBlank then
+             terminate currentParg
+          elseif lineIndentation == currentParg's indentation then
+             append to currentParg
+          else
+             error
+          end
+       else
+          if line begins a macro then
+             consume all blank and more-indented lines
+             call macro
+          end
+          if not lineIsBlank then
+             while indentation of innermost open block > lineIndentation do
+                close block
+             end
+             if lineIndentation > innermost open block then
+                if lineIsTagged and innermost block ~= list then
+                   open new list block
+                end
+                if lineIsTagged then
+                   open new LI block
+                elseif
+                   open new block
+             end
+             currentParg = new parg(line)
+          end
+       end
+
+
+================================================================
+
+art: Captions
+
+Caption syntax: final sequence of non-blank lines starts with "[" and ends
+with "]".
+
+Options:  +{  ...  }
+
+ * scale :: number | {x:number, y:number}          default = "auto"
+ * fill  :: true | false | "auto" | color          default = "#f8f8f8"
+ * shadow :: true | false
+ * markup :: true | false       (treat box contents as markup)
+ * radius :: number
+ * class :: string
+ * center :: true | false
+ * font :: string
+
+================================================================

@@ -1,0 +1,174 @@
+XML Module
+####
+
+Contents
+----
+
+    .toc
+
+
+Overview
+----
+
+The `xml` module implements a small and fast pure-Lua XML parser. It can be
+used in "SAX" or "DOM" mode, and the DOM mode supports parse-time pruning,
+allowing data to be very efficiently extracted from very large files.
+
+    .  local xml = require "xml"
+
+Entity references and numeric character references in the XML are converted
+to utf-8 strings, assuming (but not verifying) that the document encoding is
+either utf-8 or a compatible one (e.g. us-ascii).
+
+
+Functions
+----
+
+`xml.SAX(text, fnTest, fnStart, fnEnd, fnComm, fnPI)`
+....
+
+    Parse XML `text` in SAX (callback) mode.
+
+    `text` can be a string or a 'read' function that can be called
+    repeatedly to get more text.  'read' returns a string, or nil for end of
+    stream.
+
+    Five callbacks can be provided:
+
+     * `fnText(str, getText)` : a function to be called for each string of
+       character content.  getText is a function that will return the
+       actual text with its references replaced.
+
+     * `fnStart(name, attrs)` : called for each start tag name: element name
+
+     * `fnEnd(name)` : called for each end tag
+
+     * `fnComm(str, startPos, endPos)` : called for each comment
+
+     * `fnPI(name, str, startPos, endPos)` : called for each processing
+       instruction
+
+    The return value is `true` on success, `nil, <error>` on failure.
+
+
+`xml.DOM(text, [map])`
+....
+
+    Parse XML into a document tree.
+
+    `map` is a description of the elements to capture. If not given, the
+    parser will capture all document contents. See [[Pruning]] for a
+    description of other map values.
+
+    The DOM parser returns a tree of nodes that represent a document tree.
+    CDATA nodes are represented by string values.  By default, each returned
+    element is described by a table with the following contents:
+
+    .   node._type  = element name
+    .   node.attr   = value of attribute named 'attr'
+    .   node[1...N] = child nodes 1...N
+
+    Comments are treated as nodes with _type == "_comment", and processing
+    instructions are treated as nodes with _type == "_pi_<name>", where
+    <name> is the name of the processing instruction.
+
+
+Pruning
+----
+
+The DOM parser accepts a `map` value, analogous to a schema, that specifies
+how to treat elements within the document tree.  The map is structured as a
+graph that describes which nodes to extract in the document, similar to how a
+regular expression can describe what text to extract from a string.
+
+Maps can also be viewed as state machines.  The parser keeps track of a
+"current" map as it parses the document. If and when it descends into child
+elements, the map describes what map to use as the "current" map for that
+child element.
+
+Each node in the map may possess the following fields:
+
+ * `node.<child>` : If present, this specifies that child elements named
+   `<child>` should be captured.  The value of this entry gives the map
+   node that is to be in effect when processing that child element.
+
+ * `node[xml.DefaultKey]` : If present, this specifies that all child nodes
+   are to be captured.  The value gives the map node to use while processing
+   the child elements that do not match a node.<child> entry.
+
+   Child elements will be skipped and not added to the DOM tree unless
+   either node.<child> or node[xml.DefaultKey] is found.
+
+ * `node[xml.MatchTextKey]` : a pattern to apply to contained text.  Text
+   will be added to the DOM tree *only* if the pattern matches.  Only the
+   text matched by the pattern (or the first pattern capture) will be
+   retained.  If this value is nil or false, no text will be added to the
+   DOM tree.  If this value is `true`, all text children will be retained
+   without modification.
+
+ * `node[xml.ActionKey]` : If present, this is a function that will
+   transform the parsed element's value and/or key before it is stored in
+   its parent.
+
+Here are some constructors for map nodes:
+
+   `xml.CaptureAll()` returns a map that will capture all descendants and
+   any text.
+
+   `xml.CaptureText()` returns a map that will capture text, but no
+   sub-elements.
+
+   `xml.TextNode()` returns a map that will capture text, and evaluate to
+   string, not an array of strings.
+
+   `xml.ByName(node)` = capture values as described by 'node', but place
+   them in a named field of the parent (versus another child).  Any
+   occurrences of the element will override any attribute of the same name.
+   If the element occurs more than once in a parent element, the last
+   occurrence overrides the preceding ones.
+
+   `xml.ListByName(node)` = capture values as described by 'node', but
+   append them to an array stored in a named field of the parent. Any
+   occurrences of the element will override any attribute of the same name.
+
+`xml.ByName` and `xml.ListByName` can be composed with other constructors
+but not with themselves or each other.
+
+Here are some pre-defined node types:
+
+  `xml.STRING` : this node describes an element that appears once in its
+  parent element and contains a string.  It will appear as a named
+  field in the document tree with a string value.
+
+  `xml.NUMBER` : this node describes an element that appears once in its
+  parent element and contains a number.  It will appear as a named
+  field in the document tree with a number value.
+
+Refer to `xml.lua` for more node types.
+
+The following example map structure will capture style elements from a
+well-formed XHTML document, discarding the body and other head elements:
+
+  . local map = {
+  .    html = xml.ByName {
+  .       head = xml.ByName {
+  .          title = xml.STRING,
+  .          style = xml.STRING_LIST,
+  .       }
+  .    }
+  . }
+  .
+  . local tree = xml.DOM(text, map)
+  .
+  . print(tree.html.head.title)  --> a string
+  . print(#tree.html.head.style) --> number of <style> elements
+
+
+Limitations
+----
+
+ * No support for declarations.
+ * No support for namespaces.
+ * No end-of-line normalization (CRLF & CR -> LF)
+ * Does not ignore or validate BOM
+ * Limited error detection or validation.

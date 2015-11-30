@@ -1,0 +1,3 @@
+a.o: test/a.c
+a.o: test/a.h
+a.o: test/b.h

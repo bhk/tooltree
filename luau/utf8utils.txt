@@ -1,0 +1,74 @@
+UTF8 Utilities
+####
+
+Contents
+----
+
+    .toc
+
+
+Overview
+----
+
+The `utf8utils` module returns a table of functions for dealing with utf8-encoded
+strings.
+
+    .  local utf8utils = require "utf8utils"
+
+
+
+Functions
+----
+
+
+`utf8utils.decode(str, ferr)`
+....
+
+    Convert a utf8-encoded character to a Unicode index.
+
+    Returns a number from 0 to 0x10FFFF.
+
+    If the character is incomplete or in a non-canonical encoding, `decode`
+    will call `ferr` with the decoded value and the input string and then
+    return whatever values `ferr` returned.  `ferr` defaults to a function
+    that throws the error `"utf8: invalid byte sequence"`.
+
+
+`utf8utils.encode(index)`
+....
+
+    Encode a Unicode index as a UTF-8 character.
+
+    Returns a string on success, and throws an error if `index` is
+    out-of-range (greater than 0x10FFFF).
+
+
+`utf8utils.mbpattern`
+....
+
+    This Lua pattern matches a single utf-8 character (without validating).
+
+
+`utf8utils.binToChars(blob)`
+....
+
+    Convert binary data stored as a byte array in `blob` to a utf-8 encoded
+    character string.
+
+    Each byte in the input string is converted to a character with the same
+    numeric value.  This directly-mapped translation may be convenient for
+    exchange with languages like JavaScript in which strings are arrays of
+    16-bit values.
+
+
+`utf8utils.charsToBin(text)`
+....
+
+    Convert binary data stored as utf-8-encoded characters to a simple byte
+    array.  This reverses `binToChars`.
+
+
+`utf8utils.validate(string)`
+....
+
+    Throw an error if `string` is not valid utf-8.

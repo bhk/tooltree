@@ -1,0 +1,13 @@
+#csv group,file,bytes,lines,ploc,icount,ibytes,ilines,iploc
+#set cwd=/dev/apiOne/src/libstd
+a,src/AEEBase.c,713,32,13,4,27630,1108,194
+a,src/BufBound.c,5657,205,123,4,80345,3068,NaN
+a,src/CObject.c,4502,229,146,12,134661,4698,799
+b,src/smath.c,417,25,20,2,13540,615,135
+a,src/std.c,10529,515,340,4,69124,2571,323
+b,src/std_SwapBytes.c,4164,170,120,4,68203,2535,322
+a,src/std_path.c,3496,144,90,4,80345,3068,360
+b,src/std_rand.c,566,21,5,3,67683,2522,319
+c,src/std_scanul.c,4988,193,88,3,67683,2522,319
+a,src/std_strlprintf.c,9798,366,244,5,80865,3081,363
+a,src/stdtime.c,6809,197,42,3,17791,770,157

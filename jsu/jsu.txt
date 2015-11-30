@@ -1,0 +1,116 @@
+JSU: JavaScript Utilities
+####
+
+Introduction
+====
+
+Building on composable, testable components is key to developing quality
+software efficiently.  Unfortunately, the Web programming environment
+presents a number of challenges that must be overcome:
+
+ - Globals: Top-level variables in scripts, even when declared using the
+   `var` keyword, are visible to all scripts, creating the potential for
+   unintended interactions.
+
+ - Packaging: No hygienic facilities for importing/exporting functionality.
+   Many common JavaScript libraries assign and/or use globals for this
+   purpose.
+
+ - Testing: The poor support for command-line control and I/O in browsers
+   complicate the task of automating tests, and make for slow test runs.
+
+ - Loading: Web standards provide poor facilities for loading a script from
+   another script. The function constructor and `eval` can be used, but
+   this interacts poorly with the debugging facilities in browsers.
+
+ - CSS: Associating elements with styles defined in static CSS files requires
+   use of class names or IDs, which are in a single global namespace,
+   introducing the potential for unintended interactions with other modules.
+
+ - When using CSS files, the implementation of a given UI component becomes
+   split between the CSS and JavaScript files.  Unfortunately, this split
+   does not cleanly match the divide between appearance and functionality,
+   or between "programming" and "design".
+
+To address these challenges, we employ a number of conventions and
+libraries.  The `crank-js` package provides tooling and build rules, and
+this package provides libraries.
+
+
+Packaging
+.....
+
+Modules are defined using a subset of `node.js` ("common JS") conventions:
+
+ * A function named `require` is used to import functionality, and
+   returns the "exports" of the named module.
+
+ * `module.exports` holds the exports of the running module.  It is
+   initialized to an empty object, and can be overridden by the module.
+
+ * `exports` points to the initial value of `module.exports`, and so can be
+   used as a shorthand for `module.exports`.
+
+Modules can thereby avoid the use of globals for importing of exporting,
+and source files can be scanned for dependencies.
+
+
+Testing: [crank-js] (crank-js.html)
+....
+
+Each module can be accompanied with a `*_q.js` file that performs automated
+tests. These tests will be run with Node.js.
+
+When using the JavaScript in a web page, we bundle a module along with all
+of its dependencies and a simple package loader into a single script.  This
+can then be embedded in, or loaded by, a web page.
+
+
+CSS Management: [view.js] (view.html)
+....
+
+The `View` module allows DOM element styles and behavior to be constructed
+modularly.  Instead of being split between CSS and JavaScript files, a
+single module can contain:
+
+  - Static CSS property assignments
+
+  - CSS properties computed at run-time
+
+  - JavaScript that controls event handling and view construction.
+
+With the implementation in one module, packaging conventions allow bundling
+and dependency scanning to be automated.
+
+Programmers deal only with the JavaScript namespace and can stop dealing
+with CSS's global namespace and the potential for conflicts that it
+presents.
+
+CSS properties can be grouped into subclasses of View, and inheritance can
+be used to construct sub-classes.  This avoids the repetition common in CSS
+files.
+
+Although CSS properties are described in JavaScript, the View module
+constructs CSS classes and style sheet rules dynamically so that elements
+can be constructed efficiently.
+
+
+Other Libraries
+----
+
+[`anim.js`] (anim.html) simplifies animations.
+
+[`class.js`] (class.html) simplifies building classes and subclasses in
+JavaScript.
+
+[`psarray.js`] (psarray.html) implements an array-like persistent data
+structure.
+
+[`observable.js`] (observable.html) implements observable objects, which
+propagate mutable state.
+
+[`oweb.js`] (oweb.html) implements observables that propagate state changes
+from a web server.
+
+[`spiltter.js`] (splitter.html) is a UI control for dividing the content
+area amongst two child elements.

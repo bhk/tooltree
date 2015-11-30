@@ -1,0 +1,38 @@
+# Crank generator classes for building HTML using Smark
+
+#----------------------------------------------------------------
+# Smark generator: .txt -> .html
+
+SmarkDoc.parent = Gen
+SmarkDoc.ext = .html
+SmarkDoc.command = $(call v.,c-emulator) $(call .,exe) -o $@ $(call .,options) -- $^
+SmarkDoc.css =
+SmarkDoc.depFile = $@.dep
+SmarkDoc.options = $(and $(call .,css),--no-default-css $(foreach f,$(call .,css),--css="$f")) $(call .,opts) --deps=$(call .,depFile)
+SmarkDoc.opts = --error#
+SmarkDoc.exe = $(call .,smarkDir)smark
+SmarkDoc.exports = SMARK_PATH
+SmarkDoc.SMARK_PATH = ./?.lua
+SmarkDoc.smarkDir := $(dir $(lastword $(MAKEFILE_LIST)))
+
+#----------------------------------------------------------------
+# TSmark generator: .txt -> .html
+#
+# TSmark generates HTML files using a template.  The template is a text file
+# identified by the 'template' property, and it is passed to Smark as the
+# input file.  The template includes the actual content (a text file whose
+# name is the build item name).  The CONTENT environment variable is used
+# to communicate this file name to the template.
+
+TSmarkDoc.parent = Smark
+TSmarkDoc.command = $(call .,exe) -o $@ $(call .,options) -- $(call .,template)
+TSmarkDoc.CONTENT = $^
+TSmarkDoc.exports = $(call inherit) CONTENT
+
+#----------------------------------------------------------------
+# Prince generator: PDF from generated HTML files
+
+PrinceDoc.parent = Gen
+PrinceDoc.ext = .pdf
+PrinceDoc.command = rm -f $@ && $(call .,exe) $^ -o $@
+PrinceDoc.exe = prince

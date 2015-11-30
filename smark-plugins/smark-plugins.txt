@@ -1,0 +1,23 @@
+Smark plugins
+#############
+
+A colection of plugins for the Smark documentation tool
+
+Usage:
+
+. export SMARK_PATH=$TOOLTREE_DIR/smark-plugins/?.lua
+. smark -o mydoc.html mydoc.txt
+
+
+Example:
+
+. .luacode
+.   local function hello()
+.     print 'Hello, world!'
+.   end
+
+.luacode
+  local function hello()
+    print 'Hello, world!'
+  end
+

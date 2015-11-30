@@ -1,0 +1,10 @@
+# request crank-c using 'nocdep' to avoid dependency cycle
+deps = crank crank-c?$v_nocdep
+
+make = make V='$v'
+
+clean = make clean V='$v'
+
+result = out/$v
+
+conf = .config
