@@ -1,0 +1,453 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Introduction to Monoglot</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Introduction%20to%20Monoglot"></a>Introduction to Monoglot
+</h1><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Technical%20Details">Technical Details</a><div class="tocLevel"><a href="#Core%20Components">Core Components</a></div><div class="tocLevel"><a href="#Event-Driven%20I/O">Event-Driven I/O</a></div><div class="tocLevel"><a href="#Synchronous%20Programming%20Model">Synchronous Programming Model</a></div><div class="tocLevel"><a href="#Zero%20Installation">Zero Installation</a></div></div><div class="tocLevel"><a href="#Benefits">Benefits</a><div class="tocLevel"><a href="#Footprint">Footprint</a><div class="tocLevel"><a href="#Code%20Size">Code Size</a></div><div class="tocLevel"><a href="#RAM%20Footprint">RAM Footprint</a></div></div><div class="tocLevel"><a href="#Performance">Performance</a></div><div class="tocLevel"><a href="#Synchronous%20Coding%20Style">Synchronous Coding Style</a></div><div class="tocLevel"><a href="#Lua">Lua</a></div><div class="tocLevel"><a href="#Portability">Portability</a></div><div class="tocLevel"><a href="#Ease%20of%20Deployment">Ease of Deployment</a></div></div><div class="tocLevel"><a href="#Potential%20Applications">Potential Applications</a></div></div></div><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+Monoglot is a platform for developing lightweight, deployable, scalable network applications in Lua. The resulting applications can be easily deployed as standalone executables, or integrated into existing executables.
+</p><p>
+Those familiar with Node.js will recognize many similarities with Monoglot, although Monoglot is much smaller and easier to use.
+</p><p>
+Those familiar with Ruby-based web environments will find Monoglot's programming model similar, but without the installation, configuration, and deployment hassles.
+</p><h2>
+<a name="Technical%20Details"></a>Technical Details
+</h2><h3>
+<a name="Core%20Components"></a>Core Components
+</h3><p>
+Monoglot combines the Lua interpreter with a set of libraries that support:
+</p><ul type="circle">
+<li>
+<p>
+TCP/IP sockets and inter-process I/O
+</p>
+</li><li>
+<p>
+creation and management of child processes.
+</p>
+</li><li>
+<p>
+manipulation of HTML and URIs
+</p>
+</li><li>
+<p>
+HTTP server protocol
+</p>
+</li><li>
+<p>
+source-level debugging
+</p>
+</li>
+</ul><h3>
+<a name="Event-Driven%20I/O"></a>Event-Driven I/O
+</h3><p>
+Monoglot uses an event-driven networking model. Each instance of the Lua VM inhabits a single kernel thread, but that thread can handle many network connections. (In this respect, Monoglot is much like Node.js.)
+</p><h3>
+<a name="Synchronous%20Programming%20Model"></a>Synchronous Programming Model
+</h3><p>
+Although the underlying kernel APIs it uses are event-driven, Monoglot presents the Lua programmer with a &#8220;synchronous&#8221; or &#8220;threaded&#8221; usage model. Lua's support for coroutines is used to implement cooperative (non-preemptive) threads of execution.
+</p><p>
+This differs from Node.js and in-browser JavaScript development, in which programmers pass callbacks to functions that can trigger long-lived operations.
+</p><h3>
+<a name="Zero%20Installation"></a>Zero Installation
+</h3><p>
+Monoglot avoids dependencies on system configuration. A Monoglot-based project typically includes all of its dependencies in a single source tree. The application can then be deployed along with its dependencies as a single executable.
+</p><p>
+Hybrid configurations can also be employed, where some amount of the scripts are embedded in the applications while others are loaded at run time from the file system.
+</p><h2>
+<a name="Benefits"></a>Benefits
+</h2><h3>
+<a name="Footprint"></a>Footprint
+</h3><div class="indent"><p>
+<i>&#8220;... get a simpler language. Lua is much simpler than JS. This means you can make a simple interpreter that runs fast enough ...&#8221; &#8212; Brendan Eich, creator of JavaScript. [<a href="http://lambda-the-ultimate.org/node/3851#comment-57671">link</a>]</i>
+</p></div><h4>
+<a name="Code%20Size"></a>Code Size
+</h4><p>
+A smaller executable means that it can run in resource-constrained environments, leaving more room for applications and data.
+</p><p>
+A smaller source base makes it easier to fully understand Monoglot and audit the source for security issues.
+</p><p>
+The following table summarizes Monoglot and Node.js (v0.10.16).
+</p><table><tr><td></td><th><p>
+Monoglot
+</p></th><th><p>
+Node.js
+</p></th><th><p>
+Ratio
+</p></th></tr><tr><td><p>
+Binary (MB)
+</p></td><td><p>
+0.25
+</p></td><td><p>
+12
+</p></td><td><p>
+48x
+</p></td></tr><tr><td><p>
+C/C++ sources (KLOC)
+</p></td><td><p>
+19
+</p></td><td><p>
+806
+</p></td><td><p>
+42x
+</p></td></tr><tr><td><p>
+C/C++ sources (KB)
+</p></td><td><p>
+479
+</p></td><td><p>
+26,770
+</p></td><td><p>
+56x
+</p></td></tr><tr><td><p>
+Other sources (KLOC)
+</p></td><td><p>
+10
+</p></td><td><p>
+363
+</p></td><td><p>
+38x
+</p></td></tr><tr><td><p>
+Other sources (KB)
+</p></td><td><p>
+249
+</p></td><td><p>
+14,308
+</p></td><td><p>
+58x
+</p></td></tr></table><p>
+The code sizes listed above exclude tests. The binary sizes are release-mode builds on MacOS including statically linked versions of dependencies except the C and C++ standard libraries, which are not included.
+</p><p>
+It should be noted that Node.js builds in a number of libraries that may or may not be required for different applications. Monoglot includes a minimal set of libraries, and makes it easy for applications to build in only the libraries they need. Most notably, Monoglot does not yet include SSL, which would be important for most use cases.
+</p><h4>
+<a name="RAM%20Footprint"></a>RAM Footprint
+</h4><p>
+Monoglot's tiny executable size reduces memory footprint when executing.
+</p><p>
+Also, the event-driven model can result in significantly lower resource usage than models that require a thread per connection (e.g. Python or Ruby). Each kernel thread occupies space in kernel data structures and requires memory to be allocated for stacks.
+</p><h3>
+<a name="Performance"></a>Performance
+</h3><p>
+<a href="/bhk/tooltree/blob/master/bench">tooltree/bench</a> compares minimalist web servers based on <a href="/bhk/tooltree/blob/master/bench/web.lua">Monoglot</a> and <a href="/bhk/tooltree/blob/master/bench/web.js">Node.js</a>.
+</p><table><tr><th><p>
+Platform
+</p></th><th><p>
+Transactions per second
+</p></th></tr><tr><td><p>
+Monoglot
+</p></td><td><p>
+18,239
+</p></td></tr><tr><td><p>
+Node.js
+</p></td><td><p>
+13,380
+</p></td></tr></table><p>
+LuaJIT offers the possibility of significantly boosting Monoglot performance on supported acrhitectures (ARM, x86 and x86-64). Monoglot currently uses the Lua.org interpreter, which supports many more architectures than LuaJIT or Node.js.
+</p><p>
+The performance difference may be more pronounced on a single-core processor or in a high-load multi-process deployment, since Node.js appears to make more use of other threads, resulting in higher total CPU loading than Monoglot in the above test scenario.
+</p><h3>
+<a name="Synchronous%20Coding%20Style"></a>Synchronous Coding Style
+</h3><p>
+Monoglot's synchronous/threaded programming model affords a number of benefits over the &#8220;callback-based&#8221; or &#8220;asynchronous&#8221; style of programming used in Node.js. (We have experienced these firsthand while developing Node.js-based software.)
+</p><p>
+The most obvious drawback to asynchronous programming is that it does not compose well with language features. The programmer cannot make use of <code>for</code> and <code>while</code> loops, recursive function calls, and exception handling, when these constructs would have to wrap long-lived operations. The programmer is forced into a more primitive style of programming, resulting in tedious, difficult to read code.
+</p><p>
+The lack of composability with exception handling, in particular, poses a challenge for robustness. In Node.js, for example, any exception occurring in any callback can leave the server in a corrupted state if it is not caught. Exhaustively guarding against this possibility by trapping all exceptions and cascading them appropriately is an onerous burden.
+</p><p>
+Another problem relates to the difficulty of cancellation of operations. In many environments, including Node.js, cancellation of pending operations is not always possible. When it is, the mechanisms are <i>ad hoc</i> &#8212; each scheduling API provides its own corresponding cancellation API.
+</p><h3>
+<a name="Lua"></a>Lua
+</h3><p>
+Lua is a more powerful language than JavaScript, yet easier to learn.
+</p><p>
+Aside from coroutines, which allow the scalable implementation of threads, Lua offers many other benefits over JavaScript:
+</p><ul>
+<li>
+<p>
+Lua's data description features allow it to represent structures in a natural, inline form that, in other environments, would require use of a separate &#8220;templating&#8221; language. <a href="/bhk/tooltree/blob/master/webdemo/demo.lua#L91">demo.lua</a> provides a good example of how this is used to dynamically construct HTML responses.
+</p>
+</li><li>
+<p>
+Strings are sequences of bytes. By contrast, JavaScript strings are sequences of 16-bit values that are treated as characters by many library functions. This makes them not well suited for dealing with binary data. Two competing approaches for dealing with binary data are available in JavaScript (one originating with Node, the other originating in Web standards).
+</p>
+</li><li>
+<p>
+Lua tables are more versatile than JavaScript objects or arrays. In Lua, arbitrary values can be used as keys. In JavaScript, keys are always string values, and not all string values can be used as indices, depending on the underlying platform.
+</p>
+</li><li>
+<p>
+Metamathods allow implementation of operator overloading. A common use case is the <code>__index</code> metamethod, which is called when an undefined table member is requested.
+</p>
+</li><li>
+<p>
+Lua has semantics for garbage collection. Lua code can create weak references, define finalizers, and query the amount of memory used, and control garbage collector settings.
+</p>
+</li><li>
+<p>
+Lua provides a debugging API to Lua programs.
+</p>
+</li><li>
+<p>
+JavaScript is riddled with <a href="http://www.bhk.com/docs/javascript.html">unnecessary complexity, idiosyncrasies, and defects</a> that make life difficult for programmers.
+</p>
+</li>
+</ul><h3>
+<a name="Portability"></a>Portability
+</h3><p>
+Monoglot currently supports Linux, MacOS, and Android.
+</p><p>
+Windows support could be added without much difficulty.
+</p><h3>
+<a name="Ease%20of%20Deployment"></a>Ease of Deployment
+</h3><p>
+The <a href="#Zero%20Installation">Zero Installation</a> approach allows easy deployment of an application along with its dependencies. This can be contrasted with packages that have uncontrolled external dependencies, expecting them to be installed on the host, which can experience the following problems:
+</p><ul>
+<li>
+<p>
+Per-host deployment costs.
+</p>
+</li><li>
+<p>
+Version conflicts and uncertainties.
+</p>
+</li><li>
+<p>
+Obstacles to migration.
+</p>
+</li>
+</ul><h2>
+<a name="Potential%20Applications"></a>Potential Applications
+</h2><ul>
+<li>
+<p>
+On-device server for browser debugging and profiling
+</p><p>
+Monoglot is already being used in this capacity.
+</p>
+</li><li>
+<p>
+Implementing Cloud Services
+</p><p>
+Implementations of a couple of different cloud services could supplement our Snapdragon Web Engine and browser efforts, both for demonstration purposes and as reference source for OEMs:
+</p><ol type="1">
+<li>
+<p>
+A server to support bookmark synchronization.
+</p>
+</li><li>
+<p>
+A proxy to support accelerated browsing, with a SPDY-enabled client link and/or with content transformation.
+</p>
+</li>
+</ol>
+</li><li>
+<p>
+Remote Control of Mobile Devices
+</p><p>
+A device-resident Monoglot application could expose as web API to access phone features, such as pictures and documents stored on the device, test messaging capabilities, and sensors.
+</p>
+</li><li>
+<p>
+Remote Access
+</p><p>
+A web application server hosting terminal sessions. GUI environment for interactive shells, accessible from any web browser. One could think of this as a web-enabled alternative to SSH and <code>screen</code>.
+</p>
+</li><li>
+<p>
+Embedding Large-Screen UI into Mobile Applications
+</p><p>
+In one vision for the future of mobile computing, mobile devices supplant PCs as the hub of the user's interaction with their data. Mobile devices are neither PC companions or second-class terminals. Large screens and keyboards remain important for many use cases, but will be thought of as just different input and output devices for use with your mobile device.
+</p><p>
+One current limitation is that smartphone applications understand only smartphone UI. Experiments in dockable mobile devices, such at the Motorola Atrix, offer a blown-up picture of the touch screen UI, which is not compelling. If an app were to effectively make use of a large screen, keyboard, and mouse, it would need an appropriate UI framework.
+</p><p>
+One obvious candidate to fill this vacuum is web technologies. In this case, the application on the mobile becomes an app <i>server</i> and thereby can take advantage of any browser-enabled large screen devices. This bypasses the potential hurdles of hardware and software compatibility with client devices.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

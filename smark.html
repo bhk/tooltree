@@ -1,0 +1,1633 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><style type="text/css">
+.elided { text-decoration: line-through; }
+
+</style><title>Smark</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Smark"></a>Smark
+</h1><div style="text-align: center">01-Dec-2015</div><h2>
+<a name="Contents"></a>Contents
+</h2><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Introduction">Introduction</a></div><div class="tocLevel"><a href="#Block-Level%20Markup">Block-Level Markup</a><div class="tocLevel"><a href="#_Block-Level%20Markup">Block-Level Markup</a></div></div><div class="tocLevel"><a href="#Inline%20Markup">Inline Markup</a><div class="tocLevel"><a href="#Special%20Symbols">Special Symbols</a></div><div class="tocLevel"><a href="#Quoting%20Special%20Characters">Quoting Special Characters</a></div><div class="tocLevel"><a href="#Character%20Sets">Character Sets</a></div></div><div class="tocLevel"><a href="#ASCII%20Graphics">ASCII Graphics</a><div class="tocLevel"><a href="#Graphics%20Recognition">Graphics Recognition</a><div class="tocLevel"><a href="#Lines">Lines</a></div><div class="tocLevel"><a href="#Shapes">Shapes</a></div><div class="tocLevel"><a href="#Text%20Layout">Text Layout</a></div><div class="tocLevel"><a href="#Smark%20Vector%20Graphics">Smark Vector Graphics</a></div><div class="tocLevel"><a href="#Customizing%20.art%20Rendering">Customizing .art Rendering</a></div></div></div><div class="tocLevel"><a href="#Sequence%20Charts">Sequence Charts</a></div><div class="tocLevel"><a href="#Macros">Macros</a><div class="tocLevel"><a href="#Using%20Macros">Using Macros</a><div class="tocLevel"><a href="#Inline%20Macros">Inline Macros</a></div><div class="tocLevel"><a href="#Block-Level%20Macros">Block-Level Macros</a></div></div><div class="tocLevel"><a href="#Built-in%20Macros">Built-in Macros</a><div class="tocLevel"><a href="#.art">.art</a></div><div class="tocLevel"><a href="#.comment">.comment</a></div><div class="tocLevel"><a href="#%5ccounter">\counter</a></div><div class="tocLevel"><a href="#.css">.css</a></div><div class="tocLevel"><a href="#.example">.example</a></div><div class="tocLevel"><a href="#.include">.include</a></div><div class="tocLevel"><a href="#.lua,%20%5clua">.lua, \lua</a></div><div class="tocLevel"><a href="#.msc">.msc</a></div><div class="tocLevel"><a href="#.pre">.pre</a></div><div class="tocLevel"><a href="#.table">.table</a></div><div class="tocLevel"><a href="#.toc">.toc</a></div></div><div class="tocLevel"><a href="#Implementing%20Macros">Implementing Macros</a><div class="tocLevel"><a href="#Processing%20Model">Processing Model</a></div></div><div class="tocLevel"><a href="#Macro%20Modules">Macro Modules</a><div class="tocLevel"><a href="#macro.expand(node,%20doc)">macro.expand(node, doc)</a></div><div class="tocLevel"><a href="#macro.render2D(node,%20gc)">macro.render2D(node, gc)</a></div></div><div class="tocLevel"><a href="#smarklib">smarklib</a></div></div><div class="tocLevel"><a href="#Printing%20Smark%20Documents">Printing Smark Documents</a></div><div class="tocLevel"><a href="#Command%20Syntax">Command Syntax</a><div class="tocLevel"><div class="tocLevel"><a href="#--output=%3cfile%3e%20-o%20%3cfile%3e">--output=&lt;file&gt; -o &lt;file&gt;</a></div><div class="tocLevel"><a href="#--out">--out</a></div><div class="tocLevel"><a href="#--in">--in</a></div><div class="tocLevel"><a href="#--error">--error</a></div><div class="tocLevel"><a href="#--deps=%3cfile%3e">--deps=&lt;file&gt;</a></div><div class="tocLevel"><a href="#--css=%3cfile%3e">--css=&lt;file&gt;</a></div><div class="tocLevel"><a href="#--no-default-css">--no-default-css</a></div><div class="tocLevel"><a href="#--config=%3cfile%3e">--config=&lt;file&gt;</a></div><div class="tocLevel"><a href="#--help%20-h">--help -h</a></div><div class="tocLevel"><a href="#--version%20-v">--version -v</a></div></div></div><div class="tocLevel"><a href="#Examples">Examples</a><div class="tocLevel"><a href="#OO%20Notational%20Conventions">OO Notational Conventions</a></div></div><div class="tocLevel"><a href="#Release%20Notes">Release Notes</a></div></div></div><h2>
+<a name="Introduction"></a>Introduction
+</h2><p>
+<b>Smark</b> is a tool that converts plain text documents to HTML. Like <a href="http://daringfireball.net/projects/markdown/">Markdown</a>, Smark allows authors to describe markup in a way that is readable in the source form (plain text). Smark also has an emphasis on the ability to convey rich document structure, like <a href="http://www.yaml.org/">YAML</a>. Finally, it offers extensibility and programmability. Smark input can be thought of as <i>source code</i> for a document, written in a language intended to be readable in source form.
+</p><h2>
+<a name="Block-Level%20Markup"></a>Block-Level Markup
+</h2><p>
+There is a simple logic to Smark's handling of input text that underlies all of its operation. It is worth familiarizing yourself with the basic syntax rules if you are going to be writing Smark documents.
+</p><h3>
+<a name="_Block-Level%20Markup"></a>Block-Level Markup
+</h3><ol type="1">
+<li>
+<p>
+<b>Paragraphs</b>
+</p><p>
+A blank line delimits two paragraphs. Line breaks within a paragraph are treated as ordinary spaces. Sequences of more than one space are equivalent to a single space.
+</p>
+</li><li>
+<p>
+<b>Indentation</b>
+</p><p>
+Indentation of lines can be used to convey hierarchical structure. Any change in indentation constitutes a paragraph break.
+</p>
+</li><li>
+<p>
+<b>Lists</b>
+</p><p>
+Each paragraph may be preceded by a <i>tag</i> &#8212; e.g. <code class="codebox">1.</code> or <code class="codebox">*</code> &#8212; that marks the paragraph as an item in a list. When a list tag is found, the indentation of <i>the text following the tag</i> defines the indentation of the line, so subsequent lines of the same paragraph should be aligned with the text that follows the tag.
+</p><p>
+Each tagged paragraph will either begin or continue a new list. If its indentation matches that of a list item earlier in the document, and there have not been any intervening lines with <i>less</i> indentation, then it continues a list. Otherwise, it begins a new list.
+</p><p>
+Valid list tags:
+</p><ul>
+<li>
+<p>
+Bullets: <code class="codebox">-</code> and <code class="codebox">*</code> indicate bulleted items.
+</p>
+</li><li>
+<p>
+Numeric: One or two decimal digits or hash characters <code class="codebox">#</code> followed by a period <code class="codebox">.</code> or right parenthesis <code class="codebox">)</code>. Actual digits may be used for readability in the source, but the numbering in the formatted output will be auto-generated.
+</p>
+</li><li>
+<p>
+Alpha: One or two ASCII letters followed by a right parenthesis. The letter's case is reflected in the rendering of the list.
+</p>
+</li>
+</ul>
+</li><li>
+<p>
+<b>Headings</b>
+</p><p>
+A paragraph consisting of two or more lines, the last of which is four or more <code class="codebox">#</code>, <code class="codebox">=</code>, <code class="codebox">-</code>, or <code class="codebox">.</code> characters, is treated as a header (level 1 through 4, respectively). The contents of the first H1 are treated as the document title.
+</p>
+</li><li>
+<p>
+<b>Pre-formatted Paragraphs</b>
+</p><p>
+When all the lines of a paragraph begin with <code class="codebox">.</code> or <code class="codebox">:</code>, the paragraph is treated as pre-formatted text. When <code class="codebox">:</code> is the initial character, the pre-formatted block is treated as ASCII graphics and its presentation will be &#8220;optimized&#8221; using graphics, where possible. When generating HTML, the graphics will take the form of HTML/CSS markup embedded in the HTML file.
+</p>
+</li><li>
+<p>
+<b>Tables</b>
+</p><p>
+Any paragraph whose lines all begin with <code class="codebox">+</code> or <code class="codebox">|</code> characters will be treated as a <a href="#.table"><code>.table</code></a> macro invocation.
+</p>
+</li><li>
+<p>
+<b>Horizontal Rules</b>
+</p><p>
+A paragraph consisting of nothing but a line of <code class="codebox">-</code> or <code class="codebox">=</code> characters generates a horizontal rule.
+</p>
+</li><li>
+<p>
+<b>Comments</b>
+</p><p>
+When all of the lines of a paragraph begin with <code class="codebox">;</code>, that paragraph is treated as a comment and will not appear in the formatted output. These can be used just like comments in source code.
+</p>
+</li>
+</ol><p>
+As a special case, a paragraph consisting of a single period (<code class="codebox">.</code>) is also ignored. This is particularly useful for closing an indented block without emitting any text. For example, this can end a numbered list and start another without introducing any intervening text.
+</p><h2>
+<a name="Inline%20Markup"></a>Inline Markup
+</h2><p>
+Bold and italicized text can be represented by enclosing it in pairs of &#8220;<code>**</code>&#8221; or &#8220;<code>*</code>&#8221; characters. The beginning symbol in a pair must not be immediately followed by a space, and its corresponding closing symbol must not be immediately preceded by a space. These rule allow Smark to detect markup mistakes and display warnings. When a sequence of &#8220;<code>*</code>&#8221; characters appears with spaces on both sides the characters are treated as literal.
+</p><p>
+One or more &#8220;backtick&#8221; characters (&#8220;<code>`</code>&#8221;) will begin a <code>&lt;code&gt;</code> section, which must be terminated by a matching sequence of the same length.
+</p><p>
+The contents of italicized and bold sections may contain other markup (but not nested occurrences of themselves). The contents of a backtick-quoted section are treated as literal character, so no markup can be embedded. Use two backticks to enclose a single backtick, and so on. A single space, if present, will be ignored after the opening sequence or before the closing sequence.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">
+this is *italicized text*
+
+this is **boldfaced text**
+
+`code` is surrounded by (`` ` ``)
+
+`in`**`tra`**word markup works
+</td><td><p>
+this is <i>italicized text</i>
+</p><p>
+this is <b>boldfaced text</b>
+</p><p>
+<code>code</code> is surrounded by (<code>`</code>)
+</p><p>
+<code>in</code><b><code>tra</code></b>word markup works
+</p></td></tr></table><p>
+To indicate an explicit line break, put a backslash (&#8220;<code>\</code>&#8221;) character at the end of the line. It does not matter whether whitespace characters follow the backslash. (In general, invisible whitespace should never affect the meaning of a document.)
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">Roses are red \
+Violets are blue
+</td><td><p>
+Roses are red <br>Violets are blue
+</p></td></tr></table><p>
+There are multiple ways to introduce links or anchors.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">&lt;http://www.acme.com/&gt; links to
+an absolute URL.
+
+[Acme] (http://www.acme.com) links to
+an arbitrary URL.
+
+[A similar syntax] (@anchor) creates an anchor.
+
+[Relative URIs] (#anchor) can be used to
+link to anchors or headers.
+
+[[This]] is a shorthand for linking to
+a header or anchor within the same document.
+
+[[@This]] marks some text as an anchor.
+</td><td><p>
+<a href="http://www.acme.com/">http://www.acme.com/</a> links to an absolute URL.
+</p><p>
+<a href="http://www.acme.com">Acme</a> links to an arbitrary URL.
+</p><p>
+<a name="anchor">A similar syntax</a> creates an anchor.
+</p><p>
+<a href="#anchor">Relative URIs</a> can be used to link to anchors or headers.
+</p><p>
+<a href="#This">This</a> is a shorthand for linking to a header or anchor within the same document.
+</p><p>
+<a name="This">This</a> marks some text as an anchor.
+</p></td></tr></table><h3>
+<a name="Special%20Symbols"></a>Special Symbols
+</h3><p>
+Occurrences of the ASCII double quote character (<code>"</code>) are replaced with left and right double quote characters, alternately. The alternation resets at the end of a paragraph.
+</p><p>
+The following character sequences are also replaced with non-ASCII characters:
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">-- --&gt; &lt;-- ==&gt; &lt;== &lt;=&gt; != &lt;= &gt;=
+</td><td><p>
+&#8212; &#8594; &#8592; &#8658; &#8656; &#8660; &#8800; &#8804; &#8805;
+</p></td></tr></table><h3>
+<a name="Quoting%20Special%20Characters"></a>Quoting Special Characters
+</h3><p>
+When a backslash is followed by any punctuation character, the backslash will be ignored and the following character will be included literally, and not as part of markup syntax or a special symbol.
+</p><p>
+You may also quote characters using HTML <a href="http://www.w3.org/TR/html4/sgml/entities.html">character references</a>. Ampersands are treated as literal characters when the context does not match one of these patterns: &#8220;<code>&amp;name;</code>&#8221;, &#8220;<code>&amp;#D;</code>&#8221;, or &#8220;<code>&amp;#xH;</code>&#8221;, where <code>D</code> and <code>H</code> represent one or more decimal or hex digits.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">\*  &amp;#42;  &amp;euro;  K&amp;R
+</td><td><p>
+* * &#8364; K&amp;R
+</p></td></tr></table><h3>
+<a name="Character%20Sets"></a>Character Sets
+</h3><p>
+Smark expects input files to contain text encoded in UTF-8. When an invalid UTF-8 sequence is encountered, a warning is displayed and the characters are treated as ISO-Latin-1 characters.
+</p><h2>
+<a name="ASCII%20Graphics"></a>ASCII Graphics
+</h2><p>
+Smark can recognize lines and boxes in ASCII art, which represents shapes using the shapes of ASCII characters and the layout that fixed-width fonts provide. Smark converts these shapes to graphics and text that can be rendered with proportional fonts, inline with the rest of the document.
+</p><p>
+The <a href="#.art"><code>.art</code></a> macro and the <code class="codebox">:</code> line prefix character can be used to indicate that text should be processed as ASCII graphics.
+</p><h3>
+<a name="Graphics%20Recognition"></a>Graphics Recognition
+</h3><h4>
+<a name="Lines"></a>Lines
+</h4><p>
+Sequences of certain ASCII characters are recognized as lines, according to the following rules:
+</p><ul>
+<li>
+<p>
+<code class="codebox">-</code>, <code class="codebox">|</code>, <code class="codebox">.</code>, and <code class="codebox">:</code> are characters that constitute portions of a line.
+</p><div class="indent"><p>
+<code class="codebox">-</code>, <code class="codebox">.</code> &#8658; horizontal <br><code class="codebox">|</code>, <code class="codebox">:</code> &#8658; vertical <br><code class="codebox">-</code>, <code class="codebox">|</code> &#8658; solid <br><code class="codebox">.</code>, <code class="codebox">:</code> &#8658; dotted
+</p></div>
+</li><li>
+<p>
+<code class="codebox">+</code> represents a <i>connecting point</i> at the center of the character cell. It can be part of either a vertical of horizontal line, connecting with characters to the left, right, top, or bottom. <code class="codebox">+</code> can be used in either dotted or solid lines.
+</p>
+</li><li>
+<p>
+<code class="codebox">&gt;</code>, <code class="codebox">&lt;</code>, <code class="codebox">^</code>, <code class="codebox">v</code>, and <code class="codebox">V</code> can be used as arrowheads. A lower-case letter <code class="codebox">o</code> depicts a socket, which is drawn a small circle.
+</p>
+</li><li>
+<p>
+<code class="codebox">,</code> and <code class="codebox">`</code> are connecting points, like <code class="codebox">+</code>, but with special properties:
+</p><ol class="indent" type="1">
+<li>
+<p>
+<code class="codebox">,</code> does not connect upwards. <code class="codebox">`</code> does not connect downwards.
+</p>
+</li><li>
+<p>
+These characters, when they join two lines at a corner, indicate that the corner should be rounded.
+</p>
+</li>
+</ol>
+</li><li>
+<p>
+<code class="codebox">~</code> represents a solid horizontal line like <code class="codebox">-</code>, but it disables <a href="#Shapes">shape recognition</a> for that line.
+</p>
+</li><li>
+<p>
+Characters will not be treated as graphics unless they form a line consisting of at least two character cells. The exception here is <code class="codebox">|</code>, which is always treated as graphics.
+</p>
+</li><li>
+<p>
+Letters (<code class="codebox">o</code>, <code class="codebox">v</code>, or <code class="codebox">V</code>) and comma (<code class="codebox">,</code>) will not be treated as graphics if they appear horizontally adjacent to other letters or commas. Furthermore, <code class="codebox">o</code> must appear adjacent to <code class="codebox">-</code> or <code class="codebox">~</code>.
+</p>
+</li>
+</ul><p>
+Here are some examples of dotted and solid lines, connecting points, arrows, and rounded corners. Rounded corners are not supported by all browsers, and few browsers render rounded dotted lines well, although it comes out nicely in print (see <a href="#Printing%20Smark%20Documents">Printing Smark Documents</a>, below).
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:      ,---,           |
+:      |   |  +.......&gt;|
+:      `---|--+---+    |
+:   o------`  :   +---&gt;+
+:             :        |
+:   +-----....+....---&gt;|
+:                      |
+</td><td><div class=diagram>
+<div class="html2d art" style="width:160px;height:112px">
+<div class=line style="border-top-width:2px;left:3px;top:87px;right:111px;bottom:23px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:47px;top:87px;right:39px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:141.5px;top:84px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:119px;top:87px;right:11px;bottom:23px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:-1px;top:51px;right:151px;bottom:51px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:27px;top:24px;right:103px;bottom:71px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:27px;top:7px;right:99px;bottom:88px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:8px;top:24px;right:99px;bottom:55px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:141.5px;top:20px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;border-left-width:2px;left:83px;top:23px;right:11px;bottom:23px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:145.5px;top:52px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:63px;top:39px;right:43px;bottom:55px"></div>
+<div class=line style="border-top-width:2px;left:115px;top:55px;right:7px;bottom:55px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:155px;top:-1px;right:3px;bottom:-1px"></div>
+</div>
+</div>
+</td></tr></table><h4>
+<a name="Shapes"></a>Shapes
+</h4><p>
+After recognizing lines, Smark will try to recognize shapes circumscribed by those lines. Shapes display with background colors and 3D effects as specified by the style sheet for the document.
+</p><p>
+Shapes are recognized whenever a line forms a loop, <i>unless</i>:
+</p><ol type="1">
+<li>
+<p>
+The line crosses over itself.
+</p>
+</li><li>
+<p>
+One of the corners is a three- or four-way intersection.
+</p>
+</li><li>
+<p>
+The line includes a <code class="codebox">~</code> character, an arrowhead, or a socket (<code class="codebox">o</code>).
+</p>
+</li>
+</ol><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:                 +,       +,     ,---,
+:  +---,  ,-+    ,-+---,  ,-+-+   |   |
+:  `,  `--` `-,    `,  `--` `-,   `---`
+:  ,` ,--,  ,-`    ,` ,--,  ,-`   ,---,
+:  +--`  `--+    ,-+--`  `--+-+   |   |
+:                  `+      +`     `~--`
+</td><td><div class=diagram>
+<div class="html2d art" style="width:288px;height:96px">
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;left:3px;top:23px;right:250px;bottom:54px"></div>
+<div class="rect round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;left:59px;top:23px;right:210px;bottom:54px"></div>
+<div class="rect round" style="border-width:3px;left:11px;top:39px;right:194px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;left:3px;top:55px;right:258px;bottom:22px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:51px;top:55px;right:210px;bottom:22px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:23px;right:250px;bottom:54px"></div>
+<div class="nofx round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;border-color:transparent;left:59px;top:23px;right:210px;bottom:54px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:11px;top:39px;right:194px;bottom:38px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:55px;right:258px;bottom:22px"></div>
+<div class="nofx round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:51px;top:55px;right:210px;bottom:22px"></div>
+<div class=line style="border-top-width:3px;border-right-width:3px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:84.5px;top:39px;right:194px;bottom:46px;line-height:0"></div>
+<div class=line style="border-left-width:3px;border-bottom-width:3px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:75px;top:23px;right:203.5px;bottom:54px"></div>
+<div class=line style="border-left-width:3px;border-top-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:59px;top:23px;right:210px;bottom:63.5px;line-height:0"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:35px;top:32.5px;right:226px;bottom:54px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:3px;top:23px;right:250px;bottom:63.5px;line-height:0"></div>
+<div class=line style="border-bottom-width:3px;border-left-width:3px;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;left:3px;top:32.5px;right:279.5px;bottom:54px;line-height:0"></div>
+<div class=line style="border-width:3px;border-left-width:0;-webkit-border-top-right-radius:5px;-moz-border-radius-topright:5px;border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;-moz-border-radius-bottomright:5px;border-bottom-right-radius:5px;left:8.5px;top:39px;right:274px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-right-width:0;-webkit-border-top-left-radius:5px;-moz-border-radius-topleft:5px;border-top-left-radius:5px;left:3px;top:55px;right:279.5px;bottom:22px"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:8.5px;top:64.5px;right:258px;bottom:22px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:27px;top:55px;right:234px;bottom:31.5px;line-height:0"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:51px;top:64.5px;right:210px;bottom:22px;line-height:0"></div>
+<div class=line style="border-top-width:3px;border-left-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:75px;top:55px;right:203.5px;bottom:31.5px;line-height:0"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:84.5px;top:47px;right:194px;bottom:38px;line-height:0"></div>
+<div class="rect round" style="border-width:3px;left:251px;top:7px;right:2px;bottom:54px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:123px;top:7px;right:155px;bottom:72px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;left:131px;top:24px;right:152px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:5px;-moz-border-radius-topright:5px;border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;-moz-border-radius-bottomright:5px;border-bottom-right-radius:5px;left:136px;top:39px;right:147px;bottom:39px"></div>
+<div class=line style="border-width:2px;border-right-width:0;-webkit-border-top-left-radius:5px;-moz-border-radius-topleft:5px;border-top-left-radius:5px;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;left:131px;top:55px;right:152px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;left:136px;top:87px;right:147px;bottom:7px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-bottom-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:115px;top:64px;right:131px;bottom:23px;line-height:0"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:155px;top:55px;right:107px;bottom:32px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:179px;top:64px;right:67px;bottom:23px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:187px;top:23px;right:67px;bottom:64px;line-height:0"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:163px;top:32px;right:99px;bottom:55px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:115px;top:23px;right:123px;bottom:64px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:195px;top:7px;right:83px;bottom:72px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:203px;top:24px;right:76px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:212px;top:39px;right:67px;bottom:39px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:203px;top:55px;right:76px;bottom:24px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:195px;top:72px;right:83px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:251px;top:55px;right:3px;bottom:23px"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:251px;top:71px;right:3px;bottom:7px"></div>
+</div>
+</div>
+</td></tr></table><p>
+When a shape lies entirely inside another shape, it will be drawn as if on top. When two shapes have borders that intersect, the two shapes are drawn together as one larger shape at the same <i>layer</i>.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:  +------------+
+:  |  ,---,   +-+---+
+:  |  | ,-+--,| |   |
+:  |  `-+-`  |+-+---+
+:  |    `----`  |
+:  +------------+
+</td><td><div class=diagram>
+<div class="html2d art" style="width:144px;height:96px">
+<div class=rect style="border-width:3px;left:91px;top:23px;right:2px;bottom:38px"></div>
+<div class=rect style="border-width:3px;left:3px;top:7px;right:34px;bottom:6px"></div>
+<div class=nofx style="border-width:3px;border-color:transparent;left:91px;top:23px;right:2px;bottom:38px"></div>
+<div class=nofx style="border-width:3px;border-color:transparent;left:3px;top:7px;right:34px;bottom:6px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;left:91px;top:23px;right:2px;bottom:38px"></div>
+<div class=line style="border-top-width:3px;left:91px;top:55px;right:2px;bottom:38px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;left:3px;top:7px;right:34px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;left:3px;top:87px;right:34px;bottom:6px;line-height:0"></div>
+<div class="rect round" style="border-width:3px;left:43px;top:39px;right:58px;bottom:22px"></div>
+<div class="rect round" style="border-width:3px;left:27px;top:23px;right:82px;bottom:38px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:43px;top:39px;right:58px;bottom:22px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:27px;top:23px;right:82px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:43px;top:39px;right:58px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:43px;top:55px;right:58px;bottom:22px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:27px;top:23px;right:82px;bottom:54px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:27px;top:39px;right:82px;bottom:38px"></div>
+</div>
+</div>
+</td></tr></table><p>
+Smark can recognize shapes that have one vertex partially obscured by other shapes. Lines ending in a <code class="codebox">-</code>, <code class="codebox">|</code>, <code class="codebox">:</code>, or <code class="codebox">.</code> may extend underneath other shapes, and lines ending at a connecting point may connect to an obscured perpendicular line.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:         ,--------,     ,-----+
+:     ,------,     |     |     |---+
+:  ,--|   +----+   |     |   ,-+   |
+:  |  `---|    |-, |     +---+ ,---+
+:  |      +----+ | |       |   |
+:  |        |    |-`       +---+
+:  `--------`    |
+:      `---------`
+</td><td><div class=diagram>
+<div class="html2d art" style="width:264px;height:128px">
+<div class=rect style="border-width:3px;left:195px;top:23px;right:2px;bottom:70px"></div>
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:195px;top:55px;right:34px;bottom:38px"></div>
+<div class=nofx style="border-width:3px;border-color:transparent;left:195px;top:23px;right:2px;bottom:70px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:195px;top:55px;right:34px;bottom:38px"></div>
+<div class=line style="border-right-width:3px;border-top-width:3px;left:195px;top:23px;right:2px;bottom:70px"></div>
+<div class=line style="border-left-width:3px;border-top-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:227px;top:55px;right:2px;bottom:38px"></div>
+<div class=line style="border-left-width:3px;border-bottom-width:3px;left:195px;top:23px;right:34px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:179px;top:7px;right:34px;bottom:86px"></div>
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:179px;top:39px;right:50px;bottom:70px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:179px;top:7px;right:34px;bottom:86px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:179px;top:39px;right:50px;bottom:70px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:179px;top:7px;right:34px;bottom:86px"></div>
+<div class=line style="border-bottom-width:3px;border-left-width:3px;left:179px;top:40.5px;right:50px;bottom:70px"></div>
+<div class=line style="border-top-width:3px;border-left-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:211px;top:39px;right:34px;bottom:70px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;left:59px;top:7px;right:130px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;left:35px;top:55px;right:146px;bottom:6px"></div>
+<div class="rect round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;left:3px;top:39px;right:186px;bottom:22px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:27px;top:23px;right:178px;bottom:70px"></div>
+<div class=rect style="border-width:3px;left:59px;top:39px;right:162px;bottom:54px"></div>
+</div>
+</div>
+</td></tr></table><h4>
+<a name="Text%20Layout"></a>Text Layout
+</h4><p>
+Graphical elements are sized and placed proportionally to their row and column indices in the pure ASCII representation. Smark uses a character cell aspect ratio of 2:1 (height:width) when computing coordinates. This is close to that of typical monospaced fonts, and it makes it easy to produce graphics with predictable shapes, including perfect squares.
+</p><p>
+Textual elements are also placed according to their row and column indices, but with some caveats. One limitation is that font metrics &#8212; in particular, character widths &#8212; are generally unpredictable in a browser. Additionally, the author may want to choose a proportional font for improved readability or aesthetics, causing character placement to deviate even further from the monospaced ASCII source.
+</p><p>
+In order to optimize text placement, Smark applies the following rules:
+</p><ol class="indent" type="1">
+<li>
+<p>
+Sequential words of text on a line are considered &#8220;runs&#8221; of text, which are drawn as a single text string. Characters that are treated as graphical elements divide one run from another. Three or more consecutive space characters also divide runs.
+</p>
+</li><li>
+<p>
+Text runs are drawn centered about the bounding box of the run unless one of the following conditions applies:
+</p><ol type="a">
+<li>
+<p>
+If a run is &#8220;equidistant&#8221; from vertical lines to the left and right, its text will be centered about an invisible line between those lines. &#8220;Equidistant&#8221; here means that the spacing on each side is at most one space wider than the other.
+</p>
+</li><li>
+<p>
+If a run is &#8220;close&#8221; to a vertical line to its left (separated by at most one space), its text will be left-aligned to the run's left-most boundary.
+</p>
+</li><li>
+<p>
+If a run is &#8220;close&#8221; to a vertical line to its right, its text will be right-aligned to the run's right-most boundary.
+</p>
+</li><li>
+<p>
+If a run begins at the same column as a run immediately above or below it, its text will be left-aligned to its left-most boundary.
+</p>
+</li><li>
+<p>
+If a run ends at the same column as a run immediately above or below it, its text will be right-aligned to its right-most boundary.
+</p>
+</li>
+</ol>
+</li><li>
+<p>
+A single run can meet more than one (in fact all) of the conditions listed above. In that event, the rule coming first in the above list will be used.
+</p>
+</li>
+</ol><p>
+The following example illustrates the alignment rules using narrow and wide characters to make the differences apparent. The string <code>XXX</code> is adjusted to the center of the box, the word &#8220;label&#8221; is placed adjacent to graphics, and two apparent paragraphs have been assigned left and right alignment:
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:                +------+
+:          label | XXX  |
+:                +------+
+:   llll            llll
+:   WWWW           WWWWW
+</td><td><div class=diagram>
+<div class="html2d art" style="width:168px;height:80px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:107px;top:7px;right:2px;bottom:38px"></div>
+<div style="text-align:right;left:16px;top:16px;right:72px;bottom:48px">label</div>
+<div style="text-align:center;left:124px;top:16px;right:20px;bottom:48px">XXX</div>
+<div style="left:0px;top:48px;right:136px;bottom:16px">llll</div>
+<div style="text-align:right;left:96px;top:48px;right:8px;bottom:16px">llll</div>
+<div style="left:0px;top:64px;right:136px;bottom:0px">WWWW</div>
+<div style="text-align:right;left:80px;top:64px;right:8px;bottom:0px">WWWWW</div>
+</div>
+</div>
+</td></tr></table><h4>
+<a name="Smark%20Vector%20Graphics"></a>Smark Vector Graphics
+</h4><p>
+Smark outputs vector graphics as pure HTML without any external image files. The generated HTML file is therefore self-contained, and can be emailed or copied from one file system location to another without losing content. This also means that the graphics are resolution-independent, so when <a href="#Printing%20Smark%20Documents">Printing Smark Documents</a> the results will not be pixelated.
+</p><p>
+The generated HTML employs ordinary HTML <code>div</code> elements and CSS properties that control positioning, colors, and border and background styles. Chrome, Safari, Firefox, and Prince (see <a href="#Printing%20Smark%20Documents">Printing Smark Documents</a>) produce very good results. When viewed using Internet Explorer 8, rounded corners will appear square and shadow effects will not be visible, but otherwise the documents should be quite readable.
+</p><p>
+You may notice that when viewing a page on screen at a larger or smaller than ordinary scale &#8212; with &#8220;Zoom In&#8221; or &#8220;Zoom Out&#8221; in Chrome or Safari &#8212; graphical elements may not meet precisely. This results from the way browsers round coordinates to whole pixel sizes. This does not affect Prince-generated PDFs, however, and in the default zoom (where one CSS pixel is the same as a physical pixel) Smark accounts for the effects of rounding.
+</p><h4>
+<a name="Customizing%20.art%20Rendering"></a>Customizing <code>.art</code> Rendering
+</h4><p>
+Style sheets can be used to customize a number of properties that affect appearance of a <code>.art</code> diagram. The following CSS classes are attached to elements:
+</p><pre>art  = an element containing a .art diagram
+rect = a rectangle with a solid border
+drect = a rectangle with a dotted/dashed border
+round = a rectangle with rounded corners
+</pre><p>
+Custom style sheets may specify font properties, colors, and special effects. The &#8220;border-color&#8221; property can be used to specify the color of lines and arrows as well as rectangle borders, and &#8220;border-style&#8221; controls line style and rectangle border style. Avoid modifying rectangle sizes (border, padding, or margin) or positioning properties, because those would violate assumptions made by the rendering algorithms. Font size may be specified. Use &#8220;em&#8221; units for size because this will automatically adjust for the scaling of elements that is performed when large diagrams are encountered.
+</p><p>
+The default style sheet does not assign a background or shadow effects to shapes with dotted outlines. (Internet Explorer 8 does not support shadow effects, but other popular browsers do: Safari, Chrome, and Firefox.)
+</p><h2>
+<a name="Sequence%20Charts"></a>Sequence Charts
+</h2><div class=diagram style="float:right">
+<div class="html2d msc" style="width:300px;height:510px;font-size:12px;line-height:14px;white-space:nowrap">
+<div style="border-color:#000;border-left-width:2px;left:74px;top:-1px;right:224px;bottom:-1px"></div>
+<div style="border-color:#000;border-left-width:2px;left:224px;top:-1px;right:74px;bottom:-1px"></div>
+<div style="text-align:center;left:79px;top:-1px;right:79px;bottom:497px"><span style="background-color:#fff">a -&gt; b</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:212.5px;top:15.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:210.5px;top:15.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:15px;right:75px;bottom:494px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:29px;right:79px;bottom:467px"><span style="background-color:#fff">a =&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:41.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:45px;right:77px;bottom:464px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:59px;right:79px;bottom:437px"><span style="background-color:#fff">a &gt;&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:71.5px;line-height:0"></div>
+<div style="border-style:dashed;border-top-width:1px;left:75px;top:75px;right:77px;bottom:434px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:89px;right:79px;bottom:407px"><span style="background-color:#fff">a =&gt;&gt; b</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;border-top: 6px solid transparent;left:212.5px;top:99.5px;line-height:0"></div>
+<div style="border:6px solid transparent;border-left: 12px solid #fff;border-right-width: 0px;left:210.5px;top:99.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:105px;right:76px;bottom:404px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:119px;right:79px;bottom:377px"><span style="background-color:#fff">a .&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:131.5px;line-height:0"></div>
+<div style="border-style:dotted;border-top-width:1px;left:75px;top:135px;right:77px;bottom:374px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:149px;right:79px;bottom:347px"><span style="background-color:#fff">a :&gt; b</span></div>
+<div style="border-bottom: 5px solid transparent;border-left-width: 13px;border-top: 5px solid transparent;left:210.5px;top:160.5px;line-height:0"></div>
+<div style="border-style:double;border-top-width:3px;left:75px;top:164px;right:80px;bottom:343px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:179px;right:79px;bottom:317px"><span style="background-color:#fff">a -x b</span></div>
+<div style="font:12px Verdana, Arial;line-height:12px;color:#000;left:183.5px;top:188px">x</div>
+<div style="border-top-width:1px;left:75px;top:195px;right:112px;bottom:314px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:209px;right:79px;bottom:287px"><span style="background-color:#fff">a &lt;-&gt; b</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:212.5px;top:225.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:210.5px;top:225.5px;line-height:0"></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;left:75.5px;top:225.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:77.5px;top:225.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:76px;top:225px;right:75px;bottom:284px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:239px;right:79px;bottom:257px"><span style="background-color:#fff">a &lt;=&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:251.5px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:75.5px;top:251.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:77px;top:255px;right:77px;bottom:254px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:269px;right:79px;bottom:227px"><span style="background-color:#fff">a &lt;.&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:281.5px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:75.5px;top:281.5px;line-height:0"></div>
+<div style="border-style:dotted;border-top-width:1px;left:77px;top:285px;right:77px;bottom:224px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:299px;right:79px;bottom:197px"><span style="background-color:#fff">a &lt;&lt;&gt;&gt; b</span></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 12px;border-top: 4px solid transparent;left:212.5px;top:311.5px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:75.5px;top:311.5px;line-height:0"></div>
+<div style="border-style:dashed;border-top-width:1px;left:77px;top:315px;right:77px;bottom:194px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:329px;right:79px;bottom:167px"><span style="background-color:#fff">a &lt;&lt;=&gt;&gt; b</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;border-top: 6px solid transparent;left:212.5px;top:339.5px;line-height:0"></div>
+<div style="border:6px solid transparent;border-left: 12px solid #fff;border-right-width: 0px;left:210.5px;top:339.5px;line-height:0"></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;border-top: 6px solid transparent;left:75.5px;top:339.5px;line-height:0"></div>
+<div style="border:6px solid transparent;border-left-width: 0px;border-right: 12px solid #fff;left:77.5px;top:339.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:77px;top:345px;right:76px;bottom:164px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:359px;right:79px;bottom:137px"><span style="background-color:#fff">a &lt;:&gt; b</span></div>
+<div style="border-bottom: 5px solid transparent;border-left-width: 13px;border-top: 5px solid transparent;left:210.5px;top:370.5px;line-height:0"></div>
+<div style="border-bottom: 5px solid transparent;border-right-width: 13px;border-top: 5px solid transparent;left:76.5px;top:370.5px;line-height:0"></div>
+<div style="border-style:double;border-top-width:3px;left:80px;top:374px;right:80px;bottom:133px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:389px;right:79px;bottom:107px"><span style="background-color:#fff">a -- b</span></div>
+<div style="border-top-width:1px;left:75px;top:405px;right:75px;bottom:104px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:419px;right:79px;bottom:77px"><span style="background-color:#fff">a == b</span></div>
+<div style="border-top-width:1px;left:75px;top:435px;right:75px;bottom:74px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:449px;right:79px;bottom:47px"><span style="background-color:#fff">a .. b</span></div>
+<div style="border-style:dotted;border-top-width:1px;left:75px;top:465px;right:75px;bottom:44px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:479px;right:79px;bottom:17px"><span style="background-color:#fff">a :: b</span></div>
+<div style="border-style:double;border-top-width:3px;left:75px;top:494px;right:75px;bottom:13px;line-height:0"></div>
+</div>
+</div>
+<p>
+The <code>.msc</code> macro allows sequence charts to be described concisely and abstractly in Smark source files. Like <code>.art</code>, the charts use <a href="#Smark%20Vector%20Graphics">Smark Vector Graphics</a> to generate pure HTML output.
+</p><p>
+The syntax is intended to be compatible with <a href="http://en.wikipedia.org/wiki/MscGen">MSCGen</a>, which is integrated with Doxygen. All of MSCGen's feature set is supported, as of its 30-Aug-2010 release, but MSCGen is a separate project so differences may emerge.
+</p><p>
+The diagram to the right summarizes the supported arc styles. For each uni-directional arrow indicator (e.g. &#8220;<code>=&gt;</code>&#8221;) there exists a complement pointing in the other direction (&#8220;<code>&lt;=</code>&#8221;). Keywords are case-insensitive, as are option and attribute names.
+</p><p>
+There are a few Smark-specific extensions:
+</p><ul>
+<li>
+<p>
+The <code>float</code> option can be set to <code>"right"</code> or <code>"left"</code> to display the chart side-by-side with text.
+</p>
+</li><li>
+<p>
+The <code>entities</code> option can be set to <code>"off"</code> to omit the entity names from the chart.
+</p>
+</li>
+</ul><p>
+Rendering of arcs that slope (due to the <code>arcgradient</code> option or the <code>arcskip</code> arc attribute) employs &#8220;experimental&#8221; CSS features that are currently supported by Chrome, Safari, and Firefox. In Internet Explorer 8 and Prince, these lines display as horizontal, non-sloped lines.
+</p><p>
+The chart below demonstrates a wide variety of the features available. Refer to the text source of this document for examples.
+</p><div class=diagram>
+<div class="html2d msc" style="width:450px;height:707px;font-size:12px;line-height:14px;white-space:nowrap">
+<div style="text-align:center;left:0px;top:0px;right:300px;bottom:693px">client</div>
+<div style="border-color:#990;border-left-width:2px;left:74px;top:20px;right:374px;bottom:595px"></div>
+<div style="border-style:dotted;border-color:#990;border-left-width:2px;left:74px;top:110px;right:374px;bottom:565px"></div>
+<div style="border-color:#990;border-left-width:2px;left:74px;top:140px;right:374px;bottom:-1px"></div>
+<div style="text-align:center;left:150px;top:0px;right:150px;bottom:693px">server 1</div>
+<div style="border-color:#000;border-left-width:2px;left:224px;top:20px;right:224px;bottom:595px"></div>
+<div style="border-style:dotted;border-color:#000;border-left-width:2px;left:224px;top:110px;right:224px;bottom:565px"></div>
+<div style="border-color:#000;border-left-width:2px;left:224px;top:140px;right:224px;bottom:-1px"></div>
+<div style="text-align:center;left:300px;top:0px;right:0px;bottom:693px">server 2</div>
+<div style="border-color:#0a0;border-left-width:2px;left:374px;top:20px;right:74px;bottom:595px"></div>
+<div style="border-style:dotted;border-color:#0a0;border-left-width:2px;left:374px;top:110px;right:74px;bottom:565px"></div>
+<div style="border-color:#0a0;border-left-width:2px;left:374px;top:140px;right:74px;bottom:-1px"></div>
+<div style="color:#0aa;text-align:center;left:229px;top:20px;right:79px;bottom:673px"><span style="background-color:#fff">func(TRUE)</span></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #00b;left:362.5px;top:36.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:360.5px;top:36.5px;line-height:0"></div>
+<div style="border-color:#00b;border-top-width:1px;left:225px;top:36px;right:75px;bottom:670px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:50px;right:79px;bottom:643px"><span style="background-color:#fff">call(1)</span></div>
+<div style="border-bottom: 5px solid transparent;border-left-width: 13px;border-top: 5px solid transparent;left:360.5px;top:61.5px;line-height:0"></div>
+<div style="border-style:double;border-top-width:3px;left:75px;top:65px;right:80px;bottom:639px;line-height:0"></div>
+<div style="text-align:right;left:229px;top:82px;right:79px;bottom:611px"><span style="background-color:#fff">work</span></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:375px;top:100.5px;line-height:0"></div>
+<div style="border-right-width:1px;border-top-width:1px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:375px;top:88px;right:24px;bottom:611px;line-height:0"></div>
+<div style="border-bottom-width:1px;border-right-width:1px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:377px;top:96px;right:24px;bottom:603px;line-height:0"></div>
+<div style="text-align:center;left:0px;top:119px;right:0px;bottom:574px"><span style="background-color:#fff">...time passes...<a href="#\counter" type=sup>2</a></span></div>
+<div style="color:#d00;text-align:right;left:229px;top:142px;right:79px;bottom:551px"><span style="background-color:#fff"><a href="#ASCII Graphics">more work</a></span></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:375px;top:160.5px;line-height:0"></div>
+<div style="border-right-width:1px;border-top-width:1px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:375px;top:148px;right:24px;bottom:551px;line-height:0"></div>
+<div style="border-bottom-width:1px;border-right-width:1px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:377px;top:156px;right:24px;bottom:543px;line-height:0"></div>
+<div style="text-align:right;left:229px;top:172px;right:79px;bottom:521px"><span style="background-color:#ffd">process(END)</span></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:375px;top:190.5px;line-height:0"></div>
+<div style="border-right-width:1px;border-top-width:1px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:375px;top:178px;right:24px;bottom:521px;line-height:0"></div>
+<div style="border-bottom-width:1px;border-right-width:1px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:377px;top:186px;right:24px;bottom:513px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:200px;right:229px;bottom:493px"><span style="background-color:#fff">ab()</span></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #d00;left:212.5px;top:216.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:210.5px;top:216.5px;line-height:0"></div>
+<div style="border-color:#d00;border-top-width:1px;left:75px;top:216px;right:225px;bottom:490px;line-height:0"></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:212.5px;top:246.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:210.5px;top:246.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:246px;right:225px;bottom:460px;line-height:0"></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:362.5px;top:246.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:360.5px;top:246.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:246px;right:75px;bottom:460px;line-height:0"></div>
+<div style="text-align:center;left:0px;top:230px;right:0px;bottom:463px"><span style="background-color:#fff">broadcast</span></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #00b;left:75.5px;top:276.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:77.5px;top:276.5px;line-height:0"></div>
+<div style="border-color:#00b;border-top-width:1px;left:76px;top:276px;right:225px;bottom:430px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #00b;left:362.5px;top:276.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:360.5px;top:276.5px;line-height:0"></div>
+<div style="border-color:#00b;border-top-width:1px;left:225px;top:276px;right:75px;bottom:430px;line-height:0"></div>
+<div style="color:#0aa;text-align:center;left:0px;top:260px;right:0px;bottom:433px"><span style="background-color:#fff">broadcast</span></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;left:75.5px;top:306.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:77.5px;top:306.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:76px;top:306px;right:75px;bottom:400px;line-height:0"></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;left:225.5px;top:306.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:227.5px;top:306.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:226px;top:306px;right:75px;bottom:400px;line-height:0"></div>
+<div style="text-align:center;left:0px;top:290px;right:0px;bottom:403px"><span style="background-color:#fff">broadcast</span></div>
+<div style="text-align:center;left:79px;top:320px;right:79px;bottom:373px"><span style="background-color:#fff">callback()</span></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;border-top: 6px solid transparent;left:75.5px;top:330.5px;line-height:0"></div>
+<div style="border:6px solid transparent;border-left-width: 0px;border-right: 12px solid #fff;left:77.5px;top:330.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:77px;top:336px;right:75px;bottom:370px;line-height:0"></div>
+<div style="border-style:dashed;border-color:#d00;border-top-width:1px;left:0px;top:366px;right:-1px;bottom:340px;line-height:0"></div>
+<div style="color:#080;text-align:center;left:0px;top:359px;right:0px;bottom:334px"><span style="background-color:#fff">Horizontal Line*</span></div>
+<div style="left:79px;top:382px;right:229px;bottom:311px"><span style="background-color:#fff">next()</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:63px;top:404.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:61px;top:404.5px;line-height:0"></div>
+<div style="border-left-width:1px;border-top-width:1px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:25px;top:388px;right:374px;bottom:311px;line-height:0"></div>
+<div style="border-bottom-width:1px;border-left-width:1px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:25px;top:396px;right:375px;bottom:303px;line-height:0"></div>
+<div style="text-align:center;left:79px;top:410px;right:79px;bottom:283px"><span style="background-color:#fff">first line<br>second</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:362.5px;top:426.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:360.5px;top:426.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:426px;right:75px;bottom:280px;line-height:0"></div>
+<div style="text-align:center;left:229px;top:440px;right:79px;bottom:253px"><span style="background-color:#fff">right-to-left</span></div>
+<div style="border-bottom: 6px solid transparent;border-right-width: 12px;left:225.5px;top:456.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:227.5px;top:456.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:226px;top:456px;right:75px;bottom:250px;line-height:0"></div>
+<div style="color:#0aa;text-align:right;left:79px;top:472px;right:229px;bottom:221px"><span style="background-color:#fff">middle</span></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #00b;left:225px;top:494.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:227px;top:494.5px;line-height:0"></div>
+<div style="border-color:#00b;border-width:1px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:225px;top:478px;right:174px;bottom:213px"></div>
+<div style="color:#0aa;text-align:center;left:79px;top:500px;right:229px;bottom:193px"><span style="background-color:#fff">RTL</span></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #00b;left:75.5px;top:516.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-right: 12px solid #fff;left:77.5px;top:516.5px;line-height:0"></div>
+<div style="border-color:#00b;border-top-width:1px;left:76px;top:516px;right:225px;bottom:190px;line-height:0"></div>
+<div style="position:relative;-webkit-transform:rotate(5deg);-webkit-transform-origin:75.500000px 546.000000px;-moz-transform:rotate(5deg);-moz-transform-origin:75.500000px 546.000000px;-ms-transform:rotate(5deg);-ms-transform-origin:75.500000px 546.000000px;"><div style="text-align:center;left:79px;top:530px;right:79px;bottom:163px"><span style="background-color:#fff">arcskip=1</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:362.5px;top:546.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:360.5px;top:546.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:75px;top:546px;right:75px;bottom:160px;line-height:0"></div>
+</div><div style="-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;border-width:1px;border-style:solid;background-color:#fff;-webkit-box-shadow: 2px 2px 4px #888;-moz-box-shadow: 2px 2px 4px #888;text-align:center;padding-top:5px;left:9px;top:592px;right:159px;bottom:61px"><a href="#.msc"> label="box"<br>linecolor="blue"<br>third line</a></div>
+<div style="-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;border-width:1px;border-style:solid;background-color:#fff;-webkit-box-shadow: 2px 2px 4px #888;-moz-box-shadow: 2px 2px 4px #888;text-align:center;padding-top:6px;left:9px;top:648px;right:159px;bottom:31px">rounded</div>
+<div style="-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;border-width:1px;border-style:solid;background-color:#fff;-webkit-box-shadow: 2px 2px 4px #888;-moz-box-shadow: 2px 2px 4px #888;text-align:center;padding-top:6px;left:309px;top:648px;right:9px;bottom:31px">same line</div>
+</div>
+</div>
+<p>
+Due to HTML vector graphics limitations, when <code>abox</code> (angle box) is used, all boxes are rendered without shadow effects.
+</p><div class=diagram>
+<div class="html2d msc" style="width:300px;height:171px;font-size:12px;line-height:14px;white-space:nowrap">
+<div style="text-align:center;left:0px;top:0px;right:150px;bottom:157px">a</div>
+<div style="border-color:#000;border-left-width:2px;left:74px;top:20px;right:224px;bottom:-1px"></div>
+<div style="text-align:center;left:150px;top:0px;right:0px;bottom:157px">b</div>
+<div style="border-color:#000;border-left-width:2px;left:224px;top:20px;right:74px;bottom:-1px"></div>
+<div style="-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;border:2px solid #444;background-color:#fff;text-align:center;padding-top:5px;left:8px;top:52px;right:8px;bottom:91px">box</div>
+<div style="border:2px solid #444;background-color:#fff;text-align:center;padding-top:5px;left:8px;top:112px;right:158px;bottom:31px">just a</div>
+<div style="border:14.5px solid transparent;border-left-width: 0px;border-right: 7px solid #444;left:159px;top:113px;line-height:0"></div>
+<div style="border:14.5px solid transparent;border-left-width: 0px;border-right: 7px solid #fff;left:161px;top:113px;line-height:0"></div>
+<div style="border:14.5px solid transparent;border-left: 7px solid #444;border-right-width: 0px;left:283px;top:113px;line-height:0"></div>
+<div style="border:14.5px solid transparent;border-left: 7px solid #fff;border-right-width: 0px;left:281px;top:113px;line-height:0"></div>
+<div style="border:2px solid #444;border-right:0;border-left:0;background-color:white;text-align:center;padding-top:6px;left:166px;top:112px;right:17px;bottom:30px">just b</div>
+</div>
+</div>
+<h2>
+<a name="Macros"></a>Macros
+</h2><h3>
+<a name="Using%20Macros"></a>Using Macros
+</h3><p>
+Macros can appear inside a paragraph (&#8220;inline macros&#8221;) or outside the context of a paragraph (&#8220;block-level macros&#8221;).
+</p><h4>
+<a name="Inline%20Macros"></a>Inline Macros
+</h4><p>
+Inline macro invocations conform to the following syntax:
+</p><pre>"\"  name "{" args "}"
+</pre><p>
+The <code>args</code> component is literal text. It may contain &#8220;<code>{</code>&#8221; or &#8220;<code>}</code>&#8221; characters but only in balanced pairs.
+</p><p>
+See <a href="#%5ccounter"><code>\counter</code></a> for an example.
+</p><h4>
+<a name="Block-Level%20Macros"></a>Block-Level Macros
+</h4><p>
+A paragraph that begins with a &#8220;.&#8221; and a macro name is a block-level macro invocation. There are two forms of block macro invocations: single line and multi-line.
+</p><p>
+A single line macro is indicated by a colon (&#8220;<code>:</code>&#8221;) and optional text following the name. Spaces may appear between the name and the colon.
+</p><pre>.macroname: &lt;text&gt;
+</pre><p>
+A multi-line macro begins at a line consisting of nothing but the macro name. Lines that follow and are indented /more than/ the first line are passed to the macro as its parameter. An optional ending statement &#8212; &#8220;<code>.end macroname</code>&#8221; &#8212; can be placed at the end of the macro. This allows Smark to warn when accidentally introduced errors cause the macro's text block to close earlier or later.
+</p><pre>.macroname
+    &lt;text&gt;
+    &lt;text&gt;
+.end macroname
+</pre><p>
+An empty &#8220;.&#8221; paragraph can also be used to terminate a multi-line macro invocation when the following text would not otherwise terminate it.
+</p><pre>.macroname
+    &lt;content&gt;
+.
+
+    &lt;next paragraph&gt;
+</pre><h3>
+<a name="Built-in%20Macros"></a>Built-in Macros
+</h3><h4>
+<a name=".art"></a><code>.art</code>
+</h4><div class="indent"><p>
+<code>.art</code> processes text as ASCII graphics. An alternative syntax for <code>.art</code> is a series of lines prefixed by &#8220;<code>:</code>&#8221; (a colon and a space). See the <a href="#ASCII%20Graphics">ASCII Graphics</a> section for more information.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">:  ,--------,       ,--------,
+:  | Client +---&gt;o--+ Object |
+:  `--------`       `--------`
+</td><td><div class=diagram>
+<div class="html2d art" style="width:216px;height:48px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:139px;top:7px;right:2px;bottom:6px"></div>
+<div class="rect round" style="border-width:3px;left:3px;top:7px;right:138px;bottom:6px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:111px;top:19px;right:95px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:120px;top:23px;right:75px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:101.5px;top:20px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:23px;right:107px;bottom:23px;line-height:0"></div>
+<div style="text-align:center;left:16px;top:16px;right:152px;bottom:16px">Client</div>
+<div style="text-align:center;left:152px;top:16px;right:16px;bottom:16px">Object</div>
+</div>
+</div>
+</td></tr></table></div><h4>
+<a name=".comment"></a><code>.comment</code>
+</h4><div class="indent"><p>
+<code>.comment</code> generates nothing. It can be used to enclose a section of text that should not appear in the output, just like comments in source code.
+</p></div><h4>
+<a name="%5ccounter"></a><code>\counter</code>
+</h4><div class="indent"><p>
+<code>\counter{class item}</code> generates a unique number for <code>item</code> within a set named <code>class</code>. The first reference to an item assigns it a number &#8212; the number of items in its set (including itself). Subsequent references to that item in that set within the same document return the same number. Any number of spaces may separate <code>class</code> from <code>item</code>. If class is not given, <code>""</code> is used.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">fA=\counter{fig a}, sA=\counter{sec a},
+fB=\counter{fig b}, and again fA=\counter{fig a}.
+</td><td><p>
+fA=1, sA=1, fB=2, and again fA=1.
+</p></td></tr></table></div><h4>
+<a name=".css"></a><code>.css</code>
+</h4><div class="indent"><p>
+This macro includes a Cascading Style Sheet (CSS) in the generated HTML.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.css
+   .elided { text-decoration: line-through; }
+.lua
+   return E.span { class="elided", "Hello world" }
+</td><td><span class="elided">Hello world</span></td></tr></table></div><h4>
+<a name=".example"></a><code>.example</code>
+</h4><div class="indent"><p>
+The <code>example</code> macro illustrates the effects of Smark markup, which can be useful for describing conventions for documentation.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.example
+   : --&gt;
+</td><td><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">: --&gt;
+</td><td><div class=diagram>
+<div class="html2d art" style="width:24px;height:16px">
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:13.5px;top:4px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:7px;right:3px;bottom:7px;line-height:0"></div>
+</div>
+</div>
+</td></tr></table></td></tr></table></div><h4>
+<a name=".include"></a><code>.include</code>
+</h4><div class="indent"><p>
+The <code>include</code> macro parses a specified file as Smark source and replaces itself with the result. If the file name is a relative path, Smark will try to find it relative to the including file and then relative to the current working directory.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.include: hello.txt
+</td><td><p>
+Hello, World!
+</p></td></tr></table></div><h4>
+<a name=".lua,%20%5clua"></a><code>.lua</code>, <code>\lua</code>
+</h4><div class="indent"><p>
+The <code>lua</code> macro executes lua and places its return value in the document tree. The following external variables are visible to the embedded Lua code:
+</p><ul>
+<li>
+<p>
+<code>doc</code>: as documented below in <a href="#Macro%20Modules">Macro Modules</a>
+</p>
+</li><li>
+<p>
+<code>source</code>: the source object for the embedded Lua code.
+</p>
+</li><li>
+<p>
+all of the members of <a href="#smarklib"><code>smarklib</code></a> (<code>E</code>, <code>TYPE</code>, ...)
+</p>
+</li>
+</ul><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.lua
+   -- count the words in this document
+   local function cw(node)
+     if type(node) == "string" then
+        return select(2,node:gsub("[%w%-]+",""))
+     end
+     local w = 0
+     for _,c in ipairs(node) do w = w + cw(c) end
+     return w
+   end
+   return tostring( cw(doc.top) )
+</td><td>9101</td></tr></table><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.lua
+   local function draw(node, gc)
+      gc:setSize(100,100)
+      gc:path{ {10,50}, {90,50}, {90,10},
+               {50,10}, {50,90}, radius=20,
+               lineWidth=10, color="#dcb" }
+   end
+   return E._object{ render2D = draw }
+</td><td><div class=diagram>
+<div class="html2d content" style="width:100px;height:100px">
+<div style="border-color:#dcb;border-right-width:10px;border-bottom-width:10px;-webkit-border-bottom-right-radius:20px;-moz-border-radius-bottomright:20px;border-bottom-right-radius:20px;left:5px;top:30px;right:5px;bottom:45px"></div>
+<div style="border-color:#dcb;border-width:10px;border-bottom-width:0;-webkit-border-top-right-radius:20px;-moz-border-radius-topright:20px;border-top-right-radius:20px;-webkit-border-top-left-radius:20px;-moz-border-radius-topleft:20px;border-top-left-radius:20px;left:45px;top:5px;right:5px;bottom:70px"></div>
+<div style="border-color:#dcb;border-left-width:10px;left:45px;top:30px;right:45px;bottom:5px"></div>
+</div>
+</div>
+</td></tr></table><p>
+When used inline, there is an implicit &#8220;return&#8221; statement:
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">Today is \lua{os.date()}
+</td><td><p>
+Today is Tue Dec  1 14:52:01 2015
+</p></td></tr></table></div><h4>
+<a name=".msc"></a><code>.msc</code>
+</h4><div class="indent"><p>
+Use the <code>.msc</code> macro to describe sequence charts. See the <a href="#Sequence%20Charts">Sequence Charts</a> section, below, for more details. Here is a simple example:
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.msc
+   hscale = "0.5";
+   a, b, c;
+   a -&gt; b [ label = "message 1" ];
+   b -&gt; c [ label = "message 2" ];
+   c =&gt; a [ label = "message 3" ];
+.end msc
+</td><td><div class=diagram>
+<div class="html2d msc" style="width:300px;height:111px;font-size:12px;line-height:14px;white-space:nowrap">
+<div style="text-align:center;left:0px;top:0px;right:200px;bottom:97px">a</div>
+<div style="border-color:#000;border-left-width:2px;left:49px;top:20px;right:249px;bottom:-1px"></div>
+<div style="text-align:center;left:100px;top:0px;right:100px;bottom:97px">b</div>
+<div style="border-color:#000;border-left-width:2px;left:149px;top:20px;right:149px;bottom:-1px"></div>
+<div style="text-align:center;left:200px;top:0px;right:0px;bottom:97px">c</div>
+<div style="border-color:#000;border-left-width:2px;left:249px;top:20px;right:49px;bottom:-1px"></div>
+<div style="text-align:center;left:54px;top:20px;right:154px;bottom:77px"><span style="background-color:#fff">message 1</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:137.5px;top:36.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:135.5px;top:36.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:50px;top:36px;right:150px;bottom:74px;line-height:0"></div>
+<div style="text-align:center;left:154px;top:50px;right:54px;bottom:47px"><span style="background-color:#fff">message 2</span></div>
+<div style="border-bottom: 6px solid transparent;border-left-width: 12px;left:237.5px;top:66.5px;line-height:0"></div>
+<div style="border:0px solid transparent;border-bottom-width: 6px;border-left: 12px solid #fff;left:235.5px;top:66.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:150px;top:66px;right:50px;bottom:44px;line-height:0"></div>
+<div style="text-align:center;left:54px;top:80px;right:54px;bottom:17px"><span style="background-color:#fff">message 3</span></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 12px;border-top: 4px solid transparent;left:50.5px;top:92.5px;line-height:0"></div>
+<div style="border-top-width:1px;left:52px;top:96px;right:50px;bottom:14px;line-height:0"></div>
+</div>
+</div>
+</td></tr></table></div><h4>
+<a name=".pre"></a><code>.pre</code>
+</h4><div class="indent"><p>
+The <code>.pre</code> macro includes its content as pre-formatted text, with no additional formatting. This is equivalent to prefixing each line with a <code>.</code>, as described in <a href="#Block-Level%20Markup">Block-Level Markup</a>.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">.pre
+   This
+   is
+   *pre-formatted*
+</td><td><pre>This
+is
+*pre-formatted*
+</pre></td></tr></table></div><h4>
+<a name=".table"></a><code>.table</code>
+</h4><div class="indent"><p>
+Tables can be expressed in a format that is readable in plain-text by drawing the cell boundaries in ASCII, similar to the conventions in <a href="#.art"><code>.art</code></a>. Vertical lines are formed by <code class="codebox">|</code> and <code class="codebox">+</code>. Horizontal lines are formed by <code class="codebox">-</code>, <code class="codebox">=</code>, and <code class="codebox">+</code>. The presence of a <code class="codebox">=</code> character indicates the cell above is a header (a <code>TH</code> element, versus a <code>TD</code> element).
+</p><p>
+Tables cells may contain arbitrary markup, including other tables.
+</p><p>
+When all lines of a paragraph begin with either <code class="codebox">+</code> or <code class="codebox">|</code> it is treated as a <code>.table</code> invocation, so the ordinary macro syntax is not necessary.
+</p><table><tr><th align="center" width="50%">Input</th><th align="center" width="50%">Output</th></tr><tr><td class="pre" style="white-space: pre;">+---------+-------------------+
+|         | Source size       |
+| Module  +=========+=========+
+|         | Debug   | Release |
++=========+=========+=========+
+|         | 1312              |
+| `foo.c` +---------+---------+
+|         | 5892    | 1181    |
++---------+---------+---------+
+|         | 5749              |
+| `bar.c` +---------+---------+
+|         | 20947   | 4985    |
++---------+---------+---------+
+</td><td><table><tr><th rowspan="2"><p>
+Module
+</p></th><th colspan="2"><p>
+Source size
+</p></th></tr><tr><th><p>
+Debug
+</p></th><th><p>
+Release
+</p></th></tr><tr><td rowspan="2"><p>
+<code>foo.c</code>
+</p></td><td colspan="2"><p>
+1312
+</p></td></tr><tr><td><p>
+5892
+</p></td><td><p>
+1181
+</p></td></tr><tr><td rowspan="2"><p>
+<code>bar.c</code>
+</p></td><td colspan="2"><p>
+5749
+</p></td></tr><tr><td><p>
+20947
+</p></td><td><p>
+4985
+</p></td></tr></table></td></tr></table></div><h4>
+<a name=".toc"></a><code>.toc</code>
+</h4><div class="indent"><p>
+<code>.toc</code> generates a table of contents.
+</p></div><h3>
+<a name="Implementing%20Macros"></a>Implementing Macros
+</h3><h4>
+<a name="Processing%20Model"></a>Processing Model
+</h4><p>
+When implementing a macro you can choose to generate either generic output or output that is specific to the type of document being generated. The macro processing occurs in the 'expand' or 'render' phases.
+</p><div class=diagram>
+<div class="html2d art" style="width:568px;height:176px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:3px;top:39px;right:482px;bottom:38px"></div>
+<div class="rect round" style="border-width:3px;left:147px;top:39px;right:338px;bottom:38px"></div>
+<div class="rect round" style="border-width:3px;left:291px;top:39px;right:194px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:435px;top:7px;right:50px;bottom:70px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:459px;top:39px;right:26px;bottom:38px"></div>
+<div class="rect round" style="border-width:3px;left:483px;top:71px;right:2px;bottom:6px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:425.5px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:371px;top:55px;right:135px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:449.5px;top:84px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:371px;top:87px;right:111px;bottom:87px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:133.5px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:83px;top:71px;right:427px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:277.5px;top:84px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:227px;top:87px;right:283px;bottom:87px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:88px;top:100px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:91px;top:103px;right:419px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:473.5px;top:116px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:371px;top:119px;right:87px;bottom:55px;line-height:0"></div>
+<div style="left:448px;top:16px;right:88px;bottom:144px">HTML</div>
+<div style="left:472px;top:48px;right:64px;bottom:112px">Wiki</div>
+<div style="text-align:center;left:24px;top:64px;right:504px;bottom:96px">Smark</div>
+<div style="text-align:center;left:20px;top:80px;right:500px;bottom:80px">Source</div>
+<div style="text-align:center;left:160px;top:80px;right:352px;bottom:80px">DocTree</div>
+<div style="text-align:center;left:304px;top:80px;right:208px;bottom:80px">DocTree</div>
+<div style="left:496px;top:80px;right:40px;bottom:80px">DITA</div>
+<div style="left:496px;top:96px;right:32px;bottom:64px">plain</div>
+<div style="text-align:center;left:508px;top:112px;right:28px;bottom:48px">text</div>
+<div style="left:496px;top:128px;right:48px;bottom:32px">PDF</div>
+<div style="text-align:center;left:96px;top:144px;right:432px;bottom:16px">parse</div>
+<div style="text-align:center;left:232px;top:144px;right:288px;bottom:16px">expand</div>
+<div style="text-align:center;left:384px;top:144px;right:136px;bottom:16px">render</div>
+<div style="left:496px;top:144px;right:40px;bottom:16px">etc.</div>
+</div>
+</div>
+<p>
+The <b>parse</b> step converts Smark source to an internal &#8220;DocTree&#8221; data structure. This step is theoretically reversible, in that equivalent Smark source could be generated from the DocTree.
+</p><p>
+DocTree conveys the logical structure of the document, divorced from the syntax of Smark source <i>and</i> from the syntax of HTML. After parsing, macro invocations are represented in DocTree as a single node of type &#8220;<code>_macro</code>&#8221;, with an attribute called <code>text</code> that contains the macro parameter in plain text format.
+</p><p>
+During the <b>expand</b> step, the following actions are performed:
+</p><ul>
+<li>
+<p>
+Nodes of type &#8220;<code>_macro</code>&#8221; are converted to nodes of type <code>_object</code>. The macro module named by <code>node.macro</code> loaded to get a table of methods for the node object. The macro module may return a function as shorthand for returning <code>{ expand = &lt;function&gt; }</code>.
+</p>
+</li><li>
+<p>
+Nodes of type <code>_object</code> are expanded by calling one of their methods, and are then replaced with the results of that expansion. The method <code>render2D</code> is called, if present, and if not <code>expand</code> is called.
+</p>
+</li><li>
+<p>
+Nodes of type <code>_defer</code> are replaced with their children, who will remain unexpanded until the rest of the document tree is processed. The expand operation will be repeated until no more <code>_defer</code> nodes are found.
+</p>
+</li>
+</ul><p>
+The <b>render</b> step converts the DocTree representation to an exported document format. For HTML, this involves only normalization and serialization of the data to HTML. Other document formats <i>could be</i> generated directly from DocTree, but currently only HTML is supported.
+</p><h3>
+<a name="Macro%20Modules"></a>Macro Modules
+</h3><p>
+When Smark finds a macro name that is not one of the built-in macros, it looks for a Lua module named <code>smark_</code><i><code>&lt;macroname&gt;</code></i>. The environment variable <code>SMARK_PATH</code> describes where to look for the module. It defaults to <code>"?.lua"</code>. <code>SMARK_PATH</code> follows the conventions of <code>LUA_PATH</code> as described in the <a href="http://www.lua.org">Lua</a> documentation.
+</p><p>
+Each macro module is expected return a table containing one of the following functions:
+</p><h4>
+<a name="macro.expand(node,%20doc)"></a><code>macro.expand(node, doc)</code>
+</h4><div class="indent"><p>
+<code>node</code> is the DocTree node of the macro invocation.
+</p><ul>
+<li>
+<p>
+<code>node.text</code> contains the arguments (content) as a string.
+</p>
+</li><li>
+<p>
+<code>node._source</code> is the data source object for the string. This can be used to report warnings, create sub-documents for parsing, or to open files for inclusion. Refer to <code>source.lua</code> for details.
+</p>
+</li>
+</ul><p>
+<code>doc</code> is a table with the following members:
+</p><ul>
+<li>
+<p>
+<code>top</code> : top node of the DocTree being expanded
+</p>
+</li><li>
+<p>
+<code>macros</code> : the table of macros loaded for the current document. This table maps macro names to the function and/or table that defines the implementation.
+</p>
+</li>
+</ul><p>
+<code>expand()</code> returns a value that will replace the macro node in the DocTree. This may be a another DocTree node (string or table) or nil.
+</p></div><h4>
+<a name="macro.render2D(node,%20gc)"></a><code>macro.render2D(node, gc)</code>
+</h4><div class="indent"><p>
+<code>node</code> is as documented for <a href="#macro.expand(node,%20doc)"><code>macro.expand(node, doc)</code></a>.
+</p><p>
+<code>gc</code> is an Html2D instance. This function is expected to set the size of the Html2D instance and to render its contents into it before returning. Its return value is ignored.
+</p><p>
+Refer to html2d.lua for more information on Html2D objects.
+</p></div><h3>
+<a name="smarklib"></a><code>smarklib</code>
+</h3><p>
+Macros can require the <code>"smarklib"</code> library to obtain a table of utility functions. Lua embedded with the <code>lua</code> macro sees these functions as local variables (no need to call require).
+</p><p>
+<b><code>parse(text, source)</code></b> : parses text, constructing a DocTree.
+</p><p>
+<b><code>expand(doctree)</code></b> : expands macro references in a doctree.
+</p><p>
+<b><code>E</code></b> : an element constructor factory. For any string &lt;name&gt;, E.&lt;name&gt; yields a function that takes a table parameter and sets its &#8220;_type&#8221; field to &lt;name&gt;. For example, <code>E.b{"word"}</code> constructs a DocTree node equivalent to the HTML &#8220;<code>&lt;b&gt;word&lt;/b&gt;</code>&#8221;.
+</p><p>
+<b><code>TYPE</code></b>: the key that identifies an element's HTML tag name. For example, when <code>node</code> represents a &#8220;pre&#8221; element, <code>node[TYPE] == "pre"</code>.
+</p><p>
+<b><code>visitNodes(topNode, matchType, fn)</code></b>: perform in-order traversal of tree below <code>topNode</code>, calling <code>fn(node)</code> for every node for whose type matches <code>matchType</code>. If <code>matchType</code> is nil or false, <code>fn</code> is called for all nodes.
+</p><h2>
+<a name="Printing%20Smark%20Documents"></a>Printing Smark Documents
+</h2><p>
+Most browsers have mediocre to poor support for printing HTML.
+</p><p>
+A commercial product, <a href="http://www.princexml.com/">Prince</a> produces high quality output from HTML/CSS documents. It outputs PDF files, which can be distributed themselves or used for printing.
+</p><p>
+Prince supports CSS features that differentiate printed output from screen output, so printed documents can have headers, footers, and other visual elements not visible in a browser, and <i>vice versa</i>.
+</p><h2>
+<a name="Command%20Syntax"></a>Command Syntax
+</h2><p>
+Usage:
+</p><pre>smark [infile |option]*
+</pre><p>
+Options may appear in any order. Option processing stops at <code class="codebox">--</code>.
+</p><h4>
+<a name="--output=%3cfile%3e%20-o%20%3cfile%3e"></a><code>--output=</code><i><code>&lt;file&gt;</code></i> <br><code>-o</code> <i><code>&lt;file&gt;</code></i>
+</h4><div class="indent"><p>
+Specifies the output file.
+</p></div><h4>
+<a name="--out"></a><code>--out</code>
+</h4><div class="indent"><p>
+Specifies that output should be written to stdout. This option is mutually exclusive with <code>--output</code>.
+</p></div><h4>
+<a name="--in"></a><code>--in</code>
+</h4><div class="indent"><p>
+Specifies that input should be read from stdin. This option is mutually exclusive with an input file name.
+</p></div><h4>
+<a name="--error"></a><code>--error</code>
+</h4><div class="indent"><p>
+Treat warnings as errors. When this option is specified, warnings indicative of syntax errors will cause Smark to exit with a non-zero status code.
+</p></div><h4>
+<a name="--deps=%3cfile%3e"></a><code>--deps=</code><i><code>&lt;file&gt;</code></i>
+</h4><div class="indent"><p>
+Output a makefile that lists all input files as dependencies for the output file. The makefile also includes empty Make rules for all input files except the main text file, so that Make will not error out when input files are removed from the project.
+</p><p>
+<code>--deps</code> does not disable output file generation. Smark will generate an HTML file and the associated dependencies file in one invocation.
+</p><p>
+<code>--deps=XXX</code> is analogous to gcc's <code>-MD -MP -MF XXX</code>.
+</p><p>
+Dependencies will include files named on the command line, files named by <code>.include</code> macros, as well as files read programmatically by macros using the <code>source:newFile</code> method (see <code>source.lua</code> for more information).
+</p></div><h4>
+<a name="--css=%3cfile%3e"></a><code>--css=</code><i><code>&lt;file&gt;</code></i>
+</h4><div class="indent"><p>
+This specifies a file that contains a CSS style sheet to embed in the generated HTML <i>following</i> the default style sheet. This option can appear more than once; all specified style sheets will be included in the output file.
+</p></div><h4>
+<a name="--no-default-css"></a><code>--no-default-css</code>
+</h4><div class="indent"><p>
+Do not embed the default style sheet in the generated HTML.
+</p></div><h4>
+<a name="--config=%3cfile%3e"></a><code>--config=</code><i><code>&lt;file&gt;</code></i>
+</h4><div class="indent"><p>
+This specifies a configuration file. Before the document is processed, the configuration file is loaded and executed (as Lua source) with its environment set to the &#8220;configuration table&#8221;. This configuration table is subsequently available to macros in the <code>config</code> field of the <code>doc</code> table.
+</p></div><h4>
+<a name="--help%20-h"></a><code>--help</code> <br><code>-h</code>
+</h4><div class="indent"><p>
+Display usage information.
+</p></div><h4>
+<a name="--version%20-v"></a><code>--version</code> <br><code>-v</code>
+</h4><div class="indent"><p>
+Display version information.
+</p></div><h2>
+<a name="Examples"></a>Examples
+</h2><h3>
+<a name="OO%20Notational%20Conventions"></a>OO Notational Conventions
+</h3><p>
+Objects are boxes. Interfaces implemented by an object are depicted as &#8220;sockets&#8221;, a line ending in a circle. Pointer references are represented by an arrow to the object or interface:
+</p><div class=diagram>
+<div class="html2d art" style="width:248px;height:112px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:170px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:163px;top:7px;right:2px;bottom:38px"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:120px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:123px;top:39px;right:83px;bottom:71px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:35px;right:135px;bottom:67px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:39px;right:144px;bottom:71px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:67px;right:135px;bottom:35px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:71px;right:144px;bottom:39px;line-height:0"></div>
+<div style="text-align:center;left:16px;top:16px;right:184px;bottom:80px">Object</div>
+<div style="text-align:center;left:96px;top:16px;right:120px;bottom:80px">IFoo</div>
+<div style="text-align:center;left:180px;top:16px;right:20px;bottom:80px">Client</div>
+<div style="text-align:center;left:96px;top:48px;right:120px;bottom:48px">IBar</div>
+</div>
+</div>
+<p>
+A capacitor-like symbol between the interface socket and its object indicates that the interface only weakly references the object. Any invocations on that interface will first attempt to acquire a strong reference to the object. If that succeeds, the operation will be performed. Otherwise, an error code will be returned.
+</p><div class=diagram>
+<div class="html2d art" style="width:576px;height:208px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:498px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:163px;top:167px;right:322px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:203px;top:23px;right:282px;bottom:150px"></div>
+<div class=rect style="border-width:3px;left:347px;top:7px;right:154px;bottom:102px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:127px;top:35px;right:439px;bottom:163px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:111px;top:39px;right:448px;bottom:167px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:471px;top:35px;right:95px;bottom:163px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:455px;top:39px;right:104px;bottom:167px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:179px;right:463px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:183px;right:472px;bottom:23px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:39px;right:479px;bottom:167px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:112px;top:180px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:183px;right:411px;bottom:23px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:471px;top:67px;right:95px;bottom:131px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:455px;top:71px;right:104px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:136px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:139px;top:39px;right:371px;bottom:167px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:419px;top:55px;right:131px;bottom:151px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:83px;right:463px;bottom:115px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:87px;right:472px;bottom:119px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:131px;right:463px;bottom:67px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:135px;right:472px;bottom:71px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:99px;top:31px;right:475px;bottom:159px"></div>
+<div class=line style="border-left-width:2px;left:107px;top:31px;right:467px;bottom:159px"></div>
+<div class=line style="border-left-width:2px;left:443px;top:31px;right:131px;bottom:127px"></div>
+<div class=line style="border-left-width:2px;left:451px;top:31px;right:123px;bottom:127px"></div>
+<div style="text-align:center;left:16px;top:16px;right:512px;bottom:176px">Object</div>
+<div style="text-align:center;left:108px;top:16px;right:404px;bottom:176px">IWeakRef</div>
+<div style="text-align:center;left:464px;top:16px;right:0px;bottom:176px">ISignalHandler</div>
+<div style="text-align:center;left:36px;top:32px;right:532px;bottom:160px">X</div>
+<div style="text-align:center;left:216px;top:32px;right:296px;bottom:160px">Client A</div>
+<div style="text-align:center;left:360px;top:32px;right:168px;bottom:160px">Object</div>
+<div style="text-align:center;left:380px;top:48px;right:188px;bottom:144px">Y</div>
+<div style="left:464px;top:48px;right:48px;bottom:144px">IWeakRef</div>
+<div style="left:88px;top:64px;right:376px;bottom:128px">ISignalHandler</div>
+<div style="left:88px;top:112px;right:360px;bottom:80px">ISupportsWeakRef</div>
+<div style="left:88px;top:160px;right:456px;bottom:32px">IFoo</div>
+<div style="text-align:center;left:176px;top:176px;right:336px;bottom:16px">Client B</div>
+</div>
+</div>
+<p>
+For example, in the above diagram client A holds a reference to IWeakRef, which only weakly references object X. Client B holds a strong reference, which keeps object X alive. If client B were to release IFoo, object X would be destructed and invocations on IWeakRef would subsequently fail.
+</p><p>
+These are both centered:
+</p><div class=diagram>
+<div class="html2d art" style="width:24px;height:16px">
+<div class=line style="border-top-width:2px;left:-1px;top:7px;right:15px;bottom:7px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:15px;top:7px;right:-1px;bottom:7px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:11px;top:-1px;right:11px;bottom:-1px"></div>
+</div>
+</div>
+<div class=diagram>
+<div class="html2d art" style="width:24px;height:16px">
+<div class=line style="border-top-width:2px;left:-1px;top:7px;right:15px;bottom:7px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:15px;top:7px;right:-1px;bottom:7px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:11px;top:-1px;right:11px;bottom:-1px"></div>
+</div>
+</div>
+<p>
+Call flows can be represented in ASCII art, and remain readable in plain text format. <a href="#.msc"><code>.msc</code></a> provides an easier to maintain solution that looks much better in HTML.
+</p><div class=diagram>
+<div class="html2d art" style="width:328px;height:272px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:3px;top:7px;right:250px;bottom:230px"></div>
+<div class="rect round" style="border-width:3px;left:123px;top:7px;right:122px;bottom:230px"></div>
+<div class="rect round" style="border-width:3px;left:251px;top:7px;right:2px;bottom:230px"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:36px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:39px;top:215px;right:163px;bottom:55px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:36px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:39px;top:135px;right:163px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:153.5px;top:84px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:87px;right:167px;bottom:183px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:100px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:103px;right:47px;bottom:167px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:164px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:119px;right:43px;bottom:151px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:151px;right:167px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:151px;right:47px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:164px;top:164px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:167px;right:43px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:180px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:183px;right:47px;bottom:87px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:153.5px;top:196px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:199px;right:167px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:228px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:231px;right:47px;bottom:39px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:35px;top:39px;right:291px;bottom:-1px"></div>
+<div class=line style="border-left-width:2px;left:163px;top:39px;right:163px;bottom:-1px"></div>
+<div class=line style="border-left-width:2px;left:283px;top:39px;right:43px;bottom:-1px"></div>
+<div style="text-align:center;left:16px;top:16px;right:264px;bottom:240px">Mobile</div>
+<div style="text-align:center;left:152px;top:16px;right:152px;bottom:240px">BSC</div>
+<div style="text-align:center;left:276px;top:16px;right:28px;bottom:240px">MSC</div>
+<div style="left:48px;top:64px;right:216px;bottom:192px">Msg 0123</div>
+</div>
+</div>
+<div class=diagram>
+<div class="html2d art" style="width:640px;height:220px">
+<div class=line style="border-top-width:2px;left:425px;top:166px;right:197px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:523px;top:133px;right:83px;bottom:85px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:262px;top:166px;right:360px;bottom:52px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:572px;top:117px;right:50px;bottom:85px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:474px;top:19px;right:148px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:474px;top:68px;right:148px;bottom:101px"></div>
+<div class=line style="border-top-width:2px;left:180px;top:36px;right:360px;bottom:182px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:360px;top:52px;right:278px;bottom:150px"></div>
+<div style="border-left: 3px solid transparent;border-right: 3px solid transparent;border-top-width: 5px;left:7px;top:3px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:9px;top:-1px;right:629px;bottom:214px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:99px;top:85px;right:539px;bottom:117px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:66px;top:68px;right:490px;bottom:133px"></div>
+<div style="border-bottom-width: 5.5px;border-left: 3px solid transparent;border-right: 3px solid transparent;left:626.5px;top:0px;line-height:0"></div>
+<div class=dline style="border-bottom-width:2px;border-right-width:2px;left:612px;top:2px;right:9px;bottom:174px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;left:547px;top:28px;right:26px;bottom:174px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;left:547px;top:44px;right:75px;bottom:158px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:514px;top:44px;right:92px;bottom:158px"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;left:482px;top:44px;right:124px;bottom:158px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;left:482px;top:60px;right:140px;bottom:142px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;left:498px;top:76px;right:91px;bottom:125px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;left:547px;top:93px;right:75px;bottom:109px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;left:547px;top:109px;right:75px;bottom:93px"></div>
+<div class=dline style="border-bottom-width:2px;border-right-width:2px;left:547px;top:125px;right:75px;bottom:76px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;left:547px;top:142px;right:9px;bottom:27px"></div>
+<div class=dline style="border-width:2px;border-top-width:0;left:482px;top:191px;right:9px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;left:466px;top:191px;right:156px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:449px;top:191px;right:172px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:319px;top:174px;right:189px;bottom:27px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:303px;top:158px;right:319px;bottom:44px"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;left:286px;top:158px;right:335px;bottom:27px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:205px;top:174px;right:352px;bottom:27px"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;left:172px;top:174px;right:433px;bottom:27px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;left:172px;top:191px;right:450px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:140px;top:158px;right:467px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:123px;top:109px;right:498px;bottom:60px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:91px;top:93px;right:515px;bottom:109px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:58px;top:76px;right:547px;bottom:125px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:42px;top:60px;right:580px;bottom:142px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:9px;top:7px;right:596px;bottom:158px"></div>
+<div class=line style="border-top-width:2px;left:148px;top:150px;right:458px;bottom:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:620px;top:52px;right:1px;bottom:166px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:66px;top:133px;right:523px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:360px;top:199px;right:229px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;left:425px;top:101px;right:164px;bottom:117px;line-height:0"></div>
+<div class=line style="border-width:2px;border-top-width:0;left:1px;top:19px;right:1px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:409px;top:68px;right:229px;bottom:117px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:572px;top:68px;right:34px;bottom:117px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:311px;top:133px;right:262px;bottom:68px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:311px;top:151px;right:295px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:343px;top:166px;right:295px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;left:555px;top:85px;right:66px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:506px;top:117px;right:99px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;left:229px;top:133px;right:376px;bottom:85px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:17px;top:52px;right:572px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:604px;top:166px;right:1px;bottom:52px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:457px;top:150px;right:181px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:490px;top:19px;right:148px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:34px;top:117px;right:523px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:68px;right:604px;bottom:101px"></div>
+<div class=line style="border-top-width:2px;left:148px;top:199px;right:458px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:327px;top:182px;right:246px;bottom:36px;line-height:0"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:17px;top:19px;right:18px;bottom:182px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:441px;top:117px;right:181px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;left:115px;top:52px;right:458px;bottom:166px;line-height:0"></div>
+<div class=line style="border-width:2px;border-left-width:0;left:17px;top:182px;right:604px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;left:1px;top:199px;right:622px;bottom:19px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:523px;top:19px;right:115px;bottom:166px"></div>
+<div class=line style="border-left-width:2px;left:360px;top:133px;right:278px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:66px;top:166px;right:572px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;left:115px;top:199px;right:507px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:101px;right:621px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:50px;top:199px;right:588px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;left:246px;top:117px;right:376px;bottom:101px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:50px;top:101px;right:572px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:588px;top:36px;right:34px;bottom:133px"></div>
+<div class=line style="border-top-width:2px;left:604px;top:85px;right:18px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:604px;top:117px;right:1px;bottom:101px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:425px;top:199px;right:197px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:199px;right:555px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:229px;top:199px;right:409px;bottom:3px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:555px;top:85px;right:50px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:115px;top:85px;right:523px;bottom:117px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:34px;top:133px;right:588px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:50px;top:133px;right:588px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;left:34px;top:85px;right:588px;bottom:133px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:490px;top:133px;right:132px;bottom:68px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:506px;top:150px;right:18px;bottom:19px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:392px;top:117px;right:229px;bottom:85px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:83px;top:166px;right:523px;bottom:36px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:555px;top:36px;right:66px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;left:572px;top:52px;right:34px;bottom:166px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:441px;top:19px;right:197px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;left:1px;top:85px;right:621px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:523px;top:85px;right:99px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:555px;top:166px;right:66px;bottom:36px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:523px;top:36px;right:99px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;left:539px;top:52px;right:83px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:523px;top:101px;right:83px;bottom:101px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:376px;top:52px;right:246px;bottom:133px"></div>
+<div class=line style="border-width:2px;border-left-width:0;left:490px;top:85px;right:132px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;left:474px;top:133px;right:149px;bottom:85px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:17px;top:150px;right:604px;bottom:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:409px;top:150px;right:213px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:523px;top:150px;right:99px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:620px;top:101px;right:18px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:490px;top:52px;right:132px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:506px;top:68px;right:1px;bottom:150px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:83px;top:150px;right:555px;bottom:52px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:409px;top:36px;right:181px;bottom:166px"></div>
+<div class=line style="border-left-width:2px;left:376px;top:19px;right:262px;bottom:182px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:34px;top:19px;right:588px;bottom:182px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:50px;top:36px;right:555px;bottom:150px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:83px;top:52px;right:539px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:99px;top:68px;right:523px;bottom:150px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:588px;top:133px;right:18px;bottom:68px"></div>
+<div class=line style="border-width:2px;border-top-width:0;left:572px;top:150px;right:50px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;left:555px;top:150px;right:66px;bottom:68px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:392px;top:150px;right:246px;bottom:52px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:392px;top:68px;right:181px;bottom:133px"></div>
+<div class=line style="border-top-width:2px;left:457px;top:85px;right:164px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:523px;top:166px;right:99px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:66px;top:36px;right:523px;bottom:182px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:376px;top:52px;right:262px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:409px;top:85px;right:213px;bottom:133px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:457px;top:182px;right:181px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:19px;right:555px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;left:343px;top:52px;right:229px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:360px;top:36px;right:246px;bottom:182px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:425px;top:182px;right:148px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:425px;top:117px;right:213px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:327px;top:199px;right:295px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;left:197px;top:85px;right:376px;bottom:133px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:474px;top:199px;right:164px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:441px;top:52px;right:197px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;left:229px;top:68px;right:392px;bottom:150px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:262px;top:68px;right:327px;bottom:150px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:99px;top:166px;right:539px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:133px;right:621px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:425px;top:36px;right:213px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:604px;top:133px;right:18px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;left:376px;top:166px;right:229px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:83px;top:133px;right:539px;bottom:68px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:101px;right:555px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;left:506px;top:182px;right:115px;bottom:36px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:131px;top:68px;right:507px;bottom:133px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:101px;right:507px;bottom:68px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:166px;right:507px;bottom:3px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:131px;top:19px;right:490px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:36px;right:507px;bottom:166px"></div>
+<div class=line style="border-left-width:2px;left:148px;top:52px;right:490px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:148px;top:117px;right:490px;bottom:85px"></div>
+<div class=line style="border-left-width:2px;left:164px;top:36px;right:474px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:148px;top:101px;right:474px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:164px;top:85px;right:458px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:197px;top:52px;right:441px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:197px;top:101px;right:441px;bottom:68px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:180px;top:182px;right:441px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;left:197px;top:199px;right:360px;bottom:19px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:164px;top:36px;right:425px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:213px;top:101px;right:425px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:180px;top:133px;right:425px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;left:213px;top:150px;right:376px;bottom:68px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:131px;top:85px;right:409px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:246px;top:19px;right:392px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:213px;top:52px;right:392px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:229px;top:166px;right:392px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;left:506px;top:19px;right:132px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:262px;top:52px;right:360px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;left:278px;top:133px;right:344px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;left:213px;top:166px;right:360px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;left:148px;top:166px;right:425px;bottom:36px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:148px;top:182px;right:474px;bottom:19px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:311px;top:52px;right:311px;bottom:133px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:327px;top:85px;right:278px;bottom:117px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:360px;top:101px;right:246px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:392px;top:117px;right:197px;bottom:68px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:441px;top:150px;right:164px;bottom:52px"></div>
+<div class=line style="border-top-width:2px;left:474px;top:166px;right:148px;bottom:52px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:294px;top:19px;right:344px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:294px;top:52px;right:344px;bottom:150px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:246px;top:101px;right:344px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;left:294px;top:150px;right:311px;bottom:68px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:278px;top:19px;right:327px;bottom:133px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:278px;top:101px;right:327px;bottom:101px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:294px;top:166px;right:327px;bottom:36px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:294px;top:182px;right:327px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:294px;top:199px;right:344px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:327px;top:117px;right:311px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:327px;top:36px;right:295px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:327px;top:85px;right:295px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:343px;top:117px;right:262px;bottom:68px"></div>
+</div>
+</div>
+<h2>
+<a name="Release%20Notes"></a>Release Notes
+</h2><p>
+Version 0.6:
+</p><ul>
+<li>
+<p>
+New: <code>--in</code> and <code>--out</code>.
+</p>
+</li>
+</ul><p>
+Version 0.5:
+</p><ul>
+<li>
+<p>
+New: <code>[text](@anchor)</code>
+</p>
+</li><li>
+<p>
+New: <code>[[@anchortext]]</code>
+</p>
+</li><li>
+<p>
+New: <code>--deps=&lt;file&gt;</code> option
+</p>
+</li><li>
+<p>
+Change: <code>.include: &lt;file&gt;</code> used to treat paths as relative to the current working directory. Now it will look for a file relative to the <i>including file's directory</i> and then, if that fails, relative to the current working directory.
+</p>
+</li><li>
+<p>
+Fix: &#8220;Missing target for link ... &#8221; warnings would indicate the wrong text column.
+</p>
+</li><li>
+<p>
+Fix: <code>.toc</code> would not properly display hierarchy when there was only one header at the top level of the hierarchy.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Dino</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Dino"></a>Dino
+</h1><p>
+Dino is a class that simplifies construction of <a href="stack.html">Stack</a> handlers.
+</p><h2>
+<a name="Example"></a>Example
+</h2><p>
+Here is an example that constructs a Dino instance:
+</p><pre>local Dino = require "dino"
+local dino = Dino:new()
+local GET, POST = dino.method.GET, dino.method.POST
+
+GET["/path"] = function (req)
+   return "This is a test"
+end
+
+PUT["/show/{name}"] = function (req, w)
+   return w.name
+end
+</pre><p>
+Dino instances implement <code>__call</code> so they can be invoked as Stack handler functions:
+</p><pre>local HTTPD = require "httpd"
+local thread = require "thread"
+
+local function main()
+   HTTPD:new("127.0.0.1:8888"):start(dino)
+end
+
+thread.dispatch(main)
+</pre><h2>
+<a name="Routes"></a>Routes
+</h2><p>
+&#8220;Routes&#8221; register an action to be taken when the HTTP request matches a particular method name and the path matches a pattern.
+</p><p>
+To match a method, select a constructor from the <code>method</code> table. For example, <code>dino.method.GET</code> will construct routes for the <code>GET</code> HTTP method.
+</p><pre>local GET = dino.method.GET
+</pre><p>
+Route constructors can be invoked in two different ways:
+</p><pre>GET(&lt;pattern&gt;, &lt;function&gt;)
+GET[&lt;pattern&gt;] = &lt;function&gt;
+</pre><p>
+Both forms behave identically: they add a route to the list of routes.
+</p><p>
+Order is significant. The first route matching the request will be taken.
+</p><h2>
+<a name="Conditions"></a>Conditions
+</h2><p>
+Handler functions can be associated with arbitrary conditions:
+</p><pre>local function isDNT(req)
+   return req.headers.dnt == "1"
+end
+
+dino.when[isDNT] = function (req)
+   return "DNT = 1"
+end
+</pre><p>
+The following handler will always run (as long as no previous routes or conditions have matched):
+</p><pre>dino.when[true] = function (req)
+   return 404, { "Not found: ", req.path }
+end
+</pre><h2>
+<a name="Patterns"></a>Patterns
+</h2><p>
+Two kinds of patterns are supported.
+</p><p>
+If the pattern begins with a <code>^</code> character, it is treated as an ordinary <a href="file:///Users/bhk/git/tooltree/opensource/lua-5.2.3/doc/manual.html#6.4.1">Lua pattern</a>. In this case, all captures are passed to the handler function (following the <code>request</code> parameter).
+</p><pre>GET["^/a/([^/]*)/([^/]*)"] = function (request, a, b)
+   return a .. ":" .. b
+end
+</pre><p>
+Otherwise, the pattern is treated as a simple &#8220;globbing&#8221; pattern. These must exactly match the path, except for wildcards, which match a path element. (A path element is a sequence of characters delimited by <code>/</code>). A table containing all wildcard matches will be passed to the handler.
+</p><p>
+An asterisk &#8212; <code>*</code> &#8212; denotes an unnamed wildcard. Matches for these will assume ordinal positions in the table (1, 2, ...). These are also passed as arguments after the wildcard table.
+</p><pre>GET["/info/*/*"] = function (request, w, a, b)
+   assert(w[1] == a)
+   assert(w[2] == b)
+   return a .. ":" .. b
+end
+</pre><p>
+Curly braces enclosing a name &#8212; <i><code>{name}</code></i> &#8212; denote a named wildcard. Matches for these wildcards will be stored under the supplied name in the wildcard table. Both named and unnamed wildcards can appear in a globbing pattern.
+</p><pre>GET["/x/{a}/{b}/*"] = function (request, w, c)
+   assert(w[1] == c)
+   return w.a .. ":" .. w.b .. ":" .. c
+end
+</pre><p>
+Each wildcard will match all characters up to the next <code>/</code> or the end of the string. Therefore, a pattern like <code>*.*</code> never succeed.
+</p><h2>
+<a name="Requests"></a>Requests
+</h2><p>
+The <code>request</code> parameters passed to handler functions are <a href="stack.html#Request">Stack</a> request tables with the following additional field:
+</p><table><tr><th><p>
+Field
+</p></th><th><p>
+Description
+</p></th><th><p>
+Example
+</p></th></tr><tr><td><p>
+params
+</p></td><td><p>
+Parsed URI query string
+</p></td><td><p>
+<code>{ id = "123" }</code>
+</p></td></tr></table><p>
+<code>params</code> will be <code>nil</code> unless the requested URI included a query portion (<code>"?..."</code>). It maps names to values and contains array entries for unnamed fields. See <code>xuri.lua</code> for more information.
+</p><h2>
+<a name="Return%20Values"></a>Return Values
+</h2><p>
+Handlers return up to three values that describe the response to the web request:
+</p><pre>[status,] [headers,] body
+</pre><ul>
+<li>
+<p>
+<code>status</code> is a number. If omitted, <code>200</code> will be used.
+</p>
+</li><li>
+<p>
+<code>headers</code> is a table that maps HTTP header names (all lower-case) to strings. If omitted, and empty table will be used.
+</p><p>
+If the <code>content-type</code> header is not present, it will default to &#8220;text/html&#8221;.
+</p>
+</li><li>
+<p>
+<code>body</code> is a string or a tree of document elements (see <code>doctree.lua</code>).
+</p><p>
+When <code>content-type</code> is (or defaults to) &#8220;text/html&#8221; and <code>body</code> is a table, it will be serialized using <code>htmlgen.lua</code>. The following example uses <code>doctree.lua</code> to construct a document tree:
+</p><pre>GET["/index"] = function (req)
+   return E.table {
+      E.tr{  E.th{ "A" }, E.td{ "a" } },
+   }
+end
+</pre>
+</li>
+</ul></div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>anim.js</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="anim.js"></a>anim.js
+</h1><h2>
+<a name="Synopsis"></a>Synopsis
+</h2><pre>Anim.create(this.e, 'flash')
+    .css({backgroundColor: null, transition: 'background-color 0.3s'})
+    .delay(300)
+    .move(from, to, callback)
+    .start();
+</pre><h2>
+<a name="API"></a>API
+</h2><h4>
+<a name="Anim%20=%20require(%22anim.js%22).newClass(scheduler)"></a><code>Anim = require("anim.js").newClass(scheduler)</code>
+</h4><p>
+<code>scheduler.js</code> provides a browser-based implementation of the scheduler interface.
+</p><p>
+<code>scheduler_emu.js</code> provides a test harness implementation.
+</p><h4>
+<a name="a%20=%20Anim.create(elem,%20key)"></a><code>a = Anim.create(elem, key)</code>
+</h4><div class="indent"><p>
+Create a new animation object.
+</p><p>
+The <code>key</code> argument is a string used to group animations. For each value of <code>key</code>, only one animation can be running at a time. Starting a second animation with the same <code>key</code> will cancel the first.
+</p></div><h4>
+<a name="a.css(props)"></a><code>a.css(props)</code>
+</h4><div class="indent"><p>
+Append a task that will assign CSS properties to the element's style.
+</p><p>
+The <code>props</code> object is a <a href="e.html#Property%20Description">Property Description</a>.
+</p><p>
+Consecutive <code>css</code> tasks will be processed with an intervening delay that should allow style computation and rendering so that the second should be able to trigger CSS transition animations.
+</p></div><h4>
+<a name="a.cssTransition(props,%20delayMS)"></a><code>a.cssTransition(props, delayMS)</code>
+</h4><div class="indent"><p>
+Append a task that assigns CSS properties just as <code>a.css()</code> does, and also attaches a <code>transition</code> property that names the assigned properties, and delays until the transition completes.
+</p><p>
+Note: Later in the animation sequence you may want to explicitly reset the <code>transition</code> property to <code>"none"</code> or <code>""</code>.
+</p></div><h4>
+<a name="a.delay(ms)"></a><code>a.delay(ms)</code>
+</h4><div class="indent"><p>
+Append a task that delays the specified number of milliseconds.
+</p></div><h4>
+<a name="a.move(from,%20to,%20fn)"></a><code>a.move(from, to, fn)</code>
+</h4><div class="indent"><p>
+Append a task that animates a transition between two positions on the screen. The values <code>from</code> to <code>to</code> are numbers that are interpreted as pixel positions for the purpose of computing the overall duration of the animation. The function <code>fn</code> will be called one or more times with values between <code>from</code> and <code>to</code>. The last time <code>fn</code> is called it will be passed the <code>to</code> value (exactly).
+</p></div><h4>
+<a name="a.start()"></a><code>a.start()</code>
+</h4><div class="indent"><p>
+Begin animation. If an animation is in progress, it will be canceled.
+</p></div><h4>
+<a name="a.cancel()"></a><code>a.cancel()</code>
+</h4><div class="indent"><p>
+This advances to the final state of the animation. All remaining tasks will be performed synchronously without delay. For each remaining <code>move</code> task, the callback will be called exactly once with the final value.
+</p></div></div>
+</body>
+</html>

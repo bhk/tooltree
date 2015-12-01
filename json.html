@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>JSON Module</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="JSON%20Module"></a>JSON Module
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#json.decode(blob,%20%5bnullValue%5d)">json.decode(blob, [nullValue])</a></div><div class="tocLevel"><a href="#json.encode(value)">json.encode(value)</a></div><div class="tocLevel"><a href="#json.isArray(tbl)">json.isArray(tbl)</a></div><div class="tocLevel"><a href="#json.makeArray(tbl)">json.makeArray(tbl)</a></div><div class="tocLevel"><a href="#json.null">json.null</a></div><div class="tocLevel"><a href="#json.toAscii(blob)">json.toAscii(blob)</a></div></div><div class="tocLevel"><a href="#Type%20Mapping">Type Mapping</a></div><div class="tocLevel"><a href="#Character%20Encoding%20Issues">Character Encoding Issues</a></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>json</code> module returns a table of functions for encoding and decoding JSON BLOBs.
+</p><div class="indent"><pre>local json = require "json"
+</pre></div><p>
+The <a href="#Type%20Mapping">Type Mapping</a> section, below, describes how Lua values are represented in JSON and vice-versa.
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="json.decode(blob,%20%5bnullValue%5d)"></a><code>json.decode(blob, [nullValue])</code>
+</h4><div class="indent"><p>
+Convert JSON BLOB to a Lua value, and return that value.
+</p><p>
+If <code>nullValue</code> is provided, it is the value to be used for JSON <code>null</code> values. If not provided, <code>json.null</code> is used.
+</p></div><h4>
+<a name="json.encode(value)"></a><code>json.encode(value)</code>
+</h4><div class="indent"><p>
+Encode <code>value</code> as a JSON BLOB, and return the BLOB in a Lua string.
+</p></div><h4>
+<a name="json.isArray(tbl)"></a><code>json.isArray(tbl)</code>
+</h4><div class="indent"><p>
+Returns <code>true</code> if <code>tbl</code> represents a JSON array (versus an object). See <a href="#Type%20Mapping">Type Mapping</a>, below.
+</p></div><h4>
+<a name="json.makeArray(tbl)"></a><code>json.makeArray(tbl)</code>
+</h4><div class="indent"><p>
+Mark table <code>tbl</code> as an array, and return <code>tbl</code>.
+</p><p>
+This allows <code>json.encode</code> to distinguish an empty array from an empty object. See <a href="#Type%20Mapping">Type Mapping</a>, below.
+</p><p>
+<code>json.makeArray</code> makes Lua's <code>table</code> functions available as methods, so, for example, <code>tbl:concat</code> and <code>tbl:sort</code> can be used.
+</p></div><h4>
+<a name="json.null"></a><code>json.null</code>
+</h4><div class="indent"><p>
+A special value that represents JSON 'null'.
+</p></div><h4>
+<a name="json.toAscii(blob)"></a><code>json.toAscii(blob)</code>
+</h4><div class="indent"><p>
+Convert any multi-byte UTF-8 sequences in <code>blob</code> to JSON <code>"\uXXXX"</code> escape sequences. The result is an equivalent BLOB containing only ASCII characters.
+</p><p>
+If you want to obtain an ASCII-only BLOB, apply this function the result of <code>json.encode</code>.
+</p><p>
+<code>json.toAscii</code> is idempotent.
+</p></div><h3>
+<a name="Type%20Mapping"></a>Type Mapping
+</h3><ul>
+<li>
+<p>
+Tables
+</p><p>
+Lua tables represent either JSON objects or JSON arrays. Objects use keys that are strings, and arrays use keys that are integers (starting at 1).
+</p><p>
+Tables passed to <code>json.encode</code> will be treated as arrays if either [1] is non-nil or the <code>__index</code> metamethod is non-nil. You can use <code>json.makeArray</code> to set a table's <code>__index</code> metamethod to the <code>table</code> global. This allows functions like <code>concat</code> and <code>sort</code> to be used as methods, and it ensures it will be encoded as a JSON array.
+</p><p>
+Arrays returned from <code>json.decode</code> will have been marked as an array using <code>json.makeArray</code>. <code>json.isArray</code> can be used to test whether the table represents an array.
+</p>
+</li><li>
+<p>
+Strings
+</p><p>
+Lua strings represent JSON strings. This is straightforward except for character encoding issues (see below).
+</p>
+</li><li>
+<p>
+Booleans and numbers map directly to JSON boolean and numbers.
+</p>
+</li><li>
+<p>
+The value json.null represents a JSON 'null' value.
+</p>
+</li><li>
+<p>
+Other Lua types (functions, userdata, etc.) are encoded as JSON 'null' values.
+</p>
+</li>
+</ul><h3>
+<a name="Character%20Encoding%20Issues"></a>Character Encoding Issues
+</h3><p>
+The simplest way to use JSON is to use UTF-8 encoding for both JSON BLOBs and Lua strings.
+</p><ul>
+<li>
+<p>
+If you present valid UTF-8-encoded character strings to <code>json.encode</code>, it will return a valid UTF-8 JSON BLOB.
+</p><p>
+Any non-ASCII characters in the input strings will appear as non-ASCII characters in the BLOB. You may then use <a href="#json.toAscii(blob)"><code>json.toAscii(blob)</code></a> to convert non-ASCII sequences to equivalent character references (&#8220;\uXXXX&#8221;), which employ only ASCII characters.
+</p>
+</li><li>
+<p>
+If you present a valid UTF-8 JSON BLOB to <code>json.decode</code>, the resulting strings will contains valid UTF-8-encoded character strings.
+</p><p>
+Any non-ASCII characters in the JSON BLOB will appear as non-ASCII characters in the decoded strings. Also, numerical character references (&#8220;\uXXXX&#8221;) may result in non-ASCII (utf-8-encoded) characters.
+</p>
+</li>
+</ul><p>
+That said, <code>json.encode</code> is mostly agnostic to character encoding, since characters above 0x1F pass through unmodified to the resulting BLOB. When given Lua strings encoded in some encoding other than UTF-8, it will produce a BLOB that is valid for that encoding, as long as that encoding is an ASCII superset (whic is the case for almost all multi-byte encodings in wide use, including UTF-8, Shift_JIS, and the euc-* family).
+</p><p>
+Whatever encoding is being used, if there are invalid byte sequences in the Lua strings they will pass through to the JSON BLOB, and vice versa. You can use <code>utf8utils.validate</code> to check decoded strings or JSON BLOBs.
+</p><p>
+In order to convey <b>binary data</b> through JSON, you must first convert the binary data to character data, which must then be properly character encoded into a Lua string. See <code>utf8utils.binToChars</code> for more information.
+</p></div>
+</body>
+</html>

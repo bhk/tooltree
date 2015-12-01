@@ -1,0 +1,675 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Crank</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Crank"></a>Crank
+</h1><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Introduction">Introduction</a></div><div class="tocLevel"><a href="#Crank%20Concepts">Crank Concepts</a></div><div class="tocLevel"><a href="#Using%20Generators">Using Generators</a><div class="tocLevel"><a href="#Simple%20Case">Simple Case</a></div><div class="tocLevel"><a href="#Chaining">Chaining</a></div><div class="tocLevel"><a href="#Subclassing">Subclassing</a></div><div class="tocLevel"><a href="#Property%20Shorthands">Property Shorthands</a></div><div class="tocLevel"><a href="#Multiple%20Inheritance">Multiple Inheritance</a></div><div class="tocLevel"><a href="#Undefined%20Properties">Undefined Properties</a></div><div class="tocLevel"><a href="#Modules">Modules</a></div></div><div class="tocLevel"><a href="#Base%20Class%20Conventions">Base Class Conventions</a><div class="tocLevel"><a href="#Output%20Files">Output Files</a></div><div class="tocLevel"><a href="#Input%20Files">Input Files</a></div><div class="tocLevel"><a href="#Command%20Strings">Command Strings</a></div><div class="tocLevel"><a href="#Make%20Goals">Make Goals</a></div><div class="tocLevel"><a href="#Environment%20Variables">Environment Variables</a></div><div class="tocLevel"><a href="#Variable%20Naming">Variable Naming</a></div></div><div class="tocLevel"><a href="#Variants">Variants</a><div class="tocLevel"><a href="#Assignments%20With%20“:=”%20vs.%20“=”">Assignments With &#8220;:=&#8221; vs. &#8220;=&#8221;</a></div></div><div class="tocLevel"><a href="#Defining%20Your%20Own%20Classes">Defining Your Own Classes</a></div><div class="tocLevel"><a href="#Flags%20and%20Options">Flags and Options</a></div><div class="tocLevel"><a href="#Other%20Features">Other Features</a><div class="tocLevel"><a href="#Help">Help</a></div><div class="tocLevel"><a href="#make%20clean">make clean</a></div><div class="tocLevel"><a href="#Value%20Dependencies">Value Dependencies</a></div><div class="tocLevel"><a href="#open">open</a></div></div><div class="tocLevel"><a href="#Examples%20and%20Use%20Cases">Examples and Use Cases</a><div class="tocLevel"><a href="#Writing%20a%20Generator">Writing a Generator</a></div><div class="tocLevel"><a href="#Using%20a%20Generator">Using a Generator</a></div><div class="tocLevel"><a href="#Configuration">Configuration</a></div><div class="tocLevel"><a href="#_Subclassing">Subclassing</a></div><div class="tocLevel"><a href="#Multiple%20Variants">Multiple Variants</a></div><div class="tocLevel"><a href="#Chained%20Generators">Chained Generators</a></div><div class="tocLevel"><a href="#_Value%20Dependencies">Value Dependencies</a></div><div class="tocLevel"><a href="#Auto-Generated%20Headers">Auto-Generated Headers</a></div><div class="tocLevel"><a href="#Problems%20with%20Crank">Problems with Crank</a></div></div></div></div><h2>
+<a name="Introduction"></a>Introduction
+</h2><p>
+Crank is a GNU Make source file that implements an object-oriented build system. It provides a number of commonly-used classes and allows makefiles to create their own subclasses.
+</p><p>
+A makefile using Crank is typically structured like this:
+</p><pre>include path_to_crank/crank.min
+
+...declarations...
+
+$(build)
+</pre><p>
+The first line includes <code>crank.min</code>, which defines a number of functions and variables that the rest of the makefile can use. The last line triggers processing of all of the declarations in the makefile.
+</p><h2>
+<a name="Crank%20Concepts"></a>Crank Concepts
+</h2><p>
+A <b>class</b> is a collection of <b>items</b> (zero or more). The items that belong to a class are stored in a Make variable of the same name as the class.
+</p><pre>Compile = a.c b.c
+</pre><p>
+Each class may have associated <b>property</b> definitions. Properties are represented by Make variables using a &#8220;&lt;class&gt;.&lt;property&gt;&#8221; naming convention, as in:
+</p><pre>Compile.message = Compiling...
+</pre><p>
+The combination of a class name and item name identifies an <b>instance</b>. Properties may be associated with instances using the following variable naming convention:
+</p><pre>Compile[a.c].message = Compiling A!
+</pre><p>
+In this document, we write simply &#8220;<code>.prop</code>&#8221; as shorthand for &#8220;the <code>prop</code> property&#8221;.
+</p><p>
+A class may <b>inherit</b> properties from a <b>parent</b> class. Inheritance is specified by <code>.parent</code>, as in:
+</p><pre>Copy.parent = Gen
+</pre><p>
+Instance properties override class properties. That is, if an instance property is defined, its value is used and class properties are ignored. Likewise, a class property will override any properties in its parent class.
+</p><p>
+When a property is evaluated, the <b>current instance</b> is available to it in the form of <code>$C</code> (the class name) and <code>$I</code> (the item name). Property definitions can refer to other properties, using the <code>.</code> function. Its general form is <code>$(call .,&lt;prop&gt;)</code>. This triggers another property lookup on the instance (class name plus item name) that is currently being evaluated.
+</p><pre>Copy.command = cp $I $(call .,out)
+</pre><p>
+A <b>generator</b> is a class that generates <b>rules</b>. By rule, we mean a simple Make rule. Rules specify:
+</p><ol class="indent" type="1">
+<li>
+<p>
+an output file
+</p>
+</li><li>
+<p>
+some number of prerequisites
+</p>
+</li><li>
+<p>
+the commands to be executed to generate the output file
+</p>
+</li>
+</ol><p>
+Generators inherit (directly or indirectly) from the base class <code>Gen</code>.
+</p><p>
+These naming conventions introduced by Crank could be characterized as a language. This language has much in common with object-oriented languages: classes, instances, properties, and inheritance. At the same time, Crank is decidedly <i>unlike</i> object-oriented languages in two ways:
+</p><ol type="1">
+<li>
+<p>
+There is no mutable state associated with an object. The set of objects and properties is static.
+</p>
+</li><li>
+<p>
+There is no &#8220;object&#8221; data type &#8212; everything is a string.
+</p>
+</li>
+</ol><h2>
+<a name="Using%20Generators"></a>Using Generators
+</h2><h3>
+<a name="Simple%20Case"></a>Simple Case
+</h3><p>
+Small makefiles will add items to pre-existing classes and optionally declare or override some properties. For example:
+</p><pre>Exe += program
+Exe.in = program.c util.c
+Compile[util.c].opt-warn = -Wall
+</pre><p>
+We could have used <code>=</code> instead of <code>+=</code> in <code>Exe += program</code>, but using <code>+=</code> is a good habit when adding items to a class. If there were multiple program descriptions in different sections of the makefile, <code>+=</code> would allow them to coexist peacefully, whereas when using <code>=</code> the last assignment will override previous ones.
+</p><div class="indent"><p>
+<i>Note: The above example uses classes that are defined in the <code>crank-c</code> package which must be included by the makefile using, e.g., <code>include $(crank-c)</code>.</i>
+</p></div><h3>
+<a name="Chaining"></a>Chaining
+</h3><p>
+Crank generator classes have an <code>out</code> property that evaluates to the name of the output file. Other class definitions can use this to name their own input files. This is enabled by the <code>get</code> function, which evaluates a property of an arbitrary instance. Its general form is:
+</p><pre>$(call get,&lt;property&gt;,&lt;classes&gt;,&lt;items&gt;)
+</pre><p>
+The &lt;classes&gt; value can be one or more classes. <code>get</code> returns the property value for all the listed items (if more than one, they are delimited by a space character, as are the results).
+</p><pre>$(call get*,&lt;property&gt;,&lt;classes&gt;)
+</pre><p>
+<code>get*</code> evaluates a property for all members of one or more classes.
+</p><p>
+Here is an example of chaining:
+</p><pre>PrinceDoc += $(call get*,out,SmarkDoc)
+</pre><p>
+The above line builds a PDF from every HTML file generated by SmarkDoc.
+</p><h3>
+<a name="Subclassing"></a>Subclassing
+</h3><p>
+In a larger makefile, defining a new subclass and assigning it properties is preferable to modifying built-in classes, since your code will be more reusable and less likely to interfere unexpectedly with other parts of the makefile.
+</p><p>
+Creating a subclass is as simple as choosing a new name and defining <code>.parent</code>:
+</p><pre>Snazzy.parent = SmarkDoc
+</pre><p>
+The above line declares &#8220;Snazzy&#8221; as a subclass of &#8220;SmarkDoc&#8221;. A subclass is functionally equivalent to its parent until properties are attached to the subclass.
+</p><p>
+As mentioned above, the properties of a subclass will override the properties of the parent class. Often, however, when defining a subclass you would like to <i>add</i> something to what was defined by the parent class, perhaps to the end or the beginning, or perhaps you would like to remove something. The <code>inherit</code> function allows this: it returns the value that would have been inherited if the current property definition had not existed. Here is how it is used in one built-in class:
+</p><pre>TSmarkDoc.exports = $(call inherit) CONTENT
+</pre><h3>
+<a name="Property%20Shorthands"></a>Property Shorthands
+</h3><p>
+Crank defines shorthands for some properties that are similar to Make automatic variables of the same name.
+</p><ul>
+<li>
+<p>
+<code>$@</code> is defined as <code>$(call .,out)</code>
+</p>
+</li><li>
+<p>
+<code>$^</code> is defined as <code>$(call .,^)</code>
+</p>
+</li><li>
+<p>
+<code>$&lt;</code> is defined as <code>$(firstword $^)</code>.
+</p>
+</li>
+</ul><p>
+Unlike the Make automatic variables, which are available only during the build phase, these variables are available whenever properties are being expanded. (Properties are expanded <i>before</i> Make's build phase.)
+</p><p>
+Note that <code>$^</code> evaluates to the input files that should appear on the command line. This differs from the Make automatic variable <code>$^</code>, which includes all other pre-requisites (including implied dependencies).
+</p><h3>
+<a name="Multiple%20Inheritance"></a>Multiple Inheritance
+</h3><p>
+A class can inherit from multiple parent classes by listing all of them in <code>.parent</code>, separated by spaces. The parents will be searched in the order listed &#8212; first the entire inheritance chain for the first parent, then the entire chain for the second, and so on. The first property definition found will be used.
+</p><h3>
+<a name="Undefined%20Properties"></a>Undefined Properties
+</h3><p>
+<code>$(call .?,PROP)</code> returns 1 if <code>.PROP</code> is defined for the current instance, and the empty string otherwise.
+</p><p>
+<code>$(call .-,PROP,DEFAULT)</code> returns the value of <code>.PROP</code> if it is defined, or <code>DEFAULT</code> otherwise.
+</p><p>
+Unlike <code>.</code>, these functions do not throw an error when the property is not defined. They can be useful when dealing with computed property names, but when the property names are <i>not</i> computed it is better to avoid <code>.?</code> or <code>.-</code>, because the &#8220;property not defined&#8221; errors they bypass can be very useful in avoiding or diagnosing problems. When you want to make a property optional to subclasses or instances, use <code>.</code> and provide a default definition in the base class.
+</p><h3>
+<a name="Modules"></a>Modules
+</h3><p>
+After including <code>crank.min</code>, a makefile can use the <code>&lt;require&gt;</code> function to include other makefiles. The <code>&lt;require&gt;</code> function accepts a file path as an argument and searches for a matching file relative to any of the directories listed in <code>&lt;requirePath&gt;</code>, which defaults to the directory of your Makefile and the Crank directory. If a file of the same name has already been included, <code>&lt;require&gt;</code> does nothing.
+</p><h2>
+<a name="Base%20Class%20Conventions"></a>Base Class Conventions
+</h2><p>
+The <code>Gen</code> base class provides a lot of functionality that subclasses can rely upon. This section provides a high-level view of the meanings assigned to properties. If you have any further questions about how a particular property is used by <code>Gen</code>, the authoritative answer will be found in the source code for <code>Gen</code> in <code>crank.min</code>.
+</p><h3>
+<a name="Output%20Files"></a>Output Files
+</h3><p>
+The <code>out</code> property specifies the output file name. There is always one output file per rule, and it is almost always based on the item name. Usually, the file extension is replaced with the value of <code>.ext</code>. For example, item &#8220;hello.c&#8221; generates an output file named &#8220;hello.o&#8221;.
+</p><p>
+All output files are written underneath a directory given by the current variant's <code>buildDir</code> property, which defaults to <code>.crank/release</code>. The path incorporates the name of the class that generated the rule. Any path elements in the item name are also preserved, with the exception of <code>.crank/release</code>.
+</p><p>
+For example:
+</p><pre>Smark += foo.txt                      # --&gt; .crank/release/Smark/foo.html
+Smark += ../x/bar.txt                 # --&gt; .crank/release/Smark/__/x/bar.html
+Smark += .crank/release/Unzip/foo.txt # --&gt; .crank/release/Smark/Unzip/foo.txt
+</pre><p>
+This may seem gratuitous at first, but note that:
+</p><ol class="indent" type="1">
+<li>
+<p>
+The object file's path tells you how it was built and what it was built from.
+</p>
+</li><li>
+<p>
+Multiple derivatives of a single input file can be generated within a single invocation of Make.
+</p>
+</li>
+</ol><p>
+Subclasses or items can override <code>.out</code>. More commonly, they will specify a different file extension by overriding <code>.ext</code>, which is used by the base definition of <code>.out</code>.
+</p><pre>Compile.ext = .o
+</pre><h3>
+<a name="Input%20Files"></a>Input Files
+</h3><p>
+Input files are listed in <code>.in</code>.
+</p><p>
+Its usage depends on what kind of rule is generated by the class.
+</p><ol type="1">
+<li>
+<p>
+Most rules have one primary input file the correlates with the output file. In these cases, <code>.in</code> will default to the item name, which is also used to compute the output file name.
+</p><p>
+For example, one <code>.c</code> file generates one <code>.o</code> file, so the item name is the name of the C file, as in <code>Compile += foo.c</code>.
+</p>
+</li><li>
+<p>
+Some rules generate one file from many input files. In this case, the input files are unrelated to the item name, and are specified separately by the project makefile.
+</p><p>
+For example:
+</p><pre>Zip += src
+Zip[src].in = $(wildcard *.c *.h)
+</pre>
+</li>
+</ol><p>
+The <code>^</code> property is used within class implementations to describe input files that should appear on the command line, so it may differ between class implementations. In most cases it is equivalent to <code>.in</code>. On case in which it may differ is in a Compound generator like <code>Exe</code> that infers rules for intermediate files.
+</p><h3>
+<a name="Command%20Strings"></a>Command Strings
+</h3><p>
+The <code>command</code> property evaluates to one or more shell commands that construct the output file. Newline characters &#8212; <code>$(\n)</code> &#8212; may be used to delimit multiple characters.
+</p><p>
+The <code>Gen</code> base class takes care of constructing the command section of the Make rule, prefixing lines with tabs (and optionally <code>@</code>, based on other properties). It also ensures that the output directory will be created.
+</p><p>
+If you are familiar with Make, be aware of the difference between Make command strings and shell commands. Make performs a round of expansion before executing commands. Crank escapes the results of <code>.command</code> so all <code>$</code> characters in the command are passed through literally to the shell.
+</p><h3>
+<a name="Make%20Goals"></a>Make Goals
+</h3><p>
+&#8220;Goals&#8221; are the target names specified on the Make command line. If no goal is specified, Make will build the default goal, which is the first target defined in the makefile. If the project makefile defines no targets, <code>all</code> will be defined by Crank as the default goal, and which will build all of the build items defined in the makefile (unless they specify otherwise).
+</p><p>
+Crank creates a phony target for each class and instance. So, for example, you can type <code>make Exe</code> to build all items in the <code>Exe</code> class, or <code>Make Exe[prog]</code> to build the <code>prog</code> items in the <code>Exe</code> class.
+</p><p>
+You may override <code>.goal</code> for a class or item to change the name of the phony target. When <code>goal</code> evaluates to the empty string, the build item will not be associated with any phony target (including <code>all</code>). (Note that it will still be built when it is named as a prerequisite of some other target that is being built.)
+</p><h3>
+<a name="Environment%20Variables"></a>Environment Variables
+</h3><p>
+You can control the value of environment variables during execution of a rule. The <code>exports</code> property is a list of variable names. When the rule's command is executed, these variables will take on the value of the <i>property</i> by the same name.
+</p><p>
+For example:
+</p><pre>MyClass.exports = PATH
+MyClass.PATH = /usr/local/bin/ghc
+</pre><h3>
+<a name="Variable%20Naming"></a>Variable Naming
+</h3><p>
+Makefile authors should be aware of the following names used by Crank:
+</p><ul>
+<li>
+<p>
+Variables beginning with <code>&lt;</code> or <code>\</code> or consisting entirely of punctuation.
+</p>
+</li><li>
+<p>
+Single-character upper-case letters.
+</p>
+</li><li>
+<p>
+<code>inherit</code> <code>build</code> <code>get</code> <code>v</code> <code>_v</code> <code>v.</code>
+</p>
+</li>
+</ul><p>
+Additionally, Crank and extension modules define a number of classes, all beginning with an uppercase letter.
+</p><h2>
+<a name="Variants"></a>Variants
+</h2><p>
+<b>Variants</b> are different configurations of your project that are built from the same project description (your makefile contents) but which produce different build results. With Crank you can build different variants without having to &#8220;clean&#8221; the previously built variant. In fact, you can build multiple variants simultaneously in one invocation of make.
+</p><p>
+The variable <code>V</code> lists one or more variants to be built. <code>V</code> defaults to &#8220;<code>_</code>&#8221;. Project makefiles that make use of variants will usually assign some other value for V, which can be overridden on the command line:
+</p><pre>$ make V=debug
+$ make V='debug release coverage'
+</pre><p>
+For each variant being built, a complete set of rules will be generated. As the rules are generated, the variable <code>v</code> (lowercase, not upper) holds the name of the <i>current</i> variant. Class and item property definitions can inspect <code>v</code> to make decisions about, for example, what flags to pass to a compiler.
+</p><p>
+The value of <code>v</code> is incorporated into the build directory name (except when it is the default variant). This ensures that differently constructed target files will be cleanly segregated.
+</p><p>
+Crank provides functions that support a convention for structuring variant names as a <code>_</code>-delimited sequence of words. Each word may consist of a key-value pair delimited by <code>.</code> character.
+</p><ul>
+<li>
+<p>
+<code>v.</code> evaluates a property for the variant <i>currently being built</i>. For example, to check for the presence of a &#8220;debug&#8221; flag:
+</p><pre>$(if $(filter debug,$(call v.,flags)), ... )
+</pre>
+</li>
+</ul><h3>
+<a name="Assignments%20With%20“:=”%20vs.%20“=”"></a>Assignments With &#8220;:=&#8221; vs. &#8220;=&#8221;
+</h3><p>
+When a variable is assigned using <code>=</code>, the right hand side is recorded as the definition of the variable, but it is not expanded (evaluated) until later, when the variable is expanded. When a variable is assigned using <code>:=</code>, the right hand side is expanded immediately ... when the assignment is first encountered.
+</p><p>
+The object-oriented operators &#8212; <code>.</code>, <code>.?</code>, <code>.-</code>, <code>inherit</code> &#8212; return values that depend upon the current context: class name, item name, and variant. These expressions should never appear on the right hand side of a ':=' assignment.
+</p><h2>
+<a name="Defining%20Your%20Own%20Classes"></a>Defining Your Own Classes
+</h2><p>
+To define a new generator class, subclass <code>Gen</code> and provide a definition of <code>.command</code>.
+</p><p>
+Typically, generators will specify the extension to be used for the output file. For example:
+</p><pre>Frob.parent = Gen
+Frob.command = $(call .,exe) -o $@ $^
+Frob.exe = frob
+Frob.ext = .frobbed
+</pre><p>
+The command name is typically defined in a separate property, <code>exe</code>, so that other makefiles can redefine it to include the complete path to an executable file. This separates configuration information &#8212; the location and name of the executable on a given system or in a given project tree &#8212; from your rule definition.
+</p><p>
+Since <code>Frob</code> inherits from the <code>Gen</code> base class, all of the following functionality is in effect:
+</p><ul>
+<li>
+<p>
+A unique, descriptive output directory is automatically chosen.
+</p>
+</li><li>
+<p>
+The output directory will be automatically created.
+</p>
+</li><li>
+<p>
+<code>make clean</code> behavior is automatic.
+</p>
+</li><li>
+<p>
+<code>make all</code> and <code>make Frob</code> can be used to build the targets of the class.
+</p>
+</li><li>
+<p>
+<code>make @=</code> will select verbose builds.
+</p>
+</li><li>
+<p>
+The output file will be rebuilt if the command string changes.
+</p>
+</li><li>
+<p>
+Sub-classes can assign other <a href="#Value%20Dependencies">Value Dependencies</a>.
+</p>
+</li>
+</ul><h2>
+<a name="Flags%20and%20Options"></a>Flags and Options
+</h2><p>
+The <code>Compile</code> class and others use the <code>Options</code> mixin to construct command line arguments flexibly. This mixin computes a <code>.options</code> property that is included in the command line used to build an item.
+</p><p>
+These options are computed from a property called <code>.flags</code>, which is a list of words (or &#8220;flags&#8221;).
+</p><p>
+Flags beginning with &#8220;-&#8221; are passed through literally on the command line when the item is built.
+</p><p>
+Flags <i>not</i> beginning with &#8220;-&#8221; are treated as symbolic names, and the command line options to pass are given by another property named <code>.flag-FLAGNAME</code>. For example, when the flag &#8220;X&#8221; is enabled, the value of the property <code>.flag-X</code> will be added to the command line.
+</p><p>
+For each flag name there is an opposite flag name. The name &#8220;noX&#8221; and &#8220;X&#8221; are opposites. When two opposites appear in a set of flags, the one that appears <i>last</i> wins. The <code>Options</code> class defines <code>.flags</code> as <code>$(call v.,flags)</code>, which defaults to all the underscore-delimited words in the variant name. Classes and items can append or prepend to the inherited value depending on whether they want the variant to be able to override.
+</p><p>
+Aliases are flag names that expand to one or more other flag names. This expansion is done before override processing. <code>.flagAliases</code> specifies the aliases and their definitions, in the form &#8220;ALIAS=F1;F2;F3 ALIAS2=F4...&#8221;.
+</p><p>
+Example:
+</p><pre>Makefile excerpt:
+  Class.flags = debug quiet $(call inherit)
+  Class.flag-debug = -g
+  Class.flag-quiet = -s
+  Class.flag-warn = -Wall
+  Class[X].flags = $(call inherit) -W
+
+$ make V=warn_nodebug Class[X].options
+Class[X].options = "-Wall -s"
+</pre><h2>
+<a name="Other%20Features"></a>Other Features
+</h2><h3>
+<a name="Help"></a>Help
+</h3><p>
+Use <code>make help</code> to summarize the contents of your makefile.
+</p><pre>$ make help
+"make [all]" builds:
+   .crank/release/Smark/doc1.html
+
+ ...
+</pre><p>
+Crank works by generating GNU Make source and executing it using Make's <code>eval</code> function. You can ask Crank to display this auto-generated source by typing <code>make help_debug</code>.
+</p><h3>
+<a name="make%20clean"></a><code>make clean</code>
+</h3><p>
+Typing <code>make clean</code> will delete all output files. This removes the build directory and also any individual output files that lie outside the build directory.
+</p><p>
+Cleaning is parametrized by <code>V</code> in the same way that other targets are, so <code>make clean</code> will only clean build results for the default variant. Use <code>make clean V=...</code> to specify other variants to be cleaned.
+</p><h3>
+<a name="Value%20Dependencies"></a>Value Dependencies
+</h3><p>
+GNU Make allows us to express dependencies in one way: in terms of relative ages of files. We can cause a file to be rebuilt when some other file is newer.
+</p><p>
+Crank supports expressing dependencies in terms of the values of properties. This can cause a file to be rebuilt whenever a computed value differs from the value that was computed when it was last built.
+</p><p>
+To specify a value dependency, set <code>.valueDeps</code> to a list of property names. If any of the listed properties change in value since the last time the output file was built, it will be rebuilt.
+</p><p>
+For example:
+</p><pre>Compile = a.c
+Compile.includes = $(INCLUDES)
+Compile.valueDeps = in
+</pre><p>
+This will cause <code>a.o</code> to be rebuilt if the value of <code>$(INCLUDES)</code>, an environment variable, has changed since the last time <code>a.o</code> was built.
+</p><h3>
+<a name="open"></a>open
+</h3><p>
+<code>make open=&lt;name&gt;</code> is a convenience for inspecting build results. It will look for an output file name ending in &lt;name&gt; or, if none are matched, an output file name containing &lt;name&gt; as a substring, and then issue a command to view the contents of the file. This command defaults to 'open' on MacOS or 'explorer' on Windows. Override <code>.open</code> to specify a different command to be used for an item or class.
+</p><h2>
+<a name="Examples%20and%20Use%20Cases"></a>Examples and Use Cases
+</h2><p>
+Here are a set of use cases that illustrate different aspects of using a build system. These can be used as a checklist for comparing and contrasting build systems.
+</p><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Writing%20a%20Generator">Writing a Generator</a></div><div class="tocLevel"><a href="#Using%20a%20Generator">Using a Generator</a></div><div class="tocLevel"><a href="#Configuration">Configuration</a></div><div class="tocLevel"><a href="#_Subclassing">Subclassing</a></div><div class="tocLevel"><a href="#Multiple%20Variants">Multiple Variants</a></div><div class="tocLevel"><a href="#Chained%20Generators">Chained Generators</a></div><div class="tocLevel"><a href="#_Value%20Dependencies">Value Dependencies</a></div><div class="tocLevel"><a href="#Auto-Generated%20Headers">Auto-Generated Headers</a></div><div class="tocLevel"><a href="#Problems%20with%20Crank">Problems with Crank</a></div></div></div><h3>
+<a name="Writing%20a%20Generator"></a>Writing a Generator
+</h3><p>
+How can one write a simple &#8220;generator&#8221;/&#8220;rule&#8221; that can apply to many files? Specifically, consider a rule for generating HTML from plain text using Smark. In order to be complete, the generator must support explicit and implied dependencies and &#8220;make clean&#8221;.
+</p><p>
+In Crank, one answer looks like this:
+</p><div class="indent"><pre style="font-size: 84%">Smark.parent = Gen
+Smark.command = $(call .,exe) -o $@ $(call .,options) --deps=$(call .,depFile) -- $^
+Smark.options = $(foreach c,$(call .,css),--css=$c)
+Smark.depFile = $(call .,out).d
+Smark.ext = .html
+Smark.css =
+</pre></div><h3>
+<a name="Using%20a%20Generator"></a>Using a Generator
+</h3><p>
+How does one use a generator a project's makefile?
+</p><p>
+Crank example:
+</p><div class="indent"><pre>Smark += a.txt b.txt c.txt d.txt
+</pre></div><h3>
+<a name="Configuration"></a>Configuration
+</h3><p>
+How does one externalize configuration from a library of generators? What does the resulting makefile look like?
+</p><p>
+In Crank, reusable rules typically isolate configuration parameters as individual properties that can be overridden by the makefile that uses the rule, as in the following:
+</p><div class="indent"><pre>include $(smark)/crank-smark.min
+Smark.exe = ~/git/tooltree/smark/out/release/smark
+</pre></div><h3>
+<a name="_Subclassing"></a>Subclassing
+</h3><p>
+Subclassing. Some makefiles want to use an existing rule but modify it in some way. Some want to use slightly different rules for different sets of files, or make exceptions for a few files out of a large set.
+</p><p>
+Example specialized class:
+</p><div class="indent"><pre>MyDocs.parent = Smark
+MyDocs.css = mystyles.css
+</pre></div><p>
+Example per-items specialization:
+</p><div class="indent"><pre>Smark[foo.txt].css = foostyle.css
+</pre></div><h3>
+<a name="Multiple%20Variants"></a>Multiple Variants
+</h3><p>
+How does the build system answer these questions?
+</p><ul>
+<li>
+<p>
+How to write rules that describe different variants?
+</p><p>
+In Crank, you write your declarations one time and the declarations will be <i>expanded</i> once for each variant being built. Object properties can use <code>$v</code> to obtain the name of the current variant, or invoke the function <code>v.</code> to query a property of the variant.
+</p><p>
+For example, the rules for compiling C files use <code>$(call v.,flags)</code> to obtain a set of flag names that can turn on or off features like debug symbols, optimization, and so on.
+</p>
+</li><li>
+<p>
+How to specify a variant?
+</p><p>
+In Crank, the makefile can define variant properties with this syntax:
+</p><pre>V[variantName].prop = value
+</pre><p>
+The <code>.flags</code> variant property defaults to <code>$(subst _, ,$I)</code>. (Note that in the context of variant property expansion, <code>$I</code> is the name of the variant.)
+</p><p>
+For example, assigning <code>V[dbg].flags = debug</code> will set the <code>flags</code> property of the <code>dbg</code> variant to <code>debug</code>, which will cause object files generated for that variant to include symbols and use minimal optimization.
+</p>
+</li><li>
+<p>
+Where do build results go?
+</p><p>
+In Crank, the Gen base class defines <code>.out</code> in a way that segregates results based on variant name, class name, and item name. This can, of course, be overridden for particular subclasses or items.
+</p>
+</li>
+</ul><h3>
+<a name="Chained%20Generators"></a>Chained Generators
+</h3><p>
+How can one route the outputs of one generator into the inputs of another?
+</p><div class="indent"><pre>PrinceDoc += $(call get,out,SmarkDoc,foo.txt)
+</pre></div><h3>
+<a name="_Value%20Dependencies"></a>Value Dependencies
+</h3><p>
+Changes to makefiles can result in changes to command lines or environment variables that affect the build results. Making all files depend on the Makefile can have costly consequences when only minor updates are made. How can one easily represent these &#8220;value dependencies&#8221; (dependencies that are not based on input files).
+</p><p>
+In Crank, one lists the set of properties to be tested at build time. It defaults to <code>command</code>, but other values can be assigned.
+</p><div class="indent"><pre>SmarkDoc[foo.txt].valueDeps = SMARK_PATH command
+</pre></div><h3>
+<a name="Auto-Generated%20Headers"></a>Auto-Generated Headers
+</h3><p>
+Auto-generated headers are an example of auto-generated source files that <i>might</i> be implied dependencies. We do not know, before compiling a C file or scanning its dependencies, whether an auto-generated header is an actual dependency of the generated object file. But we must generate the header before compiling any C files, since any one of them <i>might</i> include the header.
+</p><p>
+One approach is to treat all auto-generated headers as dependencies of all object files generated from C, but that creates false dependencies: changes to any auto-generated header will rebuild all object files. However, if we treat them as <i>order-only</i> dependencies, this will not happen. Order-only dependencies can guarantee that the headers are built before any C files are compiled. Ordinary dependency scanning will identify the ones that are <i>real</i> dependencies.
+</p><p>
+Crank recognizes the <code>ooDeps</code> property as listing order-only dependencies.
+</p><div class="indent"><pre>Compile.ooDeps = $(call get*,out,IDL)
+</pre></div><h3>
+<a name="Problems%20with%20Crank"></a>Problems with Crank
+</h3><p>
+A number of limitations stem from Crank's being built on GNU Make.
+</p><ul>
+<li>
+<p>
+The set of characters that can be used in file names is limited. It does not support file names that contain whitespace, ':', or '=', or any shell special characters: <code>!&amp;|&lt;$'"`\!</code>
+</p>
+</li><li>
+<p>
+When performing parallel builds, all concurrent processes write to the same <code>stdout</code> and <code>stderr</code> pipes, producing potentially confusing output.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

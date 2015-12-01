@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>View</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="View"></a>View
+</h1><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#API">API</a><div class="tocLevel"><div class="tocLevel"><a href="#View.subclass(props)">View.subclass(props)</a></div><div class="tocLevel"><a href="#View.create(items...)">View.create(items...)</a></div><div class="tocLevel"><a href="#View.append(items...)">View.append(items...)</a></div><div class="tocLevel"><a href="#View.setContent(items...)">View.setContent(items...)</a></div><div class="tocLevel"><a href="#View.enableClass(className,%20isOn)">View.enableClass(className, isOn)</a></div><div class="tocLevel"><a href="#View.activate(args...)">View.activate(args...)</a></div><div class="tocLevel"><a href="#View.destroy(obs)">View.destroy(obs)</a></div></div></div><div class="tocLevel"><a href="#Property%20Description">Property Description</a></div><div class="tocLevel"><a href="#Examples">Examples</a></div></div></div><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+The <code>View</code> class provides a way for JavaScript scripts to style DOM elements with CSS in a modular, composable manner. It also aids portability by masking some browser implementation differences, and provides some other conveniences commonly needed by view objects.
+</p><p>
+The <code>create</code> method creates an instance, which has an associated DOM element. This will call <code>initialize</code>, if defined.
+</p><p>
+The <code>subclass</code> method creates a subclass that can later be used to create instances. Calls to <code>subclass</code> optionally assign or override properties using <a href="#Property%20Description">Property Description</a> objects. These can customize behavior by assigning CSS properties or by assigning <code>$...</code> properties that are recognized later during <code>create</code>.
+</p><p>
+Some more complex classes may override <code>subclass</code> or <code>subclassInit</code> and document different behavior for <code>subclass</code>.
+</p><h2>
+<a name="API"></a>API
+</h2><h4>
+<a name="View.subclass(props)"></a><code>View.subclass(props)</code>
+</h4><div class="indent"><p>
+Create a new <code>View</code> <a href="class.html">subclass</a>.
+</p><p>
+<code>props</code> is a <a href="#Property%20Description">Property Description</a> to be applied to the new class, augmenting or overriding properties of the base class (<code>this</code>). These properties will apply to DOM elements created by this class.
+</p><p>
+CSS properties in <code>props</code> will be associated with a stylesheet rule that uses a class-based selector.
+</p></div><h4>
+<a name="View.create(items...)"></a><code>View.create(items...)</code>
+</h4><div class="indent"><p>
+Create a DOM element. Returns an instance of View whose <code>e</code> property holds a reference to the DOM element.
+</p><p>
+Any number of &#8220;items&#8221; may be provided as arguments. Each item may be one of:
+</p><ul type="circle">
+<li>
+<p>
+A DOM node to be inserted into the element.
+</p>
+</li><li>
+<p>
+An instance of View, whose <code>.e</code> member is to be inserted.
+</p>
+</li><li>
+<p>
+An array of items to be processed.
+</p>
+</li><li>
+<p>
+A string that will be inserted into the element (as a text node).
+</p>
+</li><li>
+<p>
+A <a href="#Property%20Description">Property Description</a>
+</p>
+</li>
+</ul><p>
+Property description items will override any properties associated with the class. CSS properties will be applied directly to the element's <code>style</code> property.
+</p></div><h4>
+<a name="View.append(items...)"></a><code>View.append(items...)</code>
+</h4><div class="indent"><p>
+Apply items to the view instance. Any content items are appended to the DOM element. Any properties assign or override existing properties.
+</p></div><h4>
+<a name="View.setContent(items...)"></a><code>View.setContent(items...)</code>
+</h4><div class="indent"><p>
+Replace existing content with content items in <code>items...</code>. Any properties in <code>items...</code> assign or override existing properties.
+</p></div><h4>
+<a name="View.enableClass(className,%20isOn)"></a><code>View.enableClass(className, isOn)</code>
+</h4><div class="indent"><p>
+Add or remove a class name to/from the set of classes associated with the element held in <code>this.e</code>.
+</p><p>
+When one parameter is passed, <code>isOn</code> is treated as <code>true</code>.
+</p></div><h4>
+<a name="View.activate(args...)"></a><code>View.activate(args...)</code>
+</h4><div class="indent"><p>
+Activates an observable function. Activation maintains the observable in a valid state. The function will be called immediately and then later whenever any of its inputs change.
+</p><p>
+<code>args...</code> can be either:
+</p><ul type="circle">
+<li>
+<p>
+An observable function.
+</p>
+</li><li>
+<p>
+A function and inputs used to construct an observable function. In this case the arguments are passed directly to <code>observable.Func.create()</code>.
+</p>
+</li>
+</ul><p>
+The return value is a function that, when called, &#8220;undoes&#8221; the activation.
+</p></div><h4>
+<a name="View.destroy(obs)"></a><code>View.destroy(obs)</code>
+</h4><div class="indent"><p>
+Deactivate everything that has been activated using <code>this.activate</code>, except for those that have since been individually deactivated.
+</p></div><h2>
+<a name="Property%20Description"></a>Property Description
+</h2><p>
+A property description is a JavaScript object that describes CSS properties and/or element properties. These can be passed to <code>View.subclass</code> when constructing a new View object, or to <code>View.create</code> when creating an individual DOM element.
+</p><p>
+Generally, each key/value pair in the object names a CSS property and a value to be assigned to it. There are other &#8220;special&#8221; properties, however, that have different meanings:
+</p><ul type="circle">
+<li>
+<p>
+Names beginning with <code>"$"</code> are treated as names of JavaScript properties that are to be assigned on the newly created subclass or instance. Some of these have special significance:
+</p><ul type="circle">
+<li>
+<p>
+<code>"$tag"</code> provides a tag name to be used for DOM elements when they are created. The default is <code>"div"</code>.
+</p>
+</li><li>
+<p>
+<code>"$class"</code> provides a class name to be associated with the subclass (when passed to <code>View.subclass</code>). This will be used to construct a selector for any style sheet rules that will be created for the subclass. This is optional and only for debugging. When used, a CSS class name will be constructed from this name by prepending a prefix (&#8220;_&#8221;) and a suffix, if necessary, to avoid naming conflicts.
+</p>
+</li><li>
+<p>
+<code>"$id"</code> provides an ID to be assigned to an element. <i>Note: This has effect only when a property description containing modifiers is passed to <code>View.create</code>.</i> If the element already has an ID, this will not be used.
+</p>
+</li>
+</ul>
+</li><li>
+<p>
+Any name containing <code>?</code> is taken as a &#8220;modifier&#8221;, which describes a more specific CSS selector. The value bound to this name must be a <a href="#Property%20Description">Property Description</a> containing CSS properties that shall be in effect when the more specific selector is matched. Any <code>$</code> properties that occur in a modifier description are ignored.
+</p><p>
+In the modifier name, the character <code>?</code> represents the element being created, or, when passed to <code>View.subclass</code>, any future instance of that class. Here are some examples:
+</p><table><tr><th><p>
+Modifier
+</p></th><th><p>
+Applies when...
+</p></th></tr><tr><td><p>
+<code>?:hover</code>
+</p></td><td><p>
+... the mouse pointer hovers over the element
+</p></td></tr><tr><td><p>
+<code>?.on</code>
+</p></td><td><p>
+... the <code>on</code> class is listed in the element's <code>class</code> attribute
+</p></td></tr><tr><td><p>
+<code>P ?</code>
+</p></td><td><p>
+... the element is a descendant of a P element
+</p></td></tr><tr><td><p>
+<code>P &gt; ?</code>
+</p></td><td><p>
+... the element is a child of a P element
+</p></td></tr></table>
+</li>
+</ul><p>
+<b>JavaScript names vs. CSS syntax:</b> Property description keys that name a CSS property are expressed in JavaScript form, not as in CSS syntax. For example, <code>"marginLeft"</code> is used instead of <code>"margin-left"</code>. Either <code>"cssFloat'</code> or <code>"float"</code> can be used to assign the CSS syntax <code>"float"</code> property.
+</p><p>
+<b>Ordering:</b> Note that JavaScript objects are <i>unordered</i> pairings of names and values. In order to provide deterministic behavior, the keys in a property description are sorted before they are applied. As a result, shorthand properties within a property description will be applied before, and be overridden by, more specific properties &#8212;- which is presumably what is desired when both are used together. Likewise, pseudo-class modifiers will override class modifiers.
+</p><p>
+<b>Browser portability:</b> In some cases, different browsers use different names for the same CSS property. When applying a property that is not supported by the underlying implementation, different prefixes will be tried. This allows your code to use generic, unprefixed names and work on multiple browsers.
+</p><p>
+Alongside generic names you may also use browser-specific names in order to intentionally introduce browser-specific behavior. When using both, be careful of ordering.
+</p><p>
+<b>Property Value Normalization</b>: When the provided value is a string, each occurrence of <code>#{propertyName}</code> will be replaced by the browser-specific CSS syntax for that property name. Numeric values are converted to CSS lengths by appending &#8220;px&#8221;. For the rare cases where other units or numbers are desired, such as <code>opacity</code> or <code>z-index</code>, pass a string value.
+</p><p>
+Here are a few examples of how property keys and values will be normalized for different browsers:
+</p><table><tr><th><p>
+Key / <br>Value
+</p></th><th><p>
+Chrome JS / <br>Chroms CSS
+</p></th><th><p>
+Firefox JS / <br>Firefox CSS
+</p></th></tr><tr><td><p>
+transform <br>&#8220;#{transform}&#8221;
+</p></td><td><p>
+webkitTransform <br>&#8220;-webkit-transform&#8221;
+</p></td><td><p>
+transform <br>&#8220;transform&#8221;
+</p></td></tr><tr><td><p>
+boxSixing <br>&#8220;#{boxSiging}&#8221;
+</p></td><td><p>
+boxSizing <br>&#8220;box-sizing&#8221;
+</p></td><td><p>
+MozBoxSizing <br>&#8220;-moz-box-sizing&#8221;
+</p></td></tr></table><h2>
+<a name="Examples"></a>Examples
+</h2><pre>var Msg = View.subclass({
+   $class: 'Msg',
+   $tag: 'span',
+   color: 'green',
+   '?.error': { color: 'red' }
+});
+
+var msg1 = Msg.create('hello');
+document.body.appendChild(msg1.e);
+</pre><p>
+Text in this element will be green. After calling <code>msg1.enableClass('error', true)</code>, the text will become red.
+</p><pre>var msg2 = Msg.create({
+    ':hover': {
+       color: 'blue'
+       '?.enabled': { color: 'black' }
+    }
+}, "Hello, world!");
+document.body.appendChild(msg2.e);
+</pre><p>
+As with <code>msg1</code>, text in <code>msg2</code> will ordinarily appear green or blue, depending on whether the <code>error</code> class is enabled. However, when the mouse pointer hovers over the <code>msg2</code> element, its text will change to blue or black, depending on whether <code>error</code> is enabled.
+</p></div>
+</body>
+</html>

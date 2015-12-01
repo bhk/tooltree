@@ -1,0 +1,589 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>MDB: Monoglot Debugger</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="MDB:%20Monoglot%20Debugger"></a>MDB: Monoglot Debugger
+</h1><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Command%20Syntax">Command Syntax</a><div class="tocLevel"><div class="tocLevel"><a href="#Example">Example</a></div></div></div><div class="tocLevel"><a href="#Usage">Usage</a><div class="tocLevel"><div class="tocLevel"><a href="#Keyboard%20Shortcuts">Keyboard Shortcuts</a></div><div class="tocLevel"><a href="#Interactive%20Console">Interactive Console</a></div><div class="tocLevel"><a href="#Debugger%20Functions">Debugger Functions</a></div><div class="tocLevel"><a href="#Error%20Handling">Error Handling</a></div><div class="tocLevel"><a href="#Coroutines">Coroutines</a></div></div></div><div class="tocLevel"><a href="#Internals">Internals</a><div class="tocLevel"><a href="#Modes">Modes</a></div><div class="tocLevel"><a href="#MDB%20Protocol">MDB Protocol</a><div class="tocLevel"><a href="#Client%20Messages">Client Messages</a></div><div class="tocLevel"><a href="#Server%20Messages">Server Messages</a></div><div class="tocLevel"><a href="#Observable%20Items">Observable Items</a></div><div class="tocLevel"><a href="#Value%20Descriptions">Value Descriptions</a></div><div class="tocLevel"><a href="#Console%20Entries">Console Entries</a></div></div></div></div></div><h2>
+<a name="Command%20Syntax"></a>Command Syntax
+</h2><pre>mdb [--ui] [--port=PORT] -- ...DEBUGTARGET...
+</pre><ul>
+<li>
+<p>
+<code>--ui</code>: start the browser (this is done by issuing an <code>open</code> command).
+</p>
+</li><li>
+<p>
+<code>--port=PORT</code>: specify the HTTP port (and optionally IP address) on which to serve the UI. It can take the following forms:
+</p><ul type="circle">
+<li>
+<p>
+&#8220;N&#8221; : a single decimal integer names the port on which to accept connections from the browser. This will bind only to the localhost (127.0.0.1) interface.
+</p>
+</li><li>
+<p>
+&#8220;A:N : an IP address followed by a colon and a decimal integer specifies the interface and port number on which to accept connections. An address of &#8221;0&#8220; causes MDB to listen on all interfaces.
+</p>
+</li>
+</ul>
+</li><li>
+<p>
+<code>...DEBUGTARGET...</code> is a sequence of words constituting the command line to invoke the target process.
+</p><p>
+In order for the debugger to work, the target process must load <code>mdbagent.lua</code> at startup. This can be done by passing the <code>-l</code> option to the Lua interpreter (as long as mdbagent.lua is found in the Lua search path).
+</p><p>
+The <code>xpio</code> module (exported by the <code>monoglot</code> package) is required by the <code>mdbagent</code> package, and must be available in the target program's search paths (as specified by the LUA_PATH and LUA_CPATH environment variables).
+</p>
+</li>
+</ul><h4>
+<a name="Example"></a>Example
+</h4><p>
+There are two ways to run a program under the debugger.
+</p><p>
+The first loads mdbagent using <code>-l</code>:
+</p><pre>mdb --ui --port=8000 -- lua -l mdbagent myprogram.lua ...args...
+</pre><p>
+Similarly, Lua-based programs other than the Lua interpreter can include the mdbagent package.
+</p><p>
+If we run mdbagent as a source file, it loads and runs the file listed as the next argument:
+</p><pre>mdb --ui --port=8000 -- lua mdbagent.lua myprogram.lua ...args...
+</pre><p>
+This second form allows MDB to trap uncaught errors that occur in the target program.
+</p><h2>
+<a name="Usage"></a>Usage
+</h2><p>
+The debugger acts as a web server. If the <code>--ui</code> option is given, it will launch a browser to point to the debugger UI.
+</p><h4>
+<a name="Keyboard%20Shortcuts"></a>Keyboard Shortcuts
+</h4><div class="indent"><p>
+Type <code>?</code> to see a list of keyboard shortcuts.
+</p></div><h4>
+<a name="Interactive%20Console"></a>Interactive Console
+</h4><div class="indent"><p>
+The interactive console allows you to type Lua code and have it immediately executed. The Lua code will be executed in the context where execution is currently paused &#8212; all local variables, up-values, and globals are in scope.
+</p><p>
+When an expression is typed, its value will be displayed in the console. When a chunk is typed, its return values (zero or more) will be displayed in the console.
+</p><p>
+Keep in mind that <code>print</code> and <code>io.write</code> will write to <code>stdout</code> of the target process &#8212; not to the debug console. Use <code>debug.log</code> or <code>debug.printf</code> (see <a href="#Debugger%20Functions">Debugger Functions</a>) to output to the interactive console.
+</p></div><h4>
+<a name="Debugger%20Functions"></a>Debugger Functions
+</h4><div class="indent"><p>
+When a program is running in the debugger, the following fields of the <code>debug</code> library will be populated:
+</p><ul type="circle">
+<li>
+<p>
+<code>debug.log(...)</code>
+</p><p>
+Write values to the console output window.
+</p>
+</li><li>
+<p>
+<code>debug.printf(...)</code>
+</p><p>
+Write a string to the console output window. This uses <code>string.format</code> plus the <code>%Q</code> formatting option, which displays the value in an explorable form.
+</p>
+</li><li>
+<p>
+<code>debug.pause()</code>
+</p><p>
+Pause execution at the current line of code.
+</p>
+</li>
+</ul></div><h4>
+<a name="Error%20Handling"></a>Error Handling
+</h4><div class="indent"><p>
+The debugger pauses execution at any error, whether generated by <code>error</code>, <code>assert</code>, or other runtime errors (e.g. attempt to call a non-function value).
+</p><p>
+The call stack shows the location of the error, prior to handling by an <code>xpcall</code> handler (if one is in effect) and prior to returning to the nearest protected call boundary (e.g. <code>pcall</code>, <code>xpcall</code>, or <code>coroutine.resume</code>).
+</p></div><h4>
+<a name="Coroutines"></a>Coroutines
+</h4><div class="indent"><p>
+Stepping &#8220;in&#8221; to <code>coroutine.yield</code> or <code>coroutine.resume</code> will single-step into the other coroutine.
+</p><p>
+Stepping &#8220;over&#8221; a <code>coroutine.yield</code> or <code>coroutine.resume</code> will cause the debugger to pause again after the function returns to the current coroutine. Stepping &#8220;out&#8221; similarly sets a &#8220;pause again&#8221; condition.
+</p><p>
+Whenever the debugger pauses, as it does when a breakpoint is hit, it clears the &#8220;pause again&#8221; conditions <i>for the current coroutine</i> (the one in which the breakpoint was hit). Any other coroutines retain their &#8220;pause&#8221; again conditions.
+</p></div><h2>
+<a name="Internals"></a>Internals
+</h2><p>
+A debugging session involves multiple communicating processes:
+</p><ul>
+<li>
+<p>
+The target is a program that contains the code being debugger.
+</p>
+</li><li>
+<p>
+MDB is the &#8220;debugger&#8221;.
+</p>
+</li><li>
+<p>
+A browser, through which the UI is viewed.
+</p>
+</li>
+</ul><p>
+MDB is the web server to which the browser connects. The target process is typically a child process of the debugger. The <code>mdbagent</code> Lua module implements the server-side of the protocol and controls the software being debugged in the target process, staying mostly invisible to the target software.
+</p><div class=diagram>
+<div class="html2d art" style="width:544px;height:208px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:23px;right:442px;bottom:38px"></div>
+<div class=rect style="border-width:3px;left:203px;top:23px;right:226px;bottom:38px"></div>
+<div class=rect style="border-width:3px;left:403px;top:71px;right:2px;bottom:6px"></div>
+<div class="rect round" style="border-width:3px;left:427px;top:119px;right:26px;bottom:54px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:189.5px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:99px;top:55px;right:347px;bottom:151px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:104px;top:84px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:107px;top:87px;right:339px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:316px;top:132px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:413.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:319px;top:135px;right:123px;bottom:71px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:424px;top:53.5px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:335px;top:23px;right:115px;bottom:147px"></div>
+<div style="text-align:center;left:360px;top:0px;right:136px;bottom:192px">spawns</div>
+<div style="text-align:center;left:24px;top:32px;right:464px;bottom:160px">Browser</div>
+<div style="text-align:center;left:248px;top:32px;right:272px;bottom:160px">MDB</div>
+<div style="text-align:center;left:136px;top:64px;right:376px;bottom:128px">HTTP</div>
+<div style="text-align:center;left:448px;top:80px;right:48px;bottom:112px">Target</div>
+<div style="text-align:center;left:348px;top:96px;right:172px;bottom:96px">MDB</div>
+<div style="text-align:center;left:328px;top:112px;right:152px;bottom:80px">Protocol</div>
+<div style="text-align:center;left:440px;top:128px;right:40px;bottom:64px">mdbagent</div>
+</div>
+</div>
+<h3>
+<a name="Modes"></a>Modes
+</h3><p>
+The agent switches between two different modes:
+</p><ul type="circle">
+<li>
+<p>
+In <code>pause</code> mode the target program is suspended at a point of execution. The agent waits for messages from the debugger.
+</p>
+</li><li>
+<p>
+In <code>run</code> mode the target program is executing. The agent watches for the target to reach breakpoints and also watches for commands from the debugger.
+</p>
+</li>
+</ul><p>
+The debugger transitions from <code>pause</code> mode to <code>run</code> mode in response to <code>run</code> message from the server.
+</p><p>
+The debugger transitions from <code>run</code> mode to <code>pause</code> mode as a result of one of the following:
+</p><ul type="circle">
+<li>
+<p>
+a <code>pause</code> message from the server
+</p>
+</li><li>
+<p>
+a breakpoint is reached
+</p>
+</li><li>
+<p>
+a run limit is reached (&#8220;stepping&#8221; in, over, or out of functions)
+</p>
+</li><li>
+<p>
+an error triggered by the target program
+</p>
+</li><li>
+<p>
+the target program exiting
+</p>
+</li>
+</ul><h3>
+<a name="MDB%20Protocol"></a>MDB Protocol
+</h3><p>
+The MDB protocol describes the communication between MDB (the &#8220;client&#8221;) and the target process (the &#8220;server&#8221;).
+</p><p>
+Communication in each direction is a sequence of messages. Each message has an <b>ID</b> (a short ASCII string) and zero or more <b>values</b> (Lua values). The concrete syntax is defined in terms of how it is parsed, using PEG notation:
+</p><pre>Message  &lt;- ID Value* NL
+Value    &lt;- ( !SP !NL . )+ SP*
+ID       &lt;- ( !SP !NL . )+ SP*
+SP       &lt;- " "
+NL       &lt;- "\n"
+</pre><p>
+In the above syntax, &#8220;<code>.</code>&#8221; matches any byte.
+</p><p>
+Note that each <code>Value</code> non-terminal contains neither spaces nor newline characters. These contain encoded Lua values that can be decoded using <code>mdbser.decode</code>.
+</p><h4>
+<a name="Client%20Messages"></a>Client Messages
+</h4><p>
+Messages can be thought of as remote procedure invocations without return values. These are documented below as Lua functions. The function name is the message ID, and the function parameters are the message values.
+</p><ul>
+<li>
+<p>
+<code>bp(breakpoints)</code>
+</p><p>
+Update the active set of breakpoints. <code>breakpoints</code> is a table mapping file names to arrays of line numbers.
+</p>
+</li><li>
+<p>
+<code>eval(code)</code>
+</p><p>
+Compile and execute <code>code</code>. <code>code</code> is Lua source code to be treated as an expression (if a valid expression) or a Lua chunk (function body).
+</p><p>
+The evaluated code and its results and/or errors, if any, will be logged to the console, as described in <a href="#Console%20Entries">Console Entries</a>.
+</p>
+</li><li>
+<p>
+<code>run(limit)</code>
+</p><p>
+Resume execution, and optionally set a run limit as described by <code>limit</code>:
+</p><p>
+<code>"over"</code> : step over function calls. <code>"in"</code> : step into function calls. <code>"out"</code> : step out of the current function.
+</p><p>
+If any other value is supplied, no run limit will be in effect.
+</p>
+</li><li>
+<p>
+<code>sub(name)</code>: subscribe to an <a href="#Observable%20Items">observable item</a>. The server updates the server whenever the item's current value differs from the value most recently sent to the client. The server checks for updates before acknowledging each client message and before sending a &#8220;pause&#8221; message.
+</p>
+</li><li>
+<p>
+<code>unsub(name)</code>: unsubscribe to updates on an item.
+</p>
+</li>
+</ul><h4>
+<a name="Server%20Messages"></a>Server Messages
+</h4><ul>
+<li>
+<p>
+<code>pause()</code>
+</p><p>
+This is sent when the target transitions to &#8220;pause&#8221; mode from &#8220;run&#8221; mode. It is sent after subscribed values have been updated to reflect the new pause state.
+</p>
+</li><li>
+<p>
+<code>run()</code>
+</p><p>
+This is sent when the target transitions to &#8220;run&#8221; mode from &#8220;pause&#8221; mode.
+</p>
+</li><li>
+<p>
+<code>exit()</code>
+</p><p>
+This is sent when the the target returns from its main function. At this point the agent ceases communication with the server.
+</p>
+</li><li>
+<p>
+<code>log(entry)</code>
+</p><p>
+This appends an entry onto the debugging console. See <a href="#Console%20Entries">Console Entries</a>, below.
+</p>
+</li><li>
+<p>
+<code>set(name, value)</code>
+</p><p>
+This delivers a new value for a subscribed item. See <code>sub(name)</code>, above.
+</p>
+</li><li>
+<p>
+<code>ack()</code>
+</p><p>
+This acknowledges a client message. The server sends one <code>ack</code> for each message received from the client, after the documented actions have been performed.
+</p>
+</li>
+</ul><h4>
+<a name="Observable%20Items"></a>Observable Items
+</h4><p>
+<code>"stack"</code> is the contents of the stack as of the last time the target was in pause mode. This value is an array of tables describing stack frames, with the most deeply nested stack frame first. See getStack() in <code>mdbagent.lua</code> for the fields in each frame.
+</p><p>
+Items named <code>"pairs/DESC"</code>, where <code>DESC</code> is a <a href="#Value%20Descriptions">value description</a>, describe the contents of the table <code>DESC</code>. The value is an array of <code>{name=DESC, value=DESC}</code>, one for each key/value pair in the table.
+</p><p>
+Items named <code>"vars/INDEX"</code>, where <code>INDEX</code> is an integer, describe the local variables and upvalues visible in the function at a given activation record. The first index, 1, refers to the most deeply-nested activation record.
+</p><p>
+In error conditions the observed value will be a table with an <code>error</code> field with one of the following values:
+</p><ul>
+<li>
+<p>
+<code>"stale"</code> =&gt; the value description is no longer valid.
+</p>
+</li><li>
+<p>
+<code>"unk"</code> =&gt; the subscribed item name is unknown/unsupported.
+</p>
+</li>
+</ul><h4>
+<a name="Value%20Descriptions"></a>Value Descriptions
+</h4><p>
+A &#8220;Value Description&#8221; is a string that describes a Lua value.
+</p><ul>
+<li>
+<p>
+Simple data types (nil, boolean, number, and short strings) are represented as they appear in Lua source code. Strings are encoded using <code>string.format("%q", value)</code>, and control characters (\000 ... \031) are encoded as numeric escape sequences.
+</p>
+</li><li>
+<p>
+Reference data types (table, function, userdata, and thread) are encoded as the type name followed by a space and a numeric ID.
+</p>
+</li><li>
+<p>
+When strings exceed a certain length, an initial portion of the string is returned, followed by a numeric ID.
+</p>
+</li>
+</ul><p>
+Examples:
+</p><div class="indent"><table><tr><th><p>
+Type
+</p></th><th><p>
+Example Value Descriptions
+</p></th></tr><tr><td><p>
+nil
+</p></td><td><p>
+<code>nil</code>
+</p></td></tr><tr><td><p>
+boolean
+</p></td><td><p>
+<code>true</code>, <code>false</code>
+</p></td></tr><tr><td><p>
+number
+</p></td><td><p>
+<code>1</code>, <code>-1.234e20</code>
+</p></td></tr><tr><td><p>
+string
+</p></td><td><p>
+<code>"short string"</code>, <code>"long string ..." 12</code>
+</p></td></tr><tr><td><p>
+table
+</p></td><td><p>
+<code>table 14</code>
+</p></td></tr><tr><td><p>
+function
+</p></td><td><p>
+<code>function 15</code>
+</p></td></tr><tr><td><p>
+userdata
+</p></td><td><p>
+<code>userdata 17</code>
+</p></td></tr><tr><td><p>
+thread
+</p></td><td><p>
+<code>thread 201</code>
+</p></td></tr></table></div><h4>
+<a name="Console%20Entries"></a>Console Entries
+</h4><p>
+Each console entry is a string. The first byte of the string identifies the type of entry, and the remainder of the string is the payload, which is usually text to be displayed, but sometimes a <a href="#Value%20Descriptions">value description</a>.
+</p><p>
+The following entry types are defined:
+</p><ul>
+<li>
+<p>
+<code>C</code> = code that was executed using eval()
+</p>
+</li><li>
+<p>
+<code>E</code> = an error encountered during eval()
+</p>
+</li><li>
+<p>
+<code>R</code> = a value returned after executing a command; payload is a value description.
+</p>
+</li><li>
+<p>
+<code>S</code> = status message (from the debugger, not the target process)
+</p>
+</li><li>
+<p>
+<code>P</code> = text output using <code>debug.printf()</code>
+</p>
+</li><li>
+<p>
+<code>V</code> = a value logged via <code>debug.log()</code>; payload is a value description.
+</p>
+</li><li>
+<p>
+<code>W</code> = warning [internal condition]
+</p>
+</li>
+</ul><p>
+The content of a <code>P</code> entry uses an encoding to intersperse &#8220;%Q&#8221;-generated value descriptions. <code>!2</code> signifies the beginning of a value description and <code>!1</code> signifies the end. <code>!0</code> signifies a literal &#8220;!&#8221;, whether it occurs inside or outside of a value description.
+</p></div>
+</body>
+</html>

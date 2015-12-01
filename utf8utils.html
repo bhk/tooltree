@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>UTF8 Utilities</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="UTF8%20Utilities"></a>UTF8 Utilities
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#utf8utils.decode(str,%20ferr)">utf8utils.decode(str, ferr)</a></div><div class="tocLevel"><a href="#utf8utils.encode(index)">utf8utils.encode(index)</a></div><div class="tocLevel"><a href="#utf8utils.mbpattern">utf8utils.mbpattern</a></div><div class="tocLevel"><a href="#utf8utils.binToChars(blob)">utf8utils.binToChars(blob)</a></div><div class="tocLevel"><a href="#utf8utils.charsToBin(text)">utf8utils.charsToBin(text)</a></div><div class="tocLevel"><a href="#utf8utils.validate(string)">utf8utils.validate(string)</a></div></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>utf8utils</code> module returns a table of functions for dealing with utf8-encoded strings.
+</p><div class="indent"><pre>local utf8utils = require "utf8utils"
+</pre></div><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="utf8utils.decode(str,%20ferr)"></a><code>utf8utils.decode(str, ferr)</code>
+</h4><div class="indent"><p>
+Convert a utf8-encoded character to a Unicode index.
+</p><p>
+Returns a number from 0 to 0x10FFFF.
+</p><p>
+If the character is incomplete or in a non-canonical encoding, <code>decode</code> will call <code>ferr</code> with the decoded value and the input string and then return whatever values <code>ferr</code> returned. <code>ferr</code> defaults to a function that throws the error <code>"utf8: invalid byte sequence"</code>.
+</p></div><h4>
+<a name="utf8utils.encode(index)"></a><code>utf8utils.encode(index)</code>
+</h4><div class="indent"><p>
+Encode a Unicode index as a UTF-8 character.
+</p><p>
+Returns a string on success, and throws an error if <code>index</code> is out-of-range (greater than 0x10FFFF).
+</p></div><h4>
+<a name="utf8utils.mbpattern"></a><code>utf8utils.mbpattern</code>
+</h4><div class="indent"><p>
+This Lua pattern matches a single utf-8 character (without validating).
+</p></div><h4>
+<a name="utf8utils.binToChars(blob)"></a><code>utf8utils.binToChars(blob)</code>
+</h4><div class="indent"><p>
+Convert binary data stored as a byte array in <code>blob</code> to a utf-8 encoded character string.
+</p><p>
+Each byte in the input string is converted to a character with the same numeric value. This directly-mapped translation may be convenient for exchange with languages like JavaScript in which strings are arrays of 16-bit values.
+</p></div><h4>
+<a name="utf8utils.charsToBin(text)"></a><code>utf8utils.charsToBin(text)</code>
+</h4><div class="indent"><p>
+Convert binary data stored as utf-8-encoded characters to a simple byte array. This reverses <code>binToChars</code>.
+</p></div><h4>
+<a name="utf8utils.validate(string)"></a><code>utf8utils.validate(string)</code>
+</h4><div class="indent"><p>
+Throw an error if <code>string</code> is not valid utf-8.
+</p></div></div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Object Module</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Object%20Module"></a>Object Module
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#Object:new(...)">Object:new(...)</a></div><div class="tocLevel"><a href="#Object:initialize(...)">Object:initialize(...)</a></div><div class="tocLevel"><a href="#Object:basicNew()">Object:basicNew()</a></div><div class="tocLevel"><a href="#Object:adopt(t)">Object:adopt(t)</a></div><div class="tocLevel"><a href="#Object:getParent(parent)">Object:getParent(parent)</a></div></div><div class="tocLevel"><a href="#Example">Example</a></div><div class="tocLevel"><a href="#Details">Details</a></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>object</code> module implements a simple object system.
+</p><div class="indent"><pre>local Object = require "object"
+</pre></div><p>
+In this system, objects are Lua tables. Each object has a &#8220;parent&#8221; object. Objects <i>inherit</i> properties and methods from their parent object, which in turn inherits from its parent, and so on.
+</p><p>
+While this is usually called &#8220;class-less&#8221; or &#8220;prototype-based&#8221; inheritance, its usage is analogous to class-based languages. Some objects will typically be used to hold definitions of methods and common properties, while other objects will hold only per-instance state.
+</p><p>
+For convenience, we use the term <code>class</code> to refer to objects that are created for the purpose of serving as parents to other objects. (There is little chance of confusion since actual class-based OO systems, while easily implemented in Lua, are not commonly used.)
+</p><p>
+Classes typically inherit <code>new</code> and other methods from their parent and then override <code>initialize</code> and add other method definitions.
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="Object:new(...)"></a><code>Object:new(...)</code>
+</h4><div class="indent"><p>
+Create and initialize a new object that is a child of <code>self</code>.
+</p><p>
+<code>self:initialize</code> is called with all the arguments that were passed to <code>new</code>.
+</p></div><h4>
+<a name="Object:initialize(...)"></a><code>Object:initialize(...)</code>
+</h4><div class="indent"><p>
+Initialize <code>self</code>. This is called by <code>Object:new</code> after creating a new object.
+</p></div><h4>
+<a name="Object:basicNew()"></a><code>Object:basicNew()</code>
+</h4><div class="indent"><p>
+Create a new object that is a child of <code>self</code>, but do not initialize it.
+</p></div><h4>
+<a name="Object:adopt(t)"></a><code>Object:adopt(t)</code>
+</h4><div class="indent"><p>
+Make <code>self</code> the parent of table <code>t</code>.
+</p></div><h4>
+<a name="Object:getParent(parent)"></a><code>Object:getParent(parent)</code>
+</h4><div class="indent"><p>
+Return the parent of <code>self</code>.
+</p></div><h3>
+<a name="Example"></a>Example
+</h3><pre>local FIFO = Object:new()
+
+function FIFO:initialize()
+  self.t = {}
+  self.indexWrite = 1
+  self.indexRead = 1
+end
+
+function FIFO:put(item)
+   self.t[self.indexWrite] = item
+   self.indexWrite = self.indexWrite + 1
+end
+
+function FIFO:get()
+   local n = self.indexRead
+   if n &lt; self.indexWrite then
+       local item = self.t[n]
+       self.indexRead = n + 1
+       self.t[n] = nul
+       return item
+   end
+   return nil
+end
+
+function FIFO:count()
+   return self.indexWrite - self.indexRead
+end
+
+
+local fifo = FIFO:new()
+fifo:put("A")
+fifo:put("B")
+print(fifo:get()) --&gt; "A"
+print(fifo:get()) --&gt; "B"
+print(fifo:get()) --&gt; nil
+</pre><p>
+In the above example, the parent of <code>fifo</code> is <code>FIFO</code>, and the parent of <code>FIFO</code> is <code>Object</code>. <code>Object</code> has no parent.
+</p><p>
+As with all module return values, <code>Object</code> itself should never be modified by clients.
+</p><h3>
+<a name="Details"></a>Details
+</h3><p>
+Inheritance is achieved by setting the metatable of an object to its parent, and by setting the <code>__index</code> metamethod of each parent to itself. This is the approach described in <i>Programming in Lua</i>.
+</p></div>
+</body>
+</html>

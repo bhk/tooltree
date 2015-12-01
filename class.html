@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>class.js</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="class.js"></a>class.js
+</h1><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+This module exports an object called <code>Class</code> that simplifies defining objects.
+</p><p>
+The name &#8220;class&#8221; is admittedly a misnomer, but the name &#8220;Object&#8221; is already taken, and the name &#8220;Prototype&#8221; would probably add confusion given its use in JavaScript. We try use the following terms consistently:
+</p><ul type="circle">
+<li>
+<p>
+A &#8220;class&#8221; is an object that is defined for the purpose of having its properties inherited by instances or subclasses.
+</p>
+</li><li>
+<p>
+A &#8220;subclass&#8221; is a class that derives from another class. It is created using the <code>subclass</code> method of its parent class, and inherits properties from its parent (and its parent, and so on).
+</p>
+</li><li>
+<p>
+An &#8220;instance&#8221; is an object that is not used as a parent for other objects. It is created using the <code>create</code> method of its parent class, and inherits properties from its parent (and its parent, and so on).
+</p>
+</li>
+</ul><h2>
+<a name="API"></a>API
+</h2><h4>
+<a name="Class.subclass(...)"></a><code>Class.subclass(...)</code>
+</h4><div class="indent"><p>
+Create a new object that inherits from <code>this</code>.
+</p><p>
+If a <code>subclassInitialize</code> method is defined, it will be called with all the arguments that were passed to <code>subclass</code>.
+</p></div><h4>
+<a name="Class.create(...)"></a><code>Class.create(...)</code>
+</h4><div class="indent"><p>
+Create a new object that inherits from <code>this</code>.
+</p><p>
+If an <code>initialize</code> method is defined, it will be called with all the arguments that were passed to <code>create</code>.
+</p></div><h4>
+<a name="Class.initialize(...)"></a><code>Class.initialize(...)</code>
+</h4><div class="indent"><p>
+Initialize instance <code>this</code>.
+</p></div><h4>
+<a name="Class.subclassInitialize(...)"></a><code>Class.subclassInitialize(...)</code>
+</h4><div class="indent"><p>
+Initialize subclass <code>this</code>.
+</p></div><h2>
+<a name="Usage"></a>Usage
+</h2><pre>var Child = Parent.subclass();
+
+Child.initialize = function () { /* construct */ };
+
+Child.funca = function () { /* do something */ };
+
+var obj = Child.create();
+</pre><p>
+Here the inheritance chain is:
+</p><div class=diagram>
+<div class="html2d art" style="width:184px;height:16px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:45.5px;top:4px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:31px;top:7px;right:131px;bottom:7px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:125.5px;top:4px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:111px;top:7px;right:51px;bottom:7px;line-height:0"></div>
+<div style="text-align:right;left:-24px;top:0px;right:160px;bottom:0px">obj</div>
+<div style="text-align:center;left:64px;top:0px;right:80px;bottom:0px">Child</div>
+<div style="left:144px;top:0px;right:0px;bottom:0px">Class</div>
+</div>
+</div>
+<p>
+For comparison, here is how we would implement this inheritance chain with JavaScript's &#8220;stock&#8221; constructor-based approach:
+</p><pre>function Child(uri) { /* construct */ };
+
+// note: avoid `new Parent` because it will create instance members
+Child.prototype = Object.create(Parent.prototype);
+
+Child.prototype.funca = function () { /* do something */ };
+
+var obj = new Child();
+</pre><p>
+Here the inheritance chain is:
+</p><div class=diagram>
+<div class="html2d art" style="width:352px;height:16px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:45.5px;top:4px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:31px;top:7px;right:299px;bottom:7px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:205.5px;top:4px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:191px;top:7px;right:139px;bottom:7px;line-height:0"></div>
+<div style="text-align:right;left:-24px;top:0px;right:328px;bottom:0px">obj</div>
+<div style="text-align:center;left:64px;top:0px;right:168px;bottom:0px">Child.prototype</div>
+<div style="left:224px;top:0px;right:0px;bottom:0px">Parent.prototype</div>
+</div>
+</div>
+</div>
+</body>
+</html>

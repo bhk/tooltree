@@ -1,0 +1,1961 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>Pakman User's Guide</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Pakman%20User's%20Guide"></a>Pakman User's Guide
+</h1><div class="indent"><p>
+Pakman retrieves sources from a version control system onto your local machine to be built. It allows software to be grouped into self-contained software components that clearly designate their dependencies and have well-defined outputs, so software can be built with controlled dependencies that are automatically marshaled, without assumptions about the build environment or manual system configuration. This enables hassle-free builds, repeatable results, consistent builds across different machines, and flexible reconfiguration of software for development, analysis, and release management.
+</p><p>
+Unlike many package management tools, Pakman focuses on avoiding <i>installation</i> of software components on the local machine. Instead, components are made aware of their dependencies with &#8220;glue&#8221; files. Pakman projects thereby make no demands on system configuration that might interfere with other projects or applications.
+</p></div><h2>
+<a name="Contents"></a>Contents
+</h2><div class="toc"><div class="tocLevel"><a href="#Introduction">Introduction</a><div class="tocLevel"><a href="#Setup">Setup</a></div><div class="tocLevel"><a href="#Getting%20a%20Project">Getting a Project</a></div><div class="tocLevel"><a href="#Building%20a%20Project">Building a Project</a></div><div class="tocLevel"><a href="#Further%20Reading">Further Reading</a></div></div><div class="tocLevel"><a href="#Command%20Syntax">Command Syntax</a><div class="tocLevel"><a href="#pakman%20get">pakman get</a></div><div class="tocLevel"><a href="#pakman%20map">pakman map</a></div><div class="tocLevel"><a href="#pakman%20visit">pakman visit</a></div><div class="tocLevel"><a href="#pakman%20make">pakman make</a></div><div class="tocLevel"><a href="#pakman%20describe">pakman describe</a></div><div class="tocLevel"><a href="#pakman%20help">pakman help</a></div><div class="tocLevel"><a href="#pakman%20version">pakman version</a></div><div class="tocLevel"><a href="#Options">Options</a><div class="tocLevel"><a href="#--config=%3cname%3e">--config=&lt;name&gt;</a></div><div class="tocLevel"><a href="#--force">--force</a></div><div class="tocLevel"><a href="#--log=%3cfile%3e">--log=&lt;file&gt;</a></div><div class="tocLevel"><a href="#--mapshort">--mapshort</a></div><div class="tocLevel"><a href="#--p4=%3ccommand%3e">--p4=&lt;command&gt;</a></div><div class="tocLevel"><a href="#--p4-sync=%3cflags%3e">--p4-sync=&lt;flags&gt;</a></div><div class="tocLevel"><a href="#--verbose%20/%20-v">--verbose / -v</a></div><div class="tocLevel"><a href="#--version">--version</a></div></div></div><div class="tocLevel"><a href="#Pakman%20Concepts">Pakman Concepts</a><div class="tocLevel"><a href="#Component-based%20Builds">Component-based Builds</a></div><div class="tocLevel"><a href="#Theory%20of%20Operation">Theory of Operation</a><div class="tocLevel"><a href="#Reading%20From%20VCS%20or%20the%20Local%20File%20System">Reading From VCS or the Local File System</a></div><div class="tocLevel"><a href="#Version%20Conflicts">Version Conflicts</a></div></div><div class="tocLevel"><a href="#Package%20Locations">Package Locations</a><div class="tocLevel"><a href="#Query%20and%20Fragment">Query and Fragment</a></div></div><div class="tocLevel"><a href="#Types%20of%20Packages">Types of Packages</a></div><div class="tocLevel"><a href="#Workspace%20Management">Workspace Management</a><div class="tocLevel"><a href="#Creating%20Maps">Creating Maps</a></div><div class="tocLevel"><a href="#Editing%20Workspace%20Views">Editing Workspace Views</a></div><div class="tocLevel"><a href="#Overlay%20Mappings">Overlay Mappings</a></div><div class="tocLevel"><a href="#Nested%20Roots">Nested Roots</a></div></div></div><div class="tocLevel"><a href="#Pakfiles">Pakfiles</a><div class="tocLevel"><a href="#package.commands">package.commands</a></div><div class="tocLevel"><a href="#package.deps">package.deps</a></div><div class="tocLevel"><a href="#package.files">package.files</a></div><div class="tocLevel"><a href="#package.glue">package.glue</a><div class="tocLevel"><a href="#min%20Files">min Files</a></div><div class="tocLevel"><a href="#Templates">Templates</a></div><div class="tocLevel"><a href="#MAK%20files">MAK files</a></div><div class="tocLevel"><a href="#Glue%20File%20Conflicts">Glue File Conflicts</a></div></div><div class="tocLevel"><a href="#package.mapping">package.mapping</a><div class="tocLevel"><a href="#Custom%20Mapping%20Functions">Custom Mapping Functions</a></div></div><div class="tocLevel"><a href="#package.message">package.message</a></div><div class="tocLevel"><a href="#package.params">package.params</a></div><div class="tocLevel"><a href="#package.redir">package.redir</a></div><div class="tocLevel"><a href="#package.result">package.result</a></div><div class="tocLevel"><a href="#package.root">package.root</a></div><div class="tocLevel"><a href="#package.shared">package.shared</a></div><div class="tocLevel"><a href="#String%20Expansion">String Expansion</a></div><div class="tocLevel"><a href="#Deprecated%20Features">Deprecated Features</a></div><div class="tocLevel"><a href="#Pakfile%20Environment">Pakfile Environment</a><div class="tocLevel"><a href="#pmlib">pmlib</a></div><div class="tocLevel"><a href="#sys">sys</a></div><div class="tocLevel"><a href="#Global%20Functions">Global Functions</a></div></div><div class="tocLevel"><a href="#Package%20Objects">Package Objects</a></div></div><div class="tocLevel"><a href="#Configuration%20Files">Configuration Files</a><div class="tocLevel"><a href="#Configuration%20Variables">Configuration Variables</a><div class="tocLevel"><a href="#config.verbose">config.verbose</a></div><div class="tocLevel"><a href="#config.mapping">config.mapping</a></div><div class="tocLevel"><a href="#config.vcs.p4.command">config.vcs.p4.command</a></div></div><div class="tocLevel"><a href="#Hooks">Hooks</a><div class="tocLevel"><a href="#packageGlue%20hook">packageGlue hook</a></div><div class="tocLevel"><a href="#onVisit%20hook">onVisit hook</a></div></div></div><div class="tocLevel"><a href="#Use%20Cases%20and%20Strategies">Use Cases and Strategies</a><div class="tocLevel"><a href="#Build%20Variants">Build Variants</a><div class="tocLevel"><a href="#Build%20Variants%20with%20Parameters">Build Variants with Parameters</a></div><div class="tocLevel"><a href="#Unrecognized%20Parameters">Unrecognized Parameters</a></div><div class="tocLevel"><a href="#Guidelines%20for%20Variants">Guidelines for Variants</a></div></div><div class="tocLevel"><a href="#Multi-Server%20Projects">Multi-Server Projects</a><div class="tocLevel"><a href="#Directory%20Organization%20for%20Multiple%20Servers">Directory Organization for Multiple Servers</a></div><div class="tocLevel"><a href="#Cross-Server%20Versioning">Cross-Server Versioning</a></div><div class="tocLevel"><a href="#Using%20Proxies%20with%20Multiple%20Servers">Using Proxies with Multiple Servers</a></div></div><div class="tocLevel"><a href="#Multi-Client%20Projects">Multi-Client Projects</a></div><div class="tocLevel"><a href="#Package%20Guidelines">Package Guidelines</a><div class="tocLevel"><a href="#Location%20Independence">Location Independence</a></div><div class="tocLevel"><a href="#Minimize%20Environment%20Dependencies">Minimize Environment Dependencies</a></div><div class="tocLevel"><a href="#Minimizing%20Coupling">Minimizing Coupling</a></div></div><div class="tocLevel"><a href="#Switching%20Dependencies">Switching Dependencies</a></div><div class="tocLevel"><a href="#Switching%20Dependencies%20at%20Build%20Time">Switching Dependencies at Build Time</a></div><div class="tocLevel"><a href="#Automating%20Pakman">Automating Pakman</a></div><div class="tocLevel"><a href="#Archiving%20Builds">Archiving Builds</a><div class="tocLevel"><a href="#Build-time%20and%20Run-time%20Dependencies">Build-time and Run-time Dependencies</a></div></div><div class="tocLevel"><a href="#Bootstrapping%20Pakman">Bootstrapping Pakman</a></div><div class="tocLevel"><a href="#./configure">./configure</a></div><div class="tocLevel"><a href="#Alternatives%20to%20Pakman">Alternatives to Pakman</a><div class="tocLevel"><a href="#“Big%20Tree”">&#8220;Big Tree&#8221;</a></div><div class="tocLevel"><a href="#Limited%20or%20no%20Automation">Limited or no Automation</a></div><div class="tocLevel"><a href="#Other%20Tools">Other Tools</a></div></div></div><div class="tocLevel"><a href="#Troubleshooting">Troubleshooting</a><div class="tocLevel"><a href="#Frequently-Encountered%20Problems">Frequently-Encountered Problems</a></div><div class="tocLevel"><a href="#Reporting%20Problems">Reporting Problems</a></div></div></div><h2>
+<a name="Introduction"></a>Introduction
+</h2><p>
+This first section provides a gentle introduction to Pakman by walking through an example of using Pakman to retrieve and build a product that consists of several independent components. This is a real working example, so you may follow along, if you like, replicating these steps on your machine.
+</p><h3>
+<a name="Setup"></a>Setup
+</h3><p>
+Pakman is contained in a single binary executable.
+</p><p>
+You can copy the executable into a directory that is in your path, or you can add the builds/WinNT directory to your workspace and include that in your path. You can try typing <code>pakman help</code> to verify that you have it installed. See <a href="#Troubleshooting">Troubleshooting</a>, below, if you experience problems.
+</p><p>
+This document describes pakman version 0.996.
+</p><h3>
+<a name="Getting%20a%20Project"></a>Getting a Project
+</h3><p>
+Pakman's &#8220;get&#8221; sub-command retrieves a package and prepares it for building. Pakman uses a URI-like format to describe package locations. This identifies the type of Version Control System (VCS), the server, and the location within the server.
+</p><p>
+If you are starting with an empty client workspace (no views mapped), then you should be able to type the following command and see similar output:
+</p><pre style="font-size: 78%">$ pakman get p4://acme123/depot/users/bhk/proto/pakman/pak@939260
+Getting p4://acme123/depot/users/bhk/proto/pakman/pak@939260
+mapping //depot/users/bhk/proto/pakman
+mapping //depot/users/bhk/opensource/lua/lpeg-0.9
+mapping //depot/users/bhk/proto/runlua
+mapping //depot/users/bhk/proto/make.d
+mapping //main/build/tools
+mapping //make.d
+mapping //depot/users/bhk/builds/pkgs/lua-5.1.4
+mapping //depot/users/bhk/proto/simp4
+mapping //depot/users/bhk/proto/luau
+mapping //depot/users/bhk/opensource/lua/luafilesystem-1.4.2
+updating client pakmantest
+Client pakmantest saved.
+syncing p4://acme123.com:1666/build/tools/Darwin/...@939260
+ [10 changes]
+syncing p4://acme123.com:1666/make.d/...@939260
+ [113 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/builds/pkgs/lua-5.1.4/darwin_...@939260
+ [4 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/builds/pkgs/lua-5.1.4/inc/...@939260
+ [4 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/opensource/lua/lpeg-0.9/...@939260
+ [7 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/opensource/lua/luafilesystem-1.4.2/...@939260
+ [26 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/proto/luau/...@939260
+ [29 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/proto/make.d/...@939260
+ [4 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/proto/pakman/...@939260
+ [20 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/proto/runlua/...@939260
+ [13 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/proto/simp4/...@939260
+ [5 changes]
+writing /Users/bhk/p4/pkg/pakman/x.min
+writing /Users/bhk/p4/pkg/pakman/x.mak
+writing /Users/bhk/p4/pkg/runlua/x.min
+writing /Users/bhk/p4/pkg/runlua/x.mak
+writing /Users/bhk/p4/pkg/make.d/x.min
+writing /Users/bhk/p4/pkg/simp4/x.min
+writing /Users/bhk/p4/pkg/simp4/x.mak
+writing /Users/bhk/p4/pkg/luau/x.min
+writing /Users/bhk/p4/pkg/luau/x.mak
+Done.  10 packages retrieved.
+To build:
+    cd pkg/pakman
+    make -f x.mak            # builds the package and its dependencies
+    make all                 # builds just the package
+</pre><p>
+We can see from the output that Pakman retrieved not just one directory of files, but several. This is because the requested package has dependencies &#8212; other packages that must be retrieved in order to enable it to be built. These are described in package description files that Pakman reads from the server. Pakman recursively visits the entire tree of dependencies and retrieves their files.
+</p><p>
+The following diagram summarizes the packages that make up the project and their relationships to each other:
+</p><div class=diagram>
+<div class="html2d art" style="width:408px;height:480px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:3px;top:7px;right:298px;bottom:438px"></div>
+<div class="rect round" style="border-width:3px;left:99px;top:103px;right:202px;bottom:342px"></div>
+<div class="rect round" style="border-width:3px;left:51px;top:55px;right:250px;bottom:390px"></div>
+<div class="rect round" style="border-width:3px;left:243px;top:439px;right:34px;bottom:6px"></div>
+<div class="rect round" style="border-width:3px;left:195px;top:295px;right:2px;bottom:150px"></div>
+<div class="rect round" style="border-width:3px;left:99px;top:151px;right:202px;bottom:294px"></div>
+<div class="rect round" style="border-width:3px;left:243px;top:391px;right:50px;bottom:54px"></div>
+<div class="rect round" style="border-width:3px;left:195px;top:343px;right:74px;bottom:102px"></div>
+<div class="rect round" style="border-width:3px;left:147px;top:199px;right:154px;bottom:246px"></div>
+<div class="rect round" style="border-width:3px;left:147px;top:247px;right:154px;bottom:198px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:133.5px;top:260px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:123px;top:183px;right:267px;bottom:215px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:37.5px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:71px;right:363px;bottom:407px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:215px;right:315px;bottom:263px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:37.5px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:215px;right:363px;bottom:263px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:37.5px;top:260px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:27px;top:39px;right:363px;bottom:215px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:229.5px;top:404px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:219px;top:407px;right:171px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:37.5px;top:164px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:167px;right:363px;bottom:311px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:164px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:167px;right:315px;bottom:311px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:133.5px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:123px;top:215px;right:267px;bottom:263px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:229.5px;top:452px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:219px;top:375px;right:171px;bottom:23px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:260px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:75px;top:87px;right:315px;bottom:215px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:37.5px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:119px;right:363px;bottom:359px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:181.5px;top:308px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:171px;top:311px;right:219px;bottom:167px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:181.5px;top:356px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:171px;top:279px;right:219px;bottom:119px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:119px;right:315px;bottom:359px;line-height:0"></div>
+<div style="left:16px;top:16px;right:344px;bottom:448px">pakman</div>
+<div style="left:64px;top:64px;right:304px;bottom:400px">simp4</div>
+<div style="left:112px;top:112px;right:264px;bottom:352px">lpeg</div>
+<div style="left:112px;top:160px;right:264px;bottom:304px">luau</div>
+<div style="left:160px;top:208px;right:224px;bottom:256px">lfs</div>
+<div style="left:160px;top:256px;right:200px;bottom:208px">runlua</div>
+<div style="left:208px;top:304px;right:32px;bottom:160px">lua-5.1.4 (pre-built)</div>
+<div style="left:208px;top:352px;right:104px;bottom:112px">proto/make.d</div>
+<div style="left:256px;top:400px;right:104px;bottom:64px">make.d</div>
+<div style="left:256px;top:448px;right:64px;bottom:16px">build/tools</div>
+</div>
+</div>
+<p>
+The <code>pakman</code> package depends directly on five packages and indirectly on four others. The <code>runlua</code> package is required by three other packages &#8212; <code>luau</code>, <code>simp4</code>, and <code>pakman</code> &#8212; and in turn it directly depends on two other packages. You can generate a diagram like this for any project using the <a href="#pakman%20describe">pakman describe</a> command.
+</p><p>
+When Pakman retrieves sources it does so using &#8220;p4 sync&#8221;, leaving them under version control. Pakman will automatically add rules to a workspace view (as reported above in the output log) but it maintains a <i>usable</i> workspace: files map simply and directly to repository locations. Pakman never removes files from a workspace view. Developers retain control over their workspace view and can continue to interact with Perforce as usual, editing and submitting changes and resolving conflicts.
+</p><h3>
+<a name="Building%20a%20Project"></a>Building a Project
+</h3><p>
+Now that the source tree has been constructed, you can issue the command to build the project (as described by Pakman in the above output):
+</p><pre>$ cd pkg/pakman
+$ make -f x.mak
+making ../runlua
+making ../luau
+making ../simp4
+making .
+</pre><p>
+The &#8220;x.mak&#8221; file knows how to build both Pakman and all of its dependencies, and build them in the correct order. Not all of the dependencies appear in the above output because some dependencies have no build step of their own.
+</p><p>
+This step does not directly involve Pakman, but it makes use of <i>glue</i> files, like <code>x.mak</code>, that were created by Pakman when the project was retrieved. This means that a Pakman-constructed source tree can be built offline, or without access to a Pakman executable. Glue files use relative paths to refers to other packages, so Pakman source trees are copy-deployable: the tree will be build-able after being copied to another location or another machine.
+</p><h3>
+<a name="Further%20Reading"></a>Further Reading
+</h3><p>
+If you have experience working with Perforce and managing your local workspace views, you might want to read the section on <a href="#Workspace%20Management">Workspace Management</a> to better understand how it will fit into your working style.
+</p><p>
+If you want to create new packages, or create or maintain packages, then you will want to read the sections on <a href="#Pakman%20Concepts">Pakman Concepts</a> and <a href="#package.glue">package.glue</a>.
+</p><p>
+If you are managing a large project and want to establish efficient processes for a team, then you will be interested mostly in the section on <a href="#Use%20Cases%20and%20Strategies">Use Cases and Strategies</a>.
+</p><h2>
+<a name="Command%20Syntax"></a>Command Syntax
+</h2><h3>
+<a name="pakman%20get"></a>pakman get
+</h3><div class="indent"><p>
+&#8220;pakman get &lt;location&gt;&#8221; will retrieve a package from a VCS server.
+</p><p>
+The specified &lt;location&gt; may be an absolute URI, an Perforce depot location, or a local file or directory name.
+</p><table><tr><td><pre>pakman get project/pak                    
+pakman get .                              
+</pre></td><td><p>
+local file or directory
+</p></td></tr><tr><td><pre>pakman get p4://p4d/depot/proj/pak        
+pakman get p4://p4d:1666/depot/proj/pak   
+</pre></td><td><p>
+Perforce
+</p></td></tr><tr><td><pre>pakman get //depot/proj/pak               
+pakman get p4:///depot/proj/pak           
+</pre></td><td><p>
+Perforce (default server)
+</p></td></tr></table><p>
+If a local file or directory name is given and it lies within the current Perforce client view, the corresponding &#8220;p4:&#8221; URI will be substituted, so relative URIs in the pak file will be treated as relative to the Perforce location.
+</p><p>
+If the file does not fall under the current view, a &#8220;file:&#8221; URI will be used. See <a href="#Package%20Locations">Package Locations</a> for details of package URIs.
+</p><p>
+Note that while Perforce depot locations &#8212; <code>//depotname/path</code> &#8212; are valid on the command line as arguments to <code>pakman get</code>, they are not valid in pakfiles, where only URIs are used.
+</p><p>
+The <code>get</code> command performs all four steps described in the <a href="#Theory%20of%20Operation">Theory of Operation</a> section.
+</p></div><h3>
+<a name="pakman%20map"></a>pakman map
+</h3><div class="indent"><p>
+&#8220;pakman map &lt;location&gt;&#8221; implements a subset of <a href="#pakman%20get">pakman get</a>.
+</p><p>
+This &#8220;map&#8221; command performs the &#8220;Visit&#8221; and &#8220;Map&#8221; steps described in the <a href="#Theory%20of%20Operation">Theory of Operation</a> section. It validates or creates local mappings for a package tree, but does not retrieve source files or write glue files. This allows a user to review and perhaps edit the resulting client workspace before retrieving any files. This can save time when the user anticipates reviewing and editing the modifications Pakman might make to the workspace view.
+</p></div><h3>
+<a name="pakman%20visit"></a>pakman visit
+</h3><div class="indent"><p>
+&#8220;pakman visit &lt;location&gt;&#8221; implements a subset of <a href="#pakman%20get">pakman get</a>.
+</p><p>
+The &#8220;visit&#8221; command performs only the first step described in the <a href="#Theory%20of%20Operation">Theory of Operation</a>. It does not modify the workspace or local files. This can be useful for validating pakfiles or for executing scripts attached to the &#8220;onVisit&#8221; hook.
+</p></div><h3>
+<a name="pakman%20make"></a>pakman make
+</h3><div class="indent"><p>
+&#8220;pakman make &lt;location&gt;&#8221; retrieves the specified package and then builds it.
+</p><p>
+Package retrieval is done exactly as in <a href="#pakman%20get">pakman get</a>. Building the package involves changing the working directory to the root directory of the retrieved package and executing its &#8220;tree make&#8221; command (or its local build command, if no <code>MAK</code> file and no <code>commands.maketree</code> value is specified for that package.)
+</p><p>
+If the build step fails (returns a non-zero exit code), Pakman will exit with the same exit code.
+</p></div><h3>
+<a name="pakman%20describe"></a>pakman describe
+</h3><div class="indent"><p>
+&#8220;pakman describe &lt;location&gt;&#8221; examines a package and its dependencies and displays a graph of the project tree. Packages that have build steps (commands.make) are marked with an asterisk (&#8220;<code>*</code>&#8221;).
+</p><p>
+This does not retrieve or map the project.
+</p></div><h3>
+<a name="pakman%20help"></a>pakman help
+</h3><div class="indent"><p>
+&#8220;pakman help [&lt;topic&gt;]&#8221; displays help on various aspects of command-line usage.
+</p></div><h3>
+<a name="pakman%20version"></a>pakman version
+</h3><div class="indent"><p>
+&#8220;pakman version&#8221; displays the version of Pakman.
+</p></div><h3>
+<a name="Options"></a>Options
+</h3><div class="indent"><p>
+Options are order-independent and may be specified before or after other arguments. The pseudo-option &#8220;&#8212;&#8221; terminates option processing; words that follow &#8220;&#8212;&#8221; will not be treated as options.
+</p><h4>
+<a name="--config=%3cname%3e"></a><code>--config=&lt;name&gt;</code>
+</h4><div class="indent"><p>
+This specifies the name to use when looking for a config file, overriding the default name. An empty file name (&#8220;&#8212;config=&#8221;) causes pakman to use no config file. See &#8220;pakman help config&#8221;.
+</p></div><h4>
+<a name="--force"></a><code>--force</code>
+</h4><div class="indent"><p>
+This option causes Pakman to proceed in some situations that would ordinary result in a fatal error, such as a &#8220;depot conflict&#8221; error. See <a href="#Workspace%20Management">Workspace Management</a> for more details.
+</p></div><h4>
+<a name="--log=%3cfile%3e"></a><code>--log=&lt;file&gt;</code>
+</h4><div class="indent"><p>
+This option directs pakman to log detailed information on the actions it performs to the specified file.
+</p></div><h4>
+<a name="--mapshort"></a><code>--mapshort</code>
+</h4><div class="indent"><p>
+This sets the default mapping function to <code>pmlib.mapShort</code>. See <a href="#package.mapping">package.mapping</a> for more details.
+</p></div><h4>
+<a name="--p4=%3ccommand%3e"></a><code>--p4=&lt;command&gt;</code>
+</h4><div class="indent"><p>
+This specifies the command name used by pakman to invoke the p4 client. The default is &#8220;p4&#8221;. This overrides any &#8220;p4.command&#8221; setting in the config file.
+</p></div><h4>
+<a name="--p4-sync=%3cflags%3e"></a><code>--p4-sync=&lt;flags&gt;</code>
+</h4><div class="indent"><p>
+This modifies the behavior of <code>p4 sync</code> operations performed by Pakman. &lt;flags&gt; is one or more flag characters to be passed to the Perforce command line tool. For example, &#8220;<code>--p4-sync=np</code>&#8221; results in &#8220;<code>p4 sync -n -p</code>&#8221;. This option can appear multiple times on the command line to specify multiple <code>p4 sync</code> options.
+</p></div><h4>
+<a name="--verbose%20/%20-v"></a><code>--verbose / -v</code>
+</h4><div class="indent"><p>
+This causes pakman to log detailed information to <code>stdout</code>.
+</p></div><h4>
+<a name="--version"></a><code>--version</code>
+</h4><div class="indent"><p>
+This displays version information (same as the &#8220;version&#8221; subcommand).
+</p></div></div><h2>
+<a name="Pakman%20Concepts"></a>Pakman Concepts
+</h2><h3>
+<a name="Component-based%20Builds"></a>Component-based Builds
+</h3><p>
+Pakman supports <i>component-based</i> builds. The central idea is that a software build process can be decomposed into a set of components. Each component has a collection of source <b>files</b>. A component has its own <b>build step</b>, and a set of <b>dependencies</b> on other components. A component can produce build <b>results</b>: the files that are available after its build step is complete. A component's results are constructed from its own source files and its dependencies. In a large build system, higher-level components can construct their results using the results of lower-level components.
+</p><p>
+The term &#8220;component&#8221; implies the ability to substitute one implementation for another. A component has an external <i>interface</i> or <i>contract</i> independent of its implementation. In the case of a build system component, its interface consists of its build results: what files are expected to be there, and what interfaces or contracts those files are expected to meet.
+</p><p>
+For example, a version 1.1 branch of a component could be substituted for a version 1.0 branch as long as the version 1.1 branch produces all of the result files expected by the 1.0 consumer and as long as those files meet the same functional requirements. Another example of interchangeability is when a pre-built instance of a component is substituted for one that builds from source. In this case the result files are identical although the build step differs.
+</p><p>
+Each component can be built independently of its &#8220;parents&#8221; (other components that consume its results). In fact, in Pakman's implementation, build components do not even know of the existence of their parents. Each component is self-contained. This ensures that components can be re-used in other projects or configurations.
+</p><p>
+One type of component is a component without a build step. In this case, the &#8220;results&#8221; of such a component consist of the versioned files associated with the component, or some subset of them.
+</p><p>
+Another common case is a component that supports <b>variants</b>: different sets of build results generated from the same set of sources. A common example is when a library may be compiled in <i>debug</i> or <i>release</i> mode. The concept of variant builds can also apply to build results that do not resemble each other. In addition to debug and release variants, a directory of C source files might be able to generate documentation files or metrics describing code coverage.
+</p><p>
+Pakman uses the term <i>package</i> generally to refer to a build component. When a component can produce multiple build results, a package refers to a specific variant. Naming a package, thereby, names a specific set of build results.
+</p><h3>
+<a name="Theory%20of%20Operation"></a>Theory of Operation
+</h3><p>
+Pakman's main function is retrieval of <i>package trees</i> from version control onto the local file system in a form ready to be built. This process consists of the following steps:
+</p><ol type="1">
+<li>
+<p>
+<b>Visit</b>: retrieve and process the description file (&#8220;pakfile&#8221;) for a specified package, then its dependencies, and so forth until the entire package tree has been visited. (More precisely, this is a directed acyclic graph (DAG), not a tree, since diamond-shaped dependencies are allowed.) <a href="#Version%20Conflicts">Version Conflicts</a> are detected at this time.
+</p>
+</li><li>
+<p>
+<b>Map</b>: locate or create mappings for each package root directory. Mapping conflicts are detected at this time. See <a href="#Workspace%20Management">Workspace Management</a> for more information.
+</p>
+</li><li>
+<p>
+<b>Sync</b>: retrieve source files from the repository to the local file system. The source files retrieved are those under the root directories for the packages. The <a href="#package.files">package.files</a> parameter may limit the number of files to be retrieved in this step.
+</p>
+</li><li>
+<p>
+<b>Glue</b>: write glue files into the local file tree. Glue files are described in the <a href="#package.glue">package.glue</a> section.
+</p>
+</li>
+</ol><h4>
+<a name="Reading%20From%20VCS%20or%20the%20Local%20File%20System"></a>Reading From VCS or the Local File System
+</h4><p>
+When Pakman retrieves files with &#8220;p4:&#8221; URIs during the visit stage, it does not &#8220;check out&#8221; or &#8220;sync&#8221; the package description files into a local workspace; it reads the contents directly from the VCS server.
+</p><p>
+If the current workspace contains a local copy of the &#8220;p4:&#8221; file, the local copy will be used <i>if</i> it has been edited &#8212; specifically, when the &#8220;read-only&#8221; bit is not set in Windows, or the writable permission bit is set in UNIX-derived OSes. The local file will also be used when no copy exists in the server, and directories that exist locally will be recognized even if they do not exist on the server.
+</p><h4>
+<a name="Version%20Conflicts"></a>Version Conflicts
+</h4><p>
+Perforce does not allow one place in the repository to be synced to two different places in one workspace. When two different packages require different revisions of the same repository file, Pakman will detect this conflict and abandon the &#8220;get&#8221; operation before syncing or generating any files. These kinds of conflicts can arise when two different versions of a package appear in a dependency graph. For example, if package A requires B@2 and C@2, but B@2 requires C@1, then we have a version conflict.
+</p><h3>
+<a name="Package%20Locations"></a>Package Locations
+</h3><p>
+Pakman identifies packages using a URI-like syntax. A package location consists of the following parts:
+</p><div class=diagram>
+<div class="html2d art" style="width:560px;height:80px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="drect round" style="border-width:2px;left:395px;top:7px;right:75px;bottom:39px"></div>
+<div class="drect round" style="border-width:2px;left:3px;top:7px;right:507px;bottom:39px"></div>
+<div class="drect round" style="border-width:2px;left:315px;top:7px;right:179px;bottom:39px"></div>
+<div class="drect round" style="border-width:2px;left:67px;top:7px;right:395px;bottom:39px"></div>
+<div class="drect round" style="border-width:2px;left:179px;top:7px;right:259px;bottom:39px"></div>
+<div class="drect round" style="border-width:2px;left:499px;top:7px;right:3px;bottom:39px"></div>
+<div class=dline style="border-left-width:2px;left:27px;top:39px;right:531px;bottom:15px"></div>
+<div class=dline style="border-left-width:2px;left:115px;top:39px;right:443px;bottom:15px"></div>
+<div class=dline style="border-left-width:2px;left:235px;top:39px;right:323px;bottom:15px"></div>
+<div class=dline style="border-left-width:2px;left:347px;top:39px;right:211px;bottom:15px"></div>
+<div class=dline style="border-left-width:2px;left:435px;top:39px;right:123px;bottom:15px"></div>
+<div class=dline style="border-left-width:2px;left:523px;top:39px;right:35px;bottom:15px"></div>
+<div style="text-align:center;left:16px;top:16px;right:520px;bottom:48px">p4:</div>
+<div style="text-align:center;left:80px;top:16px;right:408px;bottom:48px">//acme123</div>
+<div style="text-align:center;left:192px;top:16px;right:272px;bottom:48px">/depot/users</div>
+<div style="text-align:center;left:328px;top:16px;right:192px;bottom:48px">@1234</div>
+<div style="text-align:center;left:408px;top:16px;right:88px;bottom:48px">?V=debug</div>
+<div style="text-align:center;left:512px;top:16px;right:16px;bottom:48px">#bin</div>
+<div style="text-align:center;left:8px;top:64px;right:504px;bottom:0px">scheme</div>
+<div style="text-align:center;left:104px;top:64px;right:424px;bottom:0px">host</div>
+<div style="text-align:center;left:224px;top:64px;right:304px;bottom:0px">path</div>
+<div style="text-align:center;left:320px;top:64px;right:184px;bottom:0px">version</div>
+<div style="text-align:center;left:416px;top:64px;right:104px;bottom:0px">query</div>
+<div style="text-align:center;left:496px;top:64px;right:0px;bottom:0px">fragment</div>
+</div>
+</div>
+<p>
+There is always a path part (even if only an empty string), but the other parts may be present in the URI or absent. Their presence is signified by a distinctive punctuation character or sequence.
+</p><p>
+The scheme name &#8220;p4&#8221; identifies Perforce as the version control system. This is currently the only supported VCS. The scheme &#8220;file&#8221; is used to identify packages in the local file system, not under version control. Local packages (<code>file:</code>) require no &#8220;mapping&#8221; or &#8220;syncing&#8221; steps, and version specifiers are ignored when dealing with local packages.
+</p><p>
+Locations maybe <i>absolute</i> or <i>relative</i>. Relative locations specify a location relative to a <i>base</i> location that provides context for &#8220;resolving&#8221; the relative location to an absolute one. If they omit the scheme or host fields, the values from the base are carried over. If the path does not include an initial &#8220;/&#8221;, then it is treated as relative to the path of the base URI. Elements named &#8220;..&#8221; denote a parent directory.
+</p><p>
+Pakman's handing of relative locations is slightly different from the handling of URIs in web browsers. The version field &#8212; &#8220;@xxx&#8221; &#8212; is always inherited from the base unless the location being resolved contains a version field of its own. So even when a location looks like an absolute location &#8212; e.g. <code>p4://host.domain.com/package/a</code> &#8212; it may still inherit a value from the base. This rule is the mechanism by which dependencies inherit the versions of the packages that include them.
+</p><h4>
+<a name="Query%20and%20Fragment"></a>Query and Fragment
+</h4><p>
+In standard URI syntax, a query consists of a number of fields delimited by &#8220;<code>&amp;</code>&#8221; or &#8220;<code>;</code>&#8221;. Pakman uses the query part to convey <i>package parameters</i>, which are exposed to pakfiles via the <a href="#package.params">package.params</a> member. Each query field can hold a name and value separated by &#8220;<code>=</code>&#8221;, or simply a value (a &#8220;positional&#8221; parameter). The ordering of fields that assign names is not significant, and if a name appears more than once the last occurrence overrides earlier ones. For example, &#8220;<code>?b=3;b=2;a=1;x</code>&#8221; is equivalent to &#8220;<code>?x;a=1;b=2</code>&#8221;.
+</p><p>
+In traditional URI/URL usage in web technologies, the query and the fragment play different roles:
+</p><ul>
+<li>
+<p>
+The query is sent to the server. The server assigns meaning to the query. Changing the query can drastically affect the contents of the entity being retrieved.
+</p>
+</li><li>
+<p>
+The fragment is not sent to the server. It identifies a location within the retrieved entity.
+</p>
+</li>
+</ul><p>
+The usage in Pakman is analogous:
+</p><ul>
+<li>
+<p>
+Parameters are provided to the pakfile, which decides what the parameters mean and what build results they produce. Changing a parameter may yield entirely different build results.
+</p>
+</li><li>
+<p>
+Fragments in Pakman identify a file system location within a build result. For any package URI <code>&lt;pkg&gt;</code>, the result of a dependency named <code>&lt;pkg&gt;#&lt;dir&gt;</code> is equivalent to the <code>&lt;dir&gt;</code> subdirectory within the result of the dependency named <code>&lt;pkg&gt;</code>.
+</p>
+</li>
+</ul><h3>
+<a name="Types%20of%20Packages"></a>Types of Packages
+</h3><p>
+Pakman deals with two types of packages: <b>described</b> packages and <b>plain</b> packages.
+</p><ul>
+<li>
+<p>
+When a package location names a file that exists in the VCS repository, that file is treated as a <b>pakfile</b>. Pakfiles describe the package properties. In this case, Pakman will retrieve <i>the package described by that file</i>, not just the file itself.
+</p>
+</li><li>
+<p>
+When a package location's path ends in &#8220;<code>/...</code>&#8221; it identifies a plain package. Plain packages have no pakfiles, no build step, and no dependencies. All files underneath the directory are retrieved, and those files constitute the build &#8220;results&#8221; for that package.
+</p>
+</li>
+</ul><p>
+When a path does not end in &#8220;<code>/...</code>&#8221; and does not identify a file then Pakman will take the following additional steps:
+</p><ol type="1">
+<li>
+<p>
+If the path identifies a directory that contains a file named &#8220;pak&#8221;, then &#8220;pak&#8221; is used as the pakfile.
+</p>
+</li><li>
+<p>
+If the path identifies a directory that does <i>not</i> contain a file named &#8220;pak&#8221;, the directory is treated as a plain package.
+</p>
+</li>
+</ol><p>
+These additional steps require more Perforce transactions, and are provided for compatibility with older versions of Pakman. In order to make your pakfiles more efficient, specify explicit package locations. Use &#8220;<i>&lt;dir&gt;/</i><code>...</code>&#8221; for plain packages, and &#8220;<i>&lt;dir&gt;/&lt;pakfile&gt;</i>&#8221; for described packages. Future versions of Pakman may display warnings when imprecise names are used.
+</p><p>
+Params passed to a plain package have no effect. Fragments, on the other hand, may be used with plain packages. When used with a plain package, the fragment will be used to narrow the set of files retrieved from the server. In other words,<code>p4://server/depot/a/...#b/c/</code> is equivalent to the package file:
+</p><pre>root = "p4://server/depot/a"
+files = { "b/c/..." }
+result = "b/c"
+</pre><p>
+This can be convenient when identifying directories or files within a large repository tree that is not factored as components. The path of the URI specifies the root of the package. In order to avoid <a href="#Nested%20Roots">Nested Roots</a>, packages should agree on the root directories to be used. The fragment specifies what subset of the tree needs to be retrieved.
+</p><h3>
+<a name="Workspace%20Management"></a>Workspace Management
+</h3><p>
+Perforce manages a <i>view</i> for each workspace that maps files in the repository to locations in the local file system. The view does not describe what has been retrieved; it only specifies where things will go once they are retrieved.
+</p><p>
+Ordinarily, a user would manually construct and validate these workspace views (and perhaps revisit them and inspect and debug them when build problems are suspected). Pakman automates workspace construction, but does so in a way that leaves the user in control: it leaves pre-existing mappings unchanged, and it does not add lines to the client spec that override or mask pre-existing lines.
+</p><p>
+Before retrieving a package, Pakman ensures that the package's root directory tree is mapped in the view. Due to the way Perforce views are specified, there are three cases Pakman handles differently:
+</p><ol type="1">
+<li>
+<p>
+The directory is already mapped by the current view. All files that might exist under the directory are mapped locally in a way that matches the directory structure in the repository.
+</p>
+</li><li>
+<p>
+The directory is completely absent from the current view. No files that might exist in the package are mapped.
+</p>
+</li><li>
+<p>
+The directory is partially or inconsistently mapped. This will be the case when the view includes a subset of the directory tree, or excludes a subset, or maps different parts to different locations.
+</p>
+</li>
+</ol><p>
+If the package is already mapped, Pakman will be satisfied with that mapping and continue on. Pakman generally does not care <i>where</i> packages land &#8212; only that they are completely and reliably mapped. Likewise, packages themselves should not care where they land, as discussed below under <a href="#Location%20Independence">Location Independence</a>.
+</p><p>
+If the package is completely absent, Pakman will create a map specifically for that package and add it to the workspace view. More on this below.
+</p><p>
+If the package is partially or inconsistently mapped, Pakman will exit with a message that it cannot map the package . Pakman will not attempt to automatically remedy this situation because that would interfere with existing maps. Instead it exits with an error message, describing how the view can be edited to create a complete mapping for the directory. However, as long as the root directory is mapped, then the user may invoke Pakman with the <code>--force</code> option to cause Pakman to proceed anyway, even where parts of the source tree are excluded or misplaced. This is a way for users to indicate that workspace mappings, while they do not completely and accurately reflect the package descriptions, are what the user intends to use.
+</p><h4>
+<a name="Creating%20Maps"></a>Creating Maps
+</h4><p>
+When Pakman creates a mapping for a previously unmapped package, it uses a simple default rule to choose the local workspace location, placing all packages under a directory called &#8220;pakman&#8221; underneath the workspace root. Pakfiles can specify different rules as described in <a href="#package.mapping">package.mapping</a>.
+</p><p>
+Pakman will not use a local workspace location that conflicts with existing maps. If the local workspace location is already used by existing maps in the workspace, the Pakman will try alternatives. If none of its alternatives are available, Pakman will exit with an error message asking the user to manually map the package or make the default location available.
+</p><h4>
+<a name="Editing%20Workspace%20Views"></a>Editing Workspace Views
+</h4><p>
+After Pakman has modified a view in order to retrieve a package, users can feel free to edit their workspace views. Pakman does not expect any its additions to remain unchanged forever. After modifying a workspace view, be sure to run Pakman again so it can re-validate the view, potentially add new maps, re-sync needed packages, and re-generate glue files to reflect the changes.
+</p><h4>
+<a name="Overlay%20Mappings"></a>Overlay Mappings
+</h4><p>
+Perforce overlay mappings (e.g. <code>+//depot/a1/... //client/a/...</code>) are ignored by Pakman. This allows &#8220;sparse branches&#8221; to be done on subsets of packages mapped by Pakman, although the user must take care to manually sync the overlay after using Pakman to sync the package.
+</p><h4>
+<a name="Nested%20Roots"></a>Nested Roots
+</h4><p>
+When the root directory of one package lies under the root directory of another package, this is called a <i>nested root</i>. Nested roots should be avoided, since they are prone to creating mapping conflicts. If Pakman creates a map when retrieving the &#8220;inner&#8221; package, then the workspace will have a partial mapping for the &#8220;outer&#8221; package, and this will make Pakman unable to automatically create a mapping for the &#8220;outer&#8221; package at some later time.
+</p><p>
+When nested roots are encountered within a single 'get' command, Pakman will print a warning. It will also sidestep the conflict by creating the mapping for the higher-level directory. However, Pakman will not be able to detect the condition or sidestep the conflict if the two packages are used in different package trees and happen to be retrieved in different invocations of 'pakman get' on the same machine.
+</p><h2>
+<a name="Pakfiles"></a>Pakfiles
+</h2><p>
+A pakfile describes a software component: what its dependencies are, how to configure it to locate its dependencies, and how to build it. These files are typically named <code>pak</code> or end in <code>.pak</code>. Each pakfile contains Lua 5.1 source code that acts as a constructor for a package object. Here is an example pakfile:
+</p><pre>-- pakfile for projects/baz
+deps = {
+   INCDIR = "/common/inc",
+   TOOLDIR = "/tools/WinNT"
+}
+glue = { "x.min", "x.mak" }
+commands.make = "make"
+</pre><p>
+In this example, <code>deps</code> and <code>glue</code> are assigned, and the <code>make</code> field of the <code>commands</code> table is assigned. These variables look like global variables in Lua, but Pakman executes the constructor in a restricted environment so that the values assigned are captured as properties of a package.
+</p><p>
+Instead of assigning variables in its environment, as in the above examples, a pakfile may return a table that describes the package. In that case, the variables in the environment are ignored. Default values will be used for any property that is <code>nil</code> in the returned table.
+</p><p>
+The following table summarizes the properties that may be assigned or modified by the pakfile, and the values to which they are initialized before the pakfile is executed:
+</p><table><tr><th><p>
+Name
+</p></th><th><p>
+Initial Value
+</p></th><th><p>
+Description
+</p></th></tr><tr><td><p>
+<code>commands</code>
+</p></td><td><p>
+<code>{}</code>
+</p></td><td><p>
+build &amp; clean commands
+</p></td></tr><tr><td><p>
+<code>deps</code>
+</p></td><td><p>
+<code>{}</code>
+</p></td><td><p>
+dependencies (name &#8594; URI)
+</p></td></tr><tr><td><p>
+<code>files</code>
+</p></td><td><p>
+<code>{ "..." }</code>
+</p></td><td><p>
+files to be retrieved
+</p></td></tr><tr><td><p>
+<code>glue</code>
+</p></td><td><p>
+<code>{}</code>
+</p></td><td><p>
+glue files to generate
+</p></td></tr><tr><td><p>
+<code>mapping</code>
+</p></td><td><p>
+<code>nil</code>
+</p></td><td><p>
+mapping function (or <code>nil</code>)
+</p></td></tr><tr><td><p>
+<code>message</code>
+</p></td><td><p>
+<code>nil</code>
+</p></td><td><p>
+message to display
+</p></td></tr><tr><td><p>
+<code>params</code>
+</p></td><td><p>
+table
+</p></td><td><p>
+Parameters from URI query field
+</p></td></tr><tr><td><p>
+<code>redir</code>
+</p></td><td><p>
+<code>nil</code>
+</p></td><td><p>
+URI to replace this package
+</p></td></tr><tr><td><p>
+<code>result</code>
+</p></td><td><p>
+<code>"."</code>
+</p></td><td><p>
+result directory/file
+</p></td></tr><tr><td><p>
+<code>root</code>
+</p></td><td><p>
+<code>"."</code>
+</p></td><td><p>
+root URI
+</p></td></tr><tr><td><p>
+<code>shared</code>
+</p></td><td><p>
+<code>{}</code>
+</p></td><td><p>
+shared between variants
+</p></td></tr></table><p>
+All relative URIs or file paths are treated as relative to the root URI or directory. When <code>root</code> itself is relative, it is treated as relative to the pakfile.
+</p><p>
+Note that a package that uses the default values for <i>all</i> values behaves equivalently to a plain package URI, such as &#8220;/tools/WinNT/...&#8221;. Plain packages sync the entire sub-tree, have no dependencies, no build command, and require no generated files.
+</p><p>
+The different package properties that may be assigned by a package file are described below.
+</p><h3>
+<a name="package.commands"></a><code>package.commands</code>
+</h3><p>
+Each package can specify the commands that must be issued in order to make or clean it. These commands enable the generation of glue <a href="#MAK%20files">MAK files</a>.
+</p><p>
+Pakfiles can specify these by assigning fields of the <code>commands</code> property, as in:
+</p><pre>commands.make = "make all"
+commands.clean = "make clean"
+commands.maketree = "make tree"
+</pre><p>
+The <code>commands</code> property's initial value is an empty table, so pakfiles do not have to assign <code>commands</code> itself.
+</p><p>
+<code>commands.make</code> is the command to make the package, assuming all its dependencies have been built. This command must not attempt to build its dependencies using the glue MAK file, or else infinite recursion will result.
+</p><p>
+By default, each package has no &#8220;<code>make</code>&#8221; command, which means that no build step is required to produce its outputs.
+</p><p>
+<code>commands.clean</code> is the command to clean the package. The &#8220;<code>clean</code>&#8221; command is unused when there is no &#8220;<code>make</code>&#8221; command. If there is a <code>make</code> command and no <code>clean</code> command, <code>commands.clean</code> defaults to <code>commands.make</code> with a space and the word &#8220;clean&#8221; appended to it.
+</p><p>
+<code>commands.maketree</code> is the command to build the package and all of its dependencies. If this is not provided by the pakfile but a MAK glue file is generated, pakman will provide a default. Unlike the <code>make</code> and <code>clean</code> values, <code>maketree</code> does not influence generated MAK files; it is only for display to the user in the default message (see <a href="#package.message">package.message</a>).
+</p><p>
+These values will be processed as described in <a href="#String%20Expansion">String Expansion</a>, so they may be assigned as functions or strings with variable substitutions.
+</p><h3>
+<a name="package.deps"></a><code>package.deps</code>
+</h3><p>
+The <code>deps</code> property is used to express dependencies on other packages. A package cannot be built until its dependencies are first built. When one package, say package A, lists another, say package B, as a dependency, Pakman will retrieve package B when it retrieves package A, and it will generate makefiles that build package B before package A.
+</p><p>
+Take the following pakfile excerpt for example:
+</p><pre>deps = {
+   B_DIR = "/packages/b",
+   C_DIR = "/packages/c",
+}
+</pre><p>
+The meaning of the above can be stated in English as:
+</p><ul>
+<li>
+<p>
+When retrieving package A, packages B and C must also be retrieved.
+</p>
+</li><li>
+<p>
+Before building package A, packages B and C must first be built.
+</p>
+</li>
+</ul><p>
+Dependencies are specified as a Lua table. For those new to Lua, a table is a data type that maps values to other values. It is similar to what Perl, Python, and Ruby call a &#8220;hash&#8221; and what JavaScript calls an &#8220;object.&#8221; Each dependency has a variable name (table key) and a package location (table value).
+</p><p>
+Every dependency must have a unique name. If you use the same name twice, the last assignment will override the first. The dependency name will appear in generated &#8220;min&#8221; glue files as the name of a variable that holds the dependency's result directory.
+</p><p>
+The values associated with the names are package locations, either in table form or string form. See <a href="#Package%20Locations">Package Locations</a> for information on Pakman's package location strings, and see <a href="#pmlib">pmlib</a> for information on the table representation of URIs.
+</p><p>
+Dependencies are unordered. The order in which they appear in the pakfiles does not specify to the order in which they are retrieved. Pakman's conflict detection ensures that the order in which they are retrieved does not matter.
+</p><h3>
+<a name="package.files"></a><code>package.files</code>
+</h3><p>
+By default, the entire tree of files under the root of a package will be retrieved from the repository during &#8220;<code>pakman get</code>&#8221;. If a <code>files</code> property is specified, however, it identifies a subset of the tree that must be copied onto the local file system before building. This can be useful to reduce the amount of time and local disk space consumed by retrieving a directory when it contains a mix of needed and unneeded files.
+</p><p>
+The <code>files</code> property is an array of Perforce-style patterns. All of these patterns are relative to the package root, and they must refer only to files <i>under</i> the root (i.e., a leading &#8220;/&#8221; or &#8220;..&#8221; is not allowed).
+</p><pre>files = {
+   "src/...",
+   "inc/...",
+   "Makefile"
+}
+</pre><p>
+The <code>files</code> property does not establish multiple mappings into the client workspace. There is one such mapping per package, and that corresponds to the <i>root</i> of the package. When the files are retrieved, the directory structure beneath that root is consistent with that of the repository. The <code>files</code> property restricts only the scope of the &#8220;<code>p4 sync</code>&#8221; operations performed during &#8220;<code>pakman get</code>&#8221;.
+</p><p>
+The <code>files</code> property is most useful when dealing with packages that were not constructed with component-based builds in mind. When a directory that contains large numbers of files that are not needed by some consumers, a cleaner alternative to using the <code>files</code> property would be to factor it into distinct packages that live in separate directories. As separate packages, they could be independently substituted.
+</p><h3>
+<a name="package.glue"></a><code>package.glue</code>
+</h3><p>
+Perhaps the most important function of Pakman is generating <i>glue</i> files. These are files generated during package retrieval and written into the package's directory tree. Typically they contain information about retrieved dependencies, allowing the package sources to remain free of any assumptions about where dependencies lie in the local environment, and allowing the build step to function without involvement of Pakman or the VCS server. At present, GNU Make is the only build tool for which support is built into Pakman, but the glue file concept is more general and Pakman could easily be extended to generate glue files for other languages.
+</p><p>
+Glue files are listed in the <code>glue</code> package property, which is a Lua array (a table with numeric indices starting at 1). There are two forms of entries that may appear in the <code>glue</code> array.
+</p><ol type="1">
+<li>
+<p>
+A string that gives the relative path (from the package root) to the glue file.
+</p>
+</li><li>
+<p>
+A table containing two fields: <code>type</code> and <code>path</code>.
+</p>
+</li>
+</ol><p>
+When the first form (only a string) is used, Pakman replaces the string with the table form, setting <code>path</code> to the supplied string.
+</p><p>
+If no <code>type</code> is given, it will be set to the extension part of the path (or the entire file name if no &#8220;.&#8221; characters appear in path). If the glue file name matches &#8220;[Mm]akefile&#8221;, <code>type</code> will be set to <code>mak</code>.
+</p><p>
+Instead of a table, <code>glue</code> may be assigned to a function that will return a table. This function is passed the same environment parameter described in <a href="#String%20Expansion">String Expansion</a>.
+</p><p>
+For example, the following four lines are equivalent ways to define a single dependency:
+</p><pre>1)  glue = { "x.y.z.min" }
+2)  glue = { { path = "x.y.z.min" } }
+3)  glue = { { path = "x.y.z.min", type="min" } }
+</pre><p>
+There are two supported glue file types: <code>min</code> and <code>mak</code>.
+</p><h4>
+<a name="min%20Files"></a><code>min</code> Files
+</h4><p>
+A <code>min</code> glue file is an include file in makefile syntax. It defines variables, one per dependency, that hold the relative file system path to the result of that package. A project's makefile will typically include a <code>min</code> glue file and use those variables to refer to its dependencies. Consider this example pakfile:
+</p><pre>deps = { A_DIR = "p4://server/depot/packages/a" }
+glue = { "x.min" }
+</pre><p>
+This will generate a Make include file that sets the variable A_DIR to a relative path to &#8220;//depot/packages/a&#8221;.
+</p><h4>
+<a name="Templates"></a>Templates
+</h4><p>
+Packages may customize the format of the generated <code>min</code> glue file by assigning the <code>template</code> attribute of the glue entry. This attribute, when set, is a string that is expanded as described in the <a href="#String%20Expansion">String Expansion</a> section. In addition to the variables available in the standard string expansion context, the following variables are available when MIN file templates are evaluated:
+</p><ul>
+<li>
+<p>
+<code>defs</code> : a string that contains the lines of makefile syntax that assign dependency variables to relative paths
+</p>
+</li><li>
+<p>
+<code>vars</code> : an array of names of the dependency variables.
+</p>
+</li><li>
+<p>
+<code>glueFile</code> : an object from the <code>glue</code> array. See <a href="#Package%20Objects">Package Objects</a>, below, for a description of glue file objects.
+</p>
+</li>
+</ul><p>
+Packages can append text to the default template by providing a template string that begins with the character &#8220;+&#8221;. The &#8220;+&#8221; will be replaced with the default template.
+</p><p>
+Here is the default template for MIN glue files:
+</p><pre># pakman min file
+
+#{defs}
+
+# adjust paths to be relative to current working dir
+_pkg_deps = #{vars}
+_pkg_here := $(filter-out ./,$(dir $(lastword $(MAKEFILE_LIST))))
+$(foreach v,$(_pkg_deps),$(eval $v := $(_pkg_here)$$($v)))
+
+# assign these variables only for the top-level makefile
+ifeq ($(origin __pkg_dir),undefined)
+  __pkg_dir     := $(_pkg_here)#{toroot}
+  __pkg_result  := $(__pkg_dir)$(filter-out /.,/#{pkg.expanded.result})
+  __pkg_deps    := $(_pkg_deps)
+endif
+__pkg_uri     ?= #{pkg.uri}
+__pkg_version ?= #{pkg.version}
+</pre><p>
+First, variables are assigned file paths that point to dependencies <i>relative to the directory that contains the glue file</i>.
+</p><p>
+Next, the paths are adjusted to be relative to the current working directory, allowing this MIN to be included from makefiles in other directories. The <code>$(foreach ...)</code> expression re-assigns each dependency variable, prepending the path to the directory containing the glue file.
+</p><p>
+Finally, a set of variables are assigned that convey properties of the package. These are defined conditionally so that they will not be reassigned by other glue files from other projects, which might occur if a makefile includes makefiles exported by its dependencies (see &#8220;transparent packages&#8221; in <a href="#Build-time%20and%20Run-time%20Dependencies">Build-time and Run-time Dependencies</a>). The conditional assignment guarantees that these variables describe the first (or top level) package in that invocation of make, so each project's makefile can use them safely.
+</p><p>
+For very simple packages whose makefiles and glue files live in the same directory, the following minimal template might suffice:
+</p><pre>glue = { { path="x.min", template="#{defs}" } }
+</pre><h4>
+<a name="MAK%20files"></a>MAK files
+</h4><p>
+A glue MAK file is a makefile generated within a package that knows how to build the package and all its dependencies in the proper order. Consider this example pakfile:
+</p><pre>deps = { A_DIR = "p4://server/depot/packages/a/pak" }
+mak "x.mak"
+commands.make = "make"
+</pre><p>
+After retrieving this package, a user can build the entire tree (the package and all of its dependencies) by typing:
+</p><pre>$ make -f x.mak
+</pre><p>
+A MAK file defines two targets, <code>tree</code> and <code>tree_clean</code>, that build (or clean, respectively) the entire tree of packages under the current package. The <code>tree</code> target always comes first, making it the default target. The name <code>tree</code> is used instead of <code>all</code> to avoid conflicting with the target name that would typically be used in the package's own makefile. This allows a developer to include the MAK file from the package makefile, so that &#8220;<code>make tree</code>&#8221; (with no &#8220;<code>-f ...</code>&#8221;) could be used to build the entire tree.
+</p><p>
+A MAK file also defines a target for each dependency, so a user can easily rebuild or clean a specific dependency. Dependency variable names are used as the target names. With the above example pakfile, a user could rebuild the <code>A_DIR</code> dependency by typing:
+</p><pre>$ make -f x.mak A_DIR_clean A_DIR
+</pre><p>
+By default, a MAK file will conceal the output of the build steps for each sub-package, unless it encounters a build error. Specifying &#8220;VERBOSE=1&#8221; on the make command line will show all output from sub-makes. To generate a makefile that is <i>always</i> VERBOSE, add a <code>verbose</code> property with a value of <code>true</code> to the <code>glue</code> entry.
+</p><pre>glue = { { path="x.mak", verbose=true } }
+</pre><p>
+MAK files assume that they are invoked from the root directory of the project.
+</p><h4>
+<a name="Glue%20File%20Conflicts"></a>Glue File Conflicts
+</h4><p>
+When multiple pakfiles refer to the same root directory, or when <a href="#Build%20Variants">Build Variants</a> are implemented using package parameters, two different package objects might attempt to write to the same glue file. This does not present a problem when both package objects specify the same contents for the file. If they specify conflicting contents Pakman will display a warning message, which should be taken as a sign of a serious problem: it indicates that both packages cannot coexist and still produce reliable built results.
+</p><h3>
+<a name="package.mapping"></a><code>package.mapping</code>
+</h3><p>
+Packages can use the <code>mapping</code> property to influence where in the local file system they and their dependencies will land when Pakman creates local mappings. This variable may be assigned a value of type function. For example:
+</p><pre>mapping = pmlib.mapShort
+</pre><p>
+For compatibility with older versions of Pakman (pre-0.90) you can wrap this inside an 'if' statement. Older versions will silently ignore the following instead of exiting with an error message:
+</p><pre>if pmlib then mapping = pmlib.mapShort end
+</pre><p>
+Pakman makes two built-in mapping functions available to package files:
+</p><ul>
+<li>
+<p>
+<code>pmlib.mapLong</code> maps each package under a directory called &#8220;/pakman&#8221;, including all of the path elements in the URI path. For example, if the workspace root is <code>c:/p4</code> and the repository location is <code>//depot/project/main</code>, then the package will be placed at <code>c:/p4/pakman/depot/project/main</code>.
+</p>
+</li><li>
+<p>
+<code>pmlib.mapShort</code> maps to names of the form &#8220;<code>/pkg/&lt;dir&gt;</code>&#8221;. It attempts to construct short yet meaningful directory names using just one path element from the URI. It also provides a list of longer alternative names that incorporate more path elements separated by &#8220;-&#8221;. These alternatives will be tried when the most preferred name is unavailable. Certain directory names (&#8220;main&#8221;, &#8220;latest&#8221;, &#8220;dev&#8221;, &#8220;rel&#8221;, &#8220;tip&#8221;, and &#8220;head&#8221;) are treated as less valuable, and directory names beginning with a digit are considered valuable but insufficient on their own. For example, if the workspace root is <code>c:/p4</code> and the URI is <code>p4://server/a/b/c/main/latest</code>, then the package will be placed at <code>c:/p4/pkg/c</code>, unless that directory name is already used, in which case it will try <code>c:/p4/pkg/b-c</code>, then <code>c:/p4/b-c-main</code>, and so on.
+</p><p>
+The <code>pmlib.mapShort</code> function can be used to avoid overly long file paths that result in command lines that exceed the limits of the underlying OS. Users can manually work around those problems by constructing a workspace view that has short local paths, but <code>pmlib.mapShort</code> provides a generic solution that works in automated builds that rely on Pakman to construct the workspace view.
+</p>
+</li>
+</ul><p>
+When a package has no <code>mapping</code> property, its mapping defaults to the mapping rule that was used for its parent. When a package has two parents that use different mapping rules, its default mapping is undefined.
+</p><p>
+If the topmost package in the tree does not specify a mapping rule, its mapping function will default to <code>pmlib.mapLong</code> unless <a href="#--mapshort"><code>--mapshort</code></a> or <a href="#config.mapping">config.mapping</a> is used to override it. The command-line option takes precedence over the configuration file.
+</p><p>
+If all of the alternative locations chosen by the mapping function collide with existing mappings, Pakman will try to manufacture a unique mapping by appending suffixes &#8220;-2&#8221; or &#8220;-3&#8221; and so on, until an available client location is found.
+</p><p>
+Even when a <code>mapping</code> property is specified, packages should never make assumptions about where their dependencies lie in the local file system. They should still use makefile variables to maintain <a href="#Location%20Independence">Location Independence</a>. Keep in mind the following:
+</p><ul>
+<li>
+<p>
+The mapping preferences apply only when Pakman creates a mapping. This behavior is described in <a href="#Workspace%20Management">Workspace Management</a>.
+</p>
+</li><li>
+<p>
+If two packages have the same most-preferred location, only one can win. Pakman will pick less-favored alternatives or manufacture a unique name in order to successfully map packages.
+</p>
+</li>
+</ul><h4>
+<a name="Custom%20Mapping%20Functions"></a>Custom Mapping Functions
+</h4><p>
+In addition to the built-in mapping functions, package can provide their own implementations that match the following calling convention:
+</p><pre>map(pak) -&gt; names
+</pre><ul>
+<li>
+<p>
+<code>pak</code> = the package being mapped (see <a href="#Package%20Objects">Package Objects</a>).
+</p>
+</li><li>
+<p>
+<code>names</code> = an array of local paths (strings) or nil.
+</p><p>
+The array is ordered from most-preferred to least-preferred. Each path begins with &#8220;/&#8221; and describes the local file system location relative to the workspace root for the package's VCS server. Pakman will use the most preferred name that does not conflict with an existing map.
+</p><p>
+If <code>names</code> is nil, it indicates that the default mapping rule should be applied.
+</p>
+</li>
+</ul><p>
+For example, when the built-in function <code>pmlib.mapShort</code> maps the package &#8220;<code>p4://server/a/b/dev/1.0@999</code>&#8221;, it will find <code>pak.rootPath</code> to be equal to &#8220;<code>/a/b/dev/1.0</code>&#8221;, and it will return <code>{ "/pkg/b-1.0", "/pkg/b-dev-1.0", "/pkg/a-b-dev-1.0" }</code>.
+</p><h3>
+<a name="package.message"></a><code>package.message</code>
+</h3><p>
+When a <code>pakman get</code> command completes, it displays a message describing where the package is and the values of <code>commands.make</code> or <code>commands.maketree</code>.
+</p><p>
+Pakfiles can override the default message by setting the <code>message</code> field to a string or a function that returns a string. If a function is provided, it will be called after all packages have been retrieved, with the requested package (the one typed on the command line) as a parameter.
+</p><h3>
+<a name="package.params"></a><code>package.params</code>
+</h3><p>
+If the URI for the package being processed includes parameters, <code>params</code> will hold a table describing the parameter names and values, as parsed by <code>pmlib.uriParse</code>. If no parameters are present, <code>params</code> will be an empty table.
+</p><p>
+For example, when the package &#8220;<code>p4://server/pkg/pak?debug;opt=2</code>&#8221; is processed, the pakfile &#8220;<code>/pkg/pak</code>&#8221; will be executed with <code>params[1]</code> equal to <code>"debug"</code> and <code>params.opt</code> equal to <code>"2"</code>.
+</p><p>
+Pakfiles may modify <code>params</code> to construct a &#8220;normalized&#8221; or &#8220;canonicalized&#8221; set of parameter values. The resulting <code>params</code> value will be used to re-construct the package object's <code>uri</code> value after pakfile execution completes.
+</p><p>
+As a convenience for pakfiles, <code>params</code> will accept a schema and perform validation of the parameters. To validate parameters with a schema, <i>call</i> <code>params</code> <i>as a function</i>, passing it the schema as an argument. It returns all of the positional parameters as separate return values. The following example illustrates a package that has two positional parameters:
+</p><pre>local target, flavor = params {
+   { "win", "mac" },
+   { "debug", "release" }
+}
+</pre><p>
+More formally, a schema for parameters is a table that maps each supported parameter name or index to a parameter type. Each parameter type is a table with the following fields:
+</p><ul>
+<li>
+<p>
+<code>values</code> : a list of allowed values for this parameter (array of strings). If this array is empty, all values (except nil) are accepted. If <code>values</code> is nil, the array elements of the type table itself will be used instead (as in the above example).
+</p>
+</li><li>
+<p>
+<code>default</code> : the value to set this parameter to if it is nil.
+</p>
+</li><li>
+<p>
+<code>optional</code> : if true, nil is an allowed value for this parameter.
+</p>
+</li><li>
+<p>
+<code>alias</code> : another parameter name that can be used to set this parameter. If a parameter is nil and its alias is non-nil, the alias value is substituted for the parameter and the alias parameter is removed from <code>params</code>.
+</p>
+</li>
+</ul><p>
+Validation will throw an error if it encounters any parameter that is not named in the schema. Here are some examples:
+</p><pre style="font-size: 84%">params {
+   a = { values = {"x", "y"} },       -- params.a must be either "x" or "y"
+
+   b = { "x", "y", default = "x" },   -- params.b must be "x" or "y" or nil.
+                                      -- If nil, it will be set to "x".
+
+   c = { },                           -- params.c may hold any value, but it
+                                         must be present in the URI.
+
+   d = { default="x" }                -- params.d may hold any value.  If nil,
+                                      -- it will be set to "x".
+
+   e = { optional = true }            -- params.e may hold any value, including nil.
+}
+</pre><p>
+Due to the way positional parameters are encoded in the URI, we cannot represent <code>nil</code> as a value distinct from <code>""</code> (the empty string). For example, when <code>"pak?;;b"</code> is decoded, parameters 1 and 2 will hold empty strings. In order to allow defaults to be easily applied, positional parameters with the value <code>""</code> <i>or</i> <code>nil</code> will take the default value.
+</p><p>
+Refer to <a href="#Build%20Variants">Build Variants</a> for further discussion on the use of <code>package.params</code>.
+</p><h3>
+<a name="package.redir"></a><code>package.redir</code>
+</h3><p>
+The <code>redir</code> property is used to redirect Pakman to a different package, which will be used instead of the current package.
+</p><pre>redir = "p4://server/depot/dir/pak"
+</pre><p>
+If a pakfile assigns the <code>redir</code> property, then after it finishes executing Pakman will destroy the just-created package object and substitute the new package object in its place.
+</p><h3>
+<a name="package.result"></a><code>package.result</code>
+</h3><p>
+Each pakfile can specify a result path. This is the location that will be visible to other packages that depend on that package. A package description may specify the result by assigning the variable <code>result</code>, as in:
+</p><pre>result = "built"
+</pre><p>
+For example, if package A includes the line:
+</p><pre>deps = { ToolsDir = "/src/tools/srcpak" }
+</pre><p>
+and &#8220;/src/tools/srcpak&#8221; specifies <code>result = "built"</code>, then the <code>min</code> file generated for package A will assign <code>ToolsDir</code> the location of <code>/src/tools/built</code>, not <code>/src/tools</code>.
+</p><p>
+A result path allows a package to hide its internal structure. A package can place all of its outputs under a single directory (or in a single file) and expose only that directory to its clients. Consumers of the package only care about the result, and they do not need to know where the result directory lives within the package's tree. Among other benefits, this allows us to interchange source and pre-built (binary) versions of a package. A pre-built version can be represented as a <i>plain</i> package with no build step, and no dependencies.
+</p><p>
+In order to ensure interchangeability and facilitate build automation, the <code>result</code> should specify a directory, not an individual file, and all of the output of the package should live underneath the result directory. Consumers of packages should not make any assumptions about where the result directory lives, or what files reside outside of and relative to result directory.
+</p><p>
+By default, the result path is &#8220;.&#8221; (the same as the root directory for the package).
+</p><h3>
+<a name="package.root"></a><code>package.root</code>
+</h3><p>
+Each package has a &#8220;root&#8221;, which is the repository location under which all package sources lie. The root is the directory that must be mapped into the local client when Pakman retrieves the package (see <a href="#Workspace%20Management">Workspace Management</a>).
+</p><p>
+The root is also used as the base directory for resolving other relative paths in the package, such as those for dependencies.
+</p><p>
+By default, the root of a described package is the directory that contains the pakfile. If you would like to store a package file somewhere other than the root directory of the package &#8212; in a sub-directory, or perhaps completely outside of the package tree &#8212; then you will have to specify the root explicitly in the package file.
+</p><p>
+Pakfiles specify the location of the package they describe by assigning the variable <code>root</code> to a repository location:
+</p><pre>root = "p4://host/path"
+</pre><p>
+Relative or absolute URIs may be used. If a relative location is used for the root, it will be resolved relative to the URI of the directory that contains the package file. If not specified in the package file, the root property defaults to &#8220;.&#8221; (the same as the directory containing the package file).
+</p><h3>
+<a name="package.shared"></a><code>package.shared</code>
+</h3><p>
+This is a table that can be used by multiple instance of a single pakfile to share data. This is useful when the pakfile uses package parameters to specify <a href="#Build%20Variants">Build Variants</a>.
+</p><h3>
+<a name="String%20Expansion"></a>String Expansion
+</h3><p>
+Various strings, such as glue templates, are &#8220;expanded&#8221; after the package file is processed. Instances of &#8220;<code>#{</code><i><code>&lt;expr&gt;</code></i><code>}</code>&#8221; are replaced with the value of <i><code>&lt;expr&gt;</code></i>. The string &#8220;<code>#{#}</code>&#8221; is replaced with &#8220;<code>#</code>&#8221;. The string <i><code>&lt;expr&gt;</code></i> may only contain one or more names separated by &#8220;<code>.</code>&#8221; characters. Arbitrary Lua expressions are not supported. When an array of strings is expanded into a string, the values are concatenated with a space character separating them.
+</p><p>
+When these expressions are evaluated, the following variables may be referenced:
+</p><ul>
+<li>
+<p>
+<code>pkg</code> : the package object (as defined by the pakfile) for which this file is being generated. See <a href="#Package%20Objects">Package Objects</a> below.
+</p>
+</li><li>
+<p>
+<code>paths</code> : a table mapping dependency variable names to relative paths to their result directories.
+</p>
+</li><li>
+<p>
+<code>toroot</code> : relative path to the root directory.
+</p>
+</li>
+</ul><p>
+When glue file templates are evaluated, paths (in <code>paths</code> or <code>toroot</code>) are relative to the directory containing the glue file. In other contexts, the paths are relative to the root directory of the package.
+</p><p>
+If a function is provided instead of a string, the function will be called with a parameter which is a table that holds the above values. For example:
+</p><pre>result = function (env) return env.paths.B end
+</pre><p>
+... is equivalent to ...
+</p><pre>result = "#{paths.B}"
+</pre><h3>
+<a name="Deprecated%20Features"></a>Deprecated Features
+</h3><p>
+You might encounter pakfiles that use an older syntax. For backwards compatibility with early versions of Pakman, the following functions are still supported, but creators of new package files are advised to avoid them.
+</p><ul>
+<li>
+<p>
+<code>get(&lt;table&gt;)</code> : merge &lt;table&gt; into the <code>deps</code> table.
+</p>
+</li><li>
+<p>
+<code>cmd(&lt;make&gt;,&lt;clean&gt;)</code> : assign <code>commands.make</code> and <code>commands.clean</code>.
+</p>
+</li><li>
+<p>
+<code>min(&lt;file&gt;)</code> : add &lt;file&gt; to the end of the <code>glue</code> array.
+</p>
+</li><li>
+<p>
+<code>mak(&lt;file&gt;)</code> : add &lt;file&gt; to the end of the <code>glue</code> array.
+</p>
+</li><li>
+<p>
+<code>glue:Append(&lt;item&gt;)</code> : add &lt;item&gt; to the end of the <code>glue</code> array.
+</p>
+</li>
+</ul><h3>
+<a name="Pakfile%20Environment"></a>Pakfile Environment
+</h3><p>
+When a pakfile is executed, its <i>environment</i> is set to its own package object, so global variables assigned by the pakfile &#8212; such as <code>deps</code> or <code>glue</code> &#8212; end up in its package object. The package object's <code>__index</code> &#8220;metamethod&#8221; is set to point to the &#8220;globals&#8221; table, so Lua library functions like <code>string.match</code> and <code>table.insert</code> are available as usual in Lua. Pakfiles can use the variable <code>_G</code> to obtain a reference to the globals table, and <code>self</code> to obtain a reference to the package object itself. Pakman also provides two global tables, <code>pmlib</code> and <code>sys</code>, and a few other globals, described below.
+</p><h4>
+<a name="pmlib"></a>pmlib
+</h4><p>
+The <code>pmlib</code> table provides utility functions. It contains the following members:
+</p><ul>
+<li>
+<p>
+<code>hash(</code> <i>str</i><code>,</code> [<i>len</i><code>,</code> [<i>alphabet</i>]<code>)</code>
+</p><p>
+This function can be used to generate a short string from potentially long strings. <code>len</code> defaults to 5, and <code>alphabet</code> defaults to a 35-character string consisting of all numerals and lower-case letters (except for lower-case L). Example usage:
+</p><pre>result = pmlib.hash(uri)
+</pre>
+</li><li>
+<p>
+<code>mapShort</code> and <code>mapLong</code>: see the <a href="#package.mapping">package.mapping</a> section for a description of these functions.
+</p>
+</li><li>
+<p>
+<code>uriParse</code> and <code>uriGen</code>: These functions convert between string and table representations of Pakman package locations. <code>uriParse</code> returns the table form; <code>uriGen</code> returns a string in normalized URI syntax. Either function will accept tables or strings as inputs.
+</p><p>
+If two arguments are given to either function, the second one represents a base URI to be used to resolve the first URI.
+</p><p>
+The table form of a URI contains the members <code>scheme</code>, <code>host</code>, <code>path</code>, <code>version</code>, <code>params</code>, and <code>fragment</code>. These fields may be nil. <code>params</code>, when present, is a table mapping parameter names or positions to values. Aside from <code>scheme</code> and <code>host</code>, any strings that appear within the table representation may contain arbitrary strings. They will be percent-encoded/decoded when a URI string is generated/parsed. Scheme names may only contain the alphanumeric characters and &#8220;<code>+</code>&#8221;, &#8220;<code>-</code>&#8221; and &#8220;<code>.</code>&#8221; (as per the URI specification). Host names are left in their percent-encoded form so that they may be interpreted in a scheme-specific manner.
+</p><p>
+These functions follow the relative URI processing and normalization rules described in <a href="http://tools.ietf.org/html/rfc3986">RFC 3986</a> with the following exceptions:
+</p><ul class="indent">
+<li>
+<p>
+When combining relative URIs &#8212; in which the path does not begin with a <code>"/"</code> character &#8212; <code>uriGen</code> and <code>uriParse</code> preserve the property of associativity. For example, <code>uriGen(uriGen(r1, r2), base)</code> produces the same result as <code>uriGen(r1, uriGen(r2, base))</code>. This allows you to combine two relative URIs to generate a new relative URI.
+</p>
+</li><li>
+<p>
+Strings returned by <code>uriGen</code> will have parameters ordered deterministically, and no two parameters may have the same name. Percent-encoding is made uniform. This preserves everything semantically significant <i>to Pakman</i> and nothing else, so equivalent URIs will generate identical strings.
+</p>
+</li><li>
+<p>
+Pakman's version field is supported. It will be inherited from the base URI if not present in the resolved URI.
+</p>
+</li><li>
+<p>
+Percent encoding of all characters is normalized. This erases the distinction between encoded and un-encoded characters (e.g. &#8220;/&#8221; and &#8220;%2F&#8221; in the path). The intent is that these functions are to be used only with schemes that represent file paths.
+</p>
+</li>
+</ul><p>
+Examples:
+</p><pre style="font-size: 80%">pmlib.uriParse("p?a;x=%3A%2F%3F")                 --&gt;  {path="p", params={"a", x=":/?"}}
+pmlib.uriGen{ params={"a", x=":/?"} }             --&gt;  "?a;x=%3A%2F%3F"
+pmlib.uriGen("?x=:/?&amp;a")                          --&gt;  "?a;x=%3A%2F%3F"
+pmlib.uriGen("a", "p4://host/base")               --&gt;  "p4://host/a"
+pmlib.uriGen("a", "p4://host/base/")              --&gt;  "p4://host/base/a"
+pmlib.uriGen("a", "../")                          --&gt;  "../a"
+pmlib.uriGen("a?x", {path="base/", version="1"})  --&gt;  "base/a@1?x"
+pmlib.uriGen("?x=1", "/a/pak")                    --&gt;  "/a/pak?x=1"
+</pre>
+</li>
+</ul><h4>
+<a name="sys"></a>sys
+</h4><p>
+The <code>sys</code> table describes the version of Pakman. It contains the following members:
+</p><table><tr><th><p>
+Name
+</p></th><th><p>
+Type
+</p></th><th><p>
+Description
+</p></th></tr><tr><td><p>
+<code>os</code>
+</p></td><td><p>
+string
+</p></td><td><p>
+<code>"WinNT"</code> on Windows; <code>uname -s</code> elsewhere
+</p></td></tr><tr><td><p>
+<code>version</code>
+</p></td><td><p>
+number
+</p></td><td><p>
+pakman version, e.g. <code>0.99</code>
+</p></td></tr><tr><td><p>
+<code>buildDate</code>
+</p></td><td><p>
+string
+</p></td><td><p>
+pakman build date in <code>YYYY-MM-DD</code> format
+</p></td></tr></table><h4>
+<a name="Global%20Functions"></a>Global Functions
+</h4><ul>
+<li>
+<p>
+<code>readfile</code> accepts one argument, a relative or absolute URI, and returns the contents of the file. On error, it returns nil and an error message. This reads the file directly from the VCS server and does not <code>sync</code> it locally. Relative URIs are treated as relative to the pakfile.
+</p>
+</li><li>
+<p>
+<code>require</code>, <code>loadfile</code>, and <code>dofile</code> are Pakman-provided alternatives to the standard Lua functions. These work like the standard Lua functions except that they operate on URIs. This <code>require</code> implementation does not search the module path described in the <code>LUA_PATH</code> environment variable. When relative URIs are passed to these functions they are interpreted as relative to the URI of the source file. (Technically speaking, each source file gets its own instance of each of these functions.)
+</p><p>
+Source files that are loaded and executed via these functions will see the same set of globals as pakfiles (<code>pmlib</code>, <code>sys</code>, etc.).
+</p>
+</li>
+</ul><h3>
+<a name="Package%20Objects"></a>Package Objects
+</h3><p>
+Package objects are constructed by pakfiles and may be examined by <a href="#Hooks">Hooks</a> or <a href="#Templates">Templates</a>.
+</p><p>
+After the pakfile is executed, Pakman normalizes and resolves relative URIs. In addition to the properties initialized by pakfiles, the following properties are available when glue file templates are evaluated:
+</p><table><tr><th><p>
+Name
+</p></th><th><p>
+Description
+</p></th></tr><tr><td><p>
+<code>uri</code>
+</p></td><td><p>
+absolute URI for the package
+</p></td></tr><tr><td><p>
+<code>root</code>
+</p></td><td><p>
+absolute URI for the root of the package
+</p></td></tr><tr><td><p>
+<code>rootPath</code>
+</p></td><td><p>
+path part of 'root', parsed &amp; decoded
+</p></td></tr><tr><td><p>
+<code>version</code>
+</p></td><td><p>
+version retrieved from server
+</p></td></tr><tr><td><p>
+<code>children</code>
+</p></td><td><p>
+dependencies (name &#8594; package)
+</p></td></tr><tr><td><p>
+<code>fsRoot</code>
+</p></td><td><p>
+root directory path (absolute)
+</p></td></tr><tr><td><p>
+<code>fsResult</code>
+</p></td><td><p>
+result directory path (absolute)
+</p></td></tr></table><p>
+For &#8220;p4:&#8221; URIs, the <code>version</code> property indicates what version was specified when retrieving files from the server. This will be the version field from the URI when one is specified. Otherwise, it will be the most recent changelist in the depot as indicated by &#8220;<code>p4 changes -m 1 //...</code>&#8221;.
+</p><p>
+After processing the pakfile, Pakman ensures that each glue file entry (<code>package.glue[n]</code>) is an object with the following properties:
+</p><table><tr><th><p>
+Name
+</p></th><th><p>
+Description
+</p></th></tr><tr><td><p>
+<code>type</code>
+</p></td><td><p>
+either &#8220;min&#8221; or &#8220;mak&#8221;
+</p></td></tr><tr><td><p>
+<code>path</code>
+</p></td><td><p>
+location relative to <code>root</code>
+</p></td></tr><tr><td><p>
+<code>template</code>
+</p></td><td><p>
+template for a glue min file <i>(optional)</i>
+</p></td></tr><tr><td><p>
+<code>fsPath</code>
+</p></td><td><p>
+location of glue file
+</p></td></tr><tr><td><p>
+<code>fsDir</code>
+</p></td><td><p>
+location of directory containing glue file
+</p></td></tr><tr><td><p>
+<code>data</code>
+</p></td><td><p>
+file contents
+</p></td></tr></table><p>
+Both <code>fsPath</code> and <code>fsDir</code> are absolute paths in the file system namespace (not URIs). The <code>data</code> property is visible only when the <code>packageGlue</code> hook is executed.
+</p><h2>
+<a name="Configuration%20Files"></a>Configuration Files
+</h2><p>
+On start-up, Pakman looks for a configuration file named &#8220;<code>.pakman</code>&#8221; in the current directory (or if not there, in any of its parent directories). You can use the <a href="#--config=%3cname%3e"><code>--config=&lt;name&gt;</code></a> option to set the name to something other than &#8220;<code>.pakman</code>&#8221; or to disable this feature. Configuration files are Lua files that may assign one or more variables that control operation of Pakman, or register <a href="#Hooks">Hooks</a>.
+</p><p>
+Configuration files are local to the build machine and are intended to contain information specific to the local development environment, which might differ from user to user or from time to time. Packages should not rely upon or dictate special configuration file settings.
+</p><h3>
+<a name="Configuration%20Variables"></a>Configuration Variables
+</h3><h4>
+<a name="config.verbose"></a><code>config.verbose</code>
+</h4><div class="indent"><p>
+Setting <code>verbose</code> to true in a config file is equivalent to passing the <code>--verbose</code> option on the command line every time you run Pakman. Example usage:
+</p><pre>verbose = true
+</pre></div><h4>
+<a name="config.mapping"></a><code>config.mapping</code>
+</h4><div class="indent"><p>
+The <code>mapping</code> variable specifies a default mapping function. See <a href="#package.mapping">package.mapping</a> for a description of this function. Example usage:
+</p><pre>mapping = pmlib.mapShort
+</pre></div><h4>
+<a name="config.vcs.p4.command"></a><code>config.vcs.p4.command</code>
+</h4><div class="indent"><p>
+Set <code>vcs.p4.command</code> to specify the command Pakman should use when invoking the Perforce client. If this is not specified, Pakman will issue the command &#8220;<code>p4</code>&#8221;.
+</p><p>
+When only a single Perforce server and client workspace is being used, this variable can be set to a string. For example:
+</p><pre>vcs.p4.command = "p4 -c pmclient"
+</pre><p>
+When the server name (as returned by <code>p4 info</code>) does not match the server name in the URI, Pakman will try again appending <code>"-p &lt;server&gt;:1666"</code>, where <code>&lt;server&gt;</code> is the server name in the URI (unless the P4 command already includes a <code>-p</code> option.)
+</p><p>
+When multiple Perforce servers or client workspaces are to be used, this variable can be set to a table that maps host names and/or paths to Perforce command strings. For example:
+</p><pre>vcs.p4.command = {
+   acme123 = "p4",
+   ["acme123/deploy"] = "p4 -c deploy",
+   aswp401 = "p4 -p aswp401:1666",
+}
+</pre><p>
+The values stored in the table are <code>p4</code> command strings. The keys in the table consist of host fields (including a partially or fully qualified domain and optionally a port) followed by an optional path beginning with a &#8220;/&#8221; character. When the host field and path of a package location matches the host field and path in the key, Pakman will use the corresponding command string to invoke Perforce.
+</p><p>
+The host and path portions are distinguished by the &#8220;/&#8221; that begins the path portion. For example, &#8220;<code>p4d/users</code>&#8221; identifies the host &#8220;<code>p4d</code>&#8221; and the path &#8220;<code>/users</code>&#8221;. An empty host name will match any URI. An empty path (indicated by the absence of a &#8220;/&#8221; character) will match any URI. When multiple entries match, Pakman will choose the one with the longest matching host name (or the longest matching path when multiple host strings of equal length match).
+</p><p>
+The string <code>""</code>, specifying an empty host name and an empty path, matches all URIs. This specifies the default command string to use when no specific server or path strings match the requested URI. For example:
+</p><pre>vcs.p4.command = {  [""] = "p4 -c myclient" }
+</pre><p>
+... is equivalent to ...
+</p><pre>vcs.p4.command = "p4 -c myclient"
+</pre><p>
+See <a href="#Multi-Server%20Projects">Multi-Server Projects</a> or <a href="#Multi-Client%20Projects">Multi-Client Projects</a> for more tips on the use of this variable.
+</p></div><h3>
+<a name="Hooks"></a>Hooks
+</h3><p>
+Configuration files may define hooks or callbacks to be called while Pakman performs its work.
+</p><h4>
+<a name="packageGlue%20hook"></a>packageGlue hook
+</h4><div class="indent"><p>
+The &#8220;packageGlue&#8221; hook is called during <code>get</code> operations, once for each package in the dependency tree. When it is called, all the properties of a fully constructed package are available (see <a href="#Package%20Objects">Package Objects</a>).
+</p><p>
+The following example uses this hook to write dependency information to files that later enable &#8220;cd&#8221; shortcuts for navigating between package directories.
+</p><pre>local function writeVars(pkg)
+   local f = assert(io.open(pkg.fsRoot .. "/.cdvars", "w"))
+   for var,p in pairs(pkg.children) do
+      f:write( var .. "|" .. p.fsRoot .. "\n")
+   end
+   f:close()
+end
+addHook("packageGlue", writeVars)
+</pre><p>
+You can add the following function to your <code>.bashrc</code> to read cd shortcuts from the saved files.
+</p><pre>varcd() {
+  if [ -n "$1" -a ! -d "$1" -a -r .cdvars ] ; then
+    IFS='|' &amp;&amp; while read a b ; do
+      if [ "$a" == "$1" ] ; then break ; fi
+    done &lt; .cdvars
+    'cd' "${b:-$1}"
+  else
+    'cd' "$@"
+  fi
+}
+alias cd=varcd
+</pre><p>
+This will allow you to type, for example, <code>cd A_DIR</code> when at the root directory of a package that includes a dependency named <code>A_DIR</code>.
+</p></div><h4>
+<a name="onVisit%20hook"></a>onVisit hook
+</h4><div class="indent"><p>
+This hook is called once after all pakfiles have been retrieved and processed, but before creation of local mappings. The &#8220;get&#8221;, &#8220;map&#8221;, and &#8220;visit&#8221; commands will result in this hook being called.
+</p><p>
+The hook function is called with an &#8220;package manager&#8221; object, which has the following properties:
+</p><table><tr><th><p>
+Name
+</p></th><th><p>
+Type
+</p></th><th><p>
+Description
+</p></th></tr><tr><td><p>
+<code>pkgs</code>
+</p></td><td><p>
+array
+</p></td><td><p>
+all package objects in the package tree
+</p></td></tr></table><p>
+See <a href="#Package%20Objects">Package Objects</a> for a description of the members of the <code>pkgs</code> array.
+</p></div><h2>
+<a name="Use%20Cases%20and%20Strategies"></a>Use Cases and Strategies
+</h2><h3>
+<a name="Build%20Variants"></a>Build Variants
+</h3><p>
+There are two ways to describe how different build results (variants) are produced from a single source tree. One way is by writing multiple pakfiles that reside in the same directory or specify the same <code>root</code> directory. The other way is by writing a pakfile that recognizes package parameters.
+</p><p>
+It helps to keep in mind that in Pakman the following things are independent and do not necessarily relate one-to-one with each other:
+</p><ul>
+<li>
+<p>
+source tree: a directory tree of files to be retrieved from VCS.
+</p>
+</li><li>
+<p>
+pakfile: a file containing Lua code that constructs packages.
+</p>
+</li><li>
+<p>
+package: an object with the properties described in <a href="#Package%20Objects">Package Objects</a>, including those that specify the make command, result directory, and source tree.
+</p>
+</li>
+</ul><h4>
+<a name="Build%20Variants%20with%20Parameters"></a>Build Variants with Parameters
+</h4><p>
+Pakfile parameters can be specified in a URI as described in <a href="#Package%20Locations">Package Locations</a>. When a pakfile executes, it can access the parameters from its own URI by examining the <a href="#package.params">package.params</a> table. When a package file is included multiple times with different parameters, its pakfile will be executed multiple times, once for each distinct set of parameters. Each time the pakfile executes it constructs a new package object.
+</p><p>
+Packages are thereby free to define their own &#8220;contracts&#8221;: which options are supported, and what they signify.
+</p><p>
+Here is an example pakfile, named <code>clib/pak</code>, that describes two variants:
+</p><pre>local v = "Win32_Release"
+if params.debug then
+   v = "Win32_Debug"
+   deps.DbgMalloc = { path="../dmgmalloc", params={debug="1"} }
+end
+commands.make = "make V=" .. v
+commands.clean = "make clean V=" .. v
+glue = { v .. ".min" }
+result = v
+</pre><p>
+Here is a consumer of <code>clib</code>:
+</p><pre>deps = {
+   CLibDebug = "../clib/pak?debug=1,
+   CLibRelease = "../clib/pak",
+}
+glue = { "x.min", "x.mak" }
+</pre><p>
+The two dependencies identify different variants because the parameters they specify (or omit) are recognized by <code>clib/pak</code> and treated differently. In the <code>min</code> glue file, the variables <code>CLibRelease</code> and <code>CLibDebug</code> will point to different directories: <code>&lt;clib.root&gt;/Win32_Release</code> and <code>&lt;clib.root&gt;/Win32_Debug</code>.
+</p><h4>
+<a name="Unrecognized%20Parameters"></a>Unrecognized Parameters
+</h4><p>
+What if the parent package were to add the following dependency?
+</p><pre>CLibOptimized = "../clib/pak?opt=1"
+</pre><p>
+This specifies an option that is not recognized by the pakfile. Looking at <code>clib/pak</code> you can see that it will produce the same results for <code>CLibOptimized</code> and <code>CLibRelease</code>. As a result, these URIs effectively work as two aliases for the same dependency. The corresponding <code>min</code> file variables will point to the same directory, and there will be one make command in the <code>mak</code> file.
+</p><p>
+The build should work just fine, but Pakman will warn of a glue file conflict because the <code>__pkg_uri</code> variable in <code>x.min</code> gets assigned a different value in each 'variant'. We can resolve this problem by normalizing <a href="#package.params">package.params</a>:
+</p><pre>params.opt = nil
+</pre><p>
+This will cause the 'opt' parameter to be silently ignored, and removed from the package's <code>uri</code> field. This would be appropriate when the <code>clib</code> developer is aware of the optimization parameter and has deemed that the build results will be usable by clients that specify &#8220;opt&#8221;.
+</p><p>
+Additionally, the <code>clib</code> package may choose to provide early errors when clients use unrecognized parameters:
+</p><pre>params {
+   debug = { "", "1", default = "" }
+}
+</pre><h4>
+<a name="Guidelines%20for%20Variants"></a>Guidelines for Variants
+</h4><p>
+When you create pakfiles that describe variants, you should understand and keep in mind the following concerns:
+</p><ul>
+<li>
+<p>
+Avoid glue file collision.
+</p><p>
+Glue files are created by Pakman in the source tree, under the package root directory. If two variants name the <i>same</i> glue file but specify different dependencies, etc., which affect the contents of the glue file, a conflict arises. Pakman cannot accurately construct a package tree that includes both of those variants. It will detect such conditions and print a warning.
+</p>
+</li><li>
+<p>
+Avoid result collision.
+</p><p>
+Each variant should have its own result directory.
+</p><p>
+If two different build variants are destined for the same result directory and they overwrite each other's files, then the build could produce unpredictably corrupted results.
+</p><p>
+If two build variants share the same result directory but are carefully constructed not to overwrite each other's files, it presents other, less immediate problems. For one, downstream packages could easily become dependent upon build results they did not explicitly request, leading to build problems when packages are combined in different ways.
+</p><p>
+Pakman does not currently warn of these conflicts.
+</p>
+</li><li>
+<p>
+Avoid build collisions.
+</p><p>
+The build command for each of the variants will be issued in the same root directory and operate within the same source tree. Each build should not be influenced by build operations performed for other variants. For example, temporary files generated when building one variant should not be able to affect the results of another variant built later. Good, common sense practices for constructing makefiles should be employed, including ensuring that all output and temporary files are written to a separate directory, specific to the variant, and not the source file directories.
+</p><p>
+Pakman cannot detect these kinds of conflicts, since Pakman does not know about the details of the build steps.
+</p>
+</li>
+</ul><h3>
+<a name="Multi-Server%20Projects"></a>Multi-Server Projects
+</h3><p>
+The <a href="#config.vcs.p4.command">config.vcs.p4.command</a> variable allows a user to associate different Perforce command strings with different host names by assigning a variable in a <code>.pakman</code> file. These command strings will need to specify server-specific configuration options. Below is a summary of some relevant <code>p4</code> command-line options. Type &#8220;<code>p4 usage</code>&#8221; or refer to Perforce documentation for more information.
+</p><ul>
+<li>
+<p>
+<code>-p &lt;port&gt;</code> : This provides the host name and port (typically 1666).
+</p>
+</li><li>
+<p>
+<code>-c &lt;client&gt;</code> : Client name.
+</p>
+</li><li>
+<p>
+<code>-u &lt;username&gt;</code> : User name.
+</p>
+</li>
+</ul><p>
+Pakman uses the domain name reported by the server in <code>p4 info</code> to validate the <code>command</code> table mappings.
+</p><h4>
+<a name="Directory%20Organization%20for%20Multiple%20Servers"></a>Directory Organization for Multiple Servers
+</h4><p>
+You must take care to ensure that the client workspaces used with the different servers do not have root directories that overlap in the local file system. The client roots should be different from each other, and one should never be underneath another one. If two clients were to overlap, the syncs performed in one client could overwrite and corrupt the files in another client.
+</p><p>
+A simple, reliable arrangement is to choose a directory for your multi-server &#8220;workspace&#8221;, and place client root directories for each server immediately under that directory, as shown below:
+</p><div class=diagram>
+<div class="html2d art" style="width:104px;height:160px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=line style="border-top-width:2px;left:35px;top:39px;right:47px;bottom:119px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:11px;top:23px;right:67px;bottom:103px"></div>
+<div class=line style="border-top-width:2px;left:35px;top:55px;right:47px;bottom:103px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:11px;top:87px;right:67px;bottom:55px"></div>
+<div class=line style="border-top-width:2px;left:35px;top:103px;right:47px;bottom:55px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:-1px;top:7px;right:91px;bottom:23px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:11px;top:135px;right:67px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;left:35px;top:151px;right:47px;bottom:7px;line-height:0"></div>
+<div style="left:16px;top:0px;right:48px;bottom:144px">(top)</div>
+<div style="left:40px;top:16px;right:8px;bottom:128px">server1</div>
+<div style="left:64px;top:32px;right:0px;bottom:112px">. . .</div>
+<div style="left:64px;top:48px;right:0px;bottom:96px">. . .</div>
+<div style="left:40px;top:80px;right:8px;bottom:64px">server2</div>
+<div style="left:64px;top:96px;right:0px;bottom:48px">. . .</div>
+<div style="left:40px;top:128px;right:8px;bottom:16px">server3</div>
+<div style="left:64px;top:144px;right:0px;bottom:0px">. . .</div>
+</div>
+</div>
+<p>
+The top level directory is a good place for the <code>.pakman</code> file. This will cause Pakman to find the &#8220;right&#8221; settings for that tree whenever you are working in that tree, since Pakman searches upwards from the current working directory for the <code>.pakman</code> file.
+</p><h4>
+<a name="Cross-Server%20Versioning"></a>Cross-Server Versioning
+</h4><p>
+Since changelist versions are meaningful only within a single server, time-based versioning should be used when specifying package versions in a package tree that spans multiple servers.
+</p><h4>
+<a name="Using%20Proxies%20with%20Multiple%20Servers"></a>Using Proxies with Multiple Servers
+</h4><p>
+When one or more of the multiple servers is accessed via a proxy server, the proxy server address should <i>not</i> appear as a key in the <code>command</code> table. The keys in the <code>command</code> table match host names in URIs, which refer to the host server, not the proxy server. The proxy server address will appear, however, in the &#8220;-p&#8221; option to be passed to <code>p4</code>. For example, when accessing a server <code>p4d</code> via a proxy <code>p4proxy</code>, URIs should begin with <code>p4://p4d/</code> and the server configuration may be specified in the following way:
+</p><pre>vcs.p4.command = {  p4d = "p4 -p p4proxy:1666" }
+</pre><h3>
+<a name="Multi-Client%20Projects"></a>Multi-Client Projects
+</h3><p>
+When you are working on multiple independent changes to a project in Perforce, you may need to have two copies of the project directory on your local disk, which will require two client workspaces. By default, Pakman operates entirely within one workspace, so when you get a project tree all the dependencies will be mapped and retrieved into that workspace. Since some of these dependencies may be very large and relatively inactive &#8212; for example, a large tool chain &#8212; having a copy per workspace may be unnecessarily wasteful.
+</p><p>
+The <a href="#config.vcs.p4.command">config.vcs.p4.command</a> variable allows different parts of the repository to be associated with different client workspaces, so a single <code>get</code> operation can construct a project tree that spans workspaces. This allows large common dependencies to be placed in a workspace that will be shared. If the repository tree under &#8220;/deploy&#8221; includes a number of mostly stable sources and binaries, multiple development workspaces can make use of a &#8220;<code>.pakman</code>&#8221; file with the following contents:
+</p><pre>vcs.p4.command = {
+   ["/deploy"] = "p4 -c my_deploy_client"
+   [""] = "p4"  -- default
+}
+</pre><p>
+In this example, the first entry in the <code>command</code> table has an empty host field and a path consisting of <code>/deploy</code>. The empty host name will match any host field in a URI, which is valid only when all URIs reside on the server that the default <code>p4</code> command line environment uses. Any packages that reside under <code>/deploy</code> will be retrieved using the &#8220;<code>my_deploy_client</code>&#8221; client, and other packages will be retrieved using the default client.
+</p><p>
+By maintaining different Perforce configurations for each project tree &#8212; for example, by using the <code>P4CONFIG</code> environment variable &#8212; a <code>.pakman</code> file with these contents will allow multiple project trees to share the same copy of the <code>/deploy/...</code> tree.
+</p><h3>
+<a name="Package%20Guidelines"></a>Package Guidelines
+</h3><h4>
+<a name="Location%20Independence"></a>Location Independence
+</h4><p>
+A package should not make assumptions about where it lands in the client workspace, or about where other packages or external dependencies lie in the local workspace. Instead, all external dependencies should be contained in packages, and their locations should be identified using variables in glue <code>MIN</code> files.
+</p><p>
+Packages that make assumptions about the client workspace will immediately exhibit one downside: in order to successfully build the package, each user must ensure that those assumptions are maintained. Even worse, such packages are not suitable for inclusion in other higher-level packages.
+</p><p>
+Some specific scenarios that we might want to enable include:
+</p><ol class="indent" type="1">
+<li>
+<p>
+Inclusion in a larger tree. Any package tree should be able to be included in another package so that the overall build product can be automatically built. The higher-level package may include multiple package trees, and these may need to share common dependencies. When multiple package trees make assumptions about local directory tree structure, those assumptions may conflict with each other.
+</p>
+</li><li>
+<p>
+Substitution of dependencies. Many situations call for replacing a dependency somewhere in the tree with an alternative implementation or an alternative build step. Packages should therefore not hard-code the location of any dependency. Cases include:
+</p><ol type="a">
+<li>
+<p>
+Building with a development sandbox version of a sub-package.
+</p>
+</li><li>
+<p>
+Switching between different versions of a package in order to isolate the root cause of a problem.
+</p>
+</li><li>
+<p>
+Switching between pre-built and built-from-source forms of a package.
+</p>
+</li>
+</ol>
+</li><li>
+<p>
+Coexistence with external requirements for workspace views. Assumptions about the target system &#8212; e.g. specific drive letter mappings &#8212; can conflict with other requirements place on client systems.
+</p>
+</li>
+</ol><p>
+Any explicit use of &#8220;..&#8221; within a makefile to escape out of the package's root directory is evidence of a problem in the package. Likewise, any use of absolute paths to refer to dependencies is evidence of a problem. When parts of a package refer to files outside of the package <i>without</i> using a variable defined in a glue file, an assumption is being made about the local development workspace.
+</p><p>
+In practice, location independence is not difficult to achieve, because glue files make available the locations of dependencies as make variables. Even in a <a href="#“Big%20Tree”">&#8220;Big Tree&#8221;</a> development environment, it is basic common sense to reference external dependencies with variables, since file organization tends to change over time, and variables can minimize the impact this has to makefiles and other build scripts.
+</p><h4>
+<a name="Minimize%20Environment%20Dependencies"></a>Minimize Environment Dependencies
+</h4><p>
+Packages should minimize their dependencies on the local environment: build system setup, installation requirements, or OS dependencies. Since these types of issues confront just about every package, the logic that deals with these issues (e.g. auto-detection or validation of the environment) should be separated into a package of its own.
+</p><p>
+A package's build step should not depend on user-supplied environment variables, unless that package's role is detecting and validating the environment. Environment variable assumptions inject manual steps into the processing of setting up a build environment, they can introduce otherwise avoidable conflicts between packages, and they pollute otherwise portable packages with details that can be factored out into a platform-specific package where they [Use of environment variables within a package's build step, as a means to communicate between parent and child processes, however, presents no such problem.]
+</p><h4>
+<a name="Minimizing%20Coupling"></a>Minimizing Coupling
+</h4><p>
+All else being equal, a package with fewer dependencies is a better package, because it is more easily reused in other contexts, and will be simpler to comprehend, analyze, modify, and audit. That being said, placing complexity in a separate package and listing it as a dependency can improve flexibility. Minimizing <i>overall</i> complexity is the key goal here.
+</p><p>
+Similarly, packages should minimize their <i>surface area</i> &#8212; the sum of the ways in which the package interacts with its consumers. Surface area can be defined as the complexity of the package's interface description: the contract its build product must meet.
+</p><h3>
+<a name="Switching%20Dependencies"></a>Switching Dependencies
+</h3><p>
+Building on the example discussed in the <a href="#Introduction">Introduction</a> we can modify the project to swap one package out for another. Edit the pakfile for runlua (from the pakman directory you can type &#8220;<code>make '$(RunLuaDir)'</code>&#8221; or examine the <code>x.min</code> file find out where this is in your file system). Comment out the line that references <code>builds/pkgs/lua-5.1.4.pak</code> and un-comment the line that references <code>lua/lua-5.1.4/pak</code>, and save the result to your local disk.
+</p><p>
+Those two lines should now look like this:
+</p><pre>-- LuaDir = "../../builds/pkgs/lua-5.1.4.pak",          -- Lua 5.1.4 pre-built
+LuaDir = "../../opensource/lua/lua-5.1.4/build/pak", -- Lua 5.1.4 from source
+</pre><p>
+Reissue the same <code>pakman get</code> command we used earlier to update the project tree. Since we have already retrieved Pakman locally, it will be easier to use a relative path than the long absolute URI. Assuming your current working directory is still the &#8220;<code>pakman</code>&#8221; directory, you can type:
+</p><pre style="font-size: 59%">$ pakman get @926500
+Client bhk-sedition-pt saved.
+Getting @926500
+*** Using locally edited c:/p4/pt/pakman/depot/users/bhk/proto/runlua/pak
+mapping //depot/users/bhk/opensource/lua/lua-5.1.4 --&gt; //bhk-sedition-pt/pakman/depot/users/bhk/opensource/lua/lua-5.1.4
+updating client bhk-sedition-pt
+syncing p4://acme123.com:1666/build/tools/Vc7/...@926500
+syncing p4://acme123.com:1666/build/tools/WinNT/...@926500
+syncing p4://acme123.com:1666/make.d/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/opensource/lua/lpeg-0.9/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/opensource/lua/lua-5.1.4/...@926500
+ [106 changes]
+syncing p4://acme123.com:1666/depot/users/bhk/opensource/lua/luafilesystem-1.4.2/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/proto/luau/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/proto/make.d/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/proto/pakman/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/proto/runlua/...@926500
+syncing p4://acme123.com:1666/depot/users/bhk/proto/simp4/...@926500
+writing c:/p4/pt/pakman/depot/users/bhk/proto/pakman/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/proto/pakman/x.mak
+writing c:/p4/pt/pakman/depot/users/bhk/proto/runlua/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/proto/runlua/x.mak
+writing c:/p4/pt/pakman/depot/users/bhk/proto/make.d/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/opensource/lua/lua-5.1.4/build/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/proto/simp4/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/proto/simp4/x.mak
+writing c:/p4/pt/pakman/depot/users/bhk/proto/luau/x.min
+writing c:/p4/pt/pakman/depot/users/bhk/proto/luau/x.mak
+Done.  10 packages retrieved.
+To build:
+    cd c:/p4/pt/pakman/depot/users/bhk/proto/pakman
+    make -f x.mak            # builds the package and its dependencies
+    make all                 # builds just the package
+</pre><p>
+This time, Pakman retrieved one new package. The already-retrieved packages were left in place. The pre-built Lua package (which we swapped out) also remains in the workspace, but it is no longer referenced in the project tree. It will not have to be retrieved again if you swap it back in.
+</p><p>
+Now when we rebuild Pakman we will see an additional build step:
+</p><pre>$ make
+making ../../opensource/lua/lua-5.1.4
+making ../runlua
+making ../luau
+making ../simp4
+making .
+</pre><p>
+At this point we can easily generate a new executable after making changes to the Lua sources or rebuild everything with different levels of optimizations or different debugging or profiling options.
+</p><h3>
+<a name="Switching%20Dependencies%20at%20Build%20Time"></a>Switching Dependencies at Build Time
+</h3><p>
+While this works well for switching between pre-built deployments and source trees, you might want to be able to select between packages at build time, not when retrieving. For example, you may be on an airplane when you need to build from sources.
+</p><p>
+We can modify our example project to select between Lua-5.1.4 and LuaJIT-2.0 at build time. The build step is outside of Pakman's domain, so we are not talking about Pakman features at this point, but this use case illustrates how the same package construction principles can apply in other contexts.
+</p><p>
+First, we modify <code>runlua/pak</code> to include <i>both</i> Lua and LuaJIT at the same time. We need to use two different variable names for this. The relevant lines from the pakfile should look like this:
+</p><pre>...
+   --LuaDir = "../../builds/pkgs/lua-5.1.4.pak",      -- Lua 5.1.4 pre-built
+   LuaDir = "../../opensource/lua/lua-5.1.4/pak",   -- Lua 5.1.4 from source
+   LuaJITDir = "../extpaks/luajit/pak",
+...
+</pre><p>
+After modifying a pakfile we need to update the package tree using Pakman. This will retrieve the new dependency (LuaJIT) and update <code>runlua/x.min</code> to define both <code>LuaDir</code> and <code>LuaJITDir</code>.
+</p><pre>$ pakman get @909090
+...
+</pre><p>
+Next, we add the following three lines to <code>runlua/runlua.min</code>, immediately after the line that includes x.min:
+</p><pre>ifdef RUNLUA_USEJIT
+   LuaDir = $(LuaJITDir)
+endif
+</pre><p>
+At build time we can rebuild Pakman either way using:
+</p><pre>$ make clean all RUNLUA_USEJIT=1
+</pre><p>
+or:
+</p><pre>$ make clean all
+</pre><p>
+When deciding whether to construct a pakfile that enables this type of behavior, consider that such a package has more dependencies, and will require a larger build tree than a more specialized package. This would not be appropriate for an automated product build, for example.
+</p><p>
+Finally, consider that you can have multiple pakfiles for a single package. One could build from binaries, one could build from source, and one could allow either to be selected. Users could retrieve the package appropriate for their task facing them.
+</p><h3>
+<a name="Automating%20Pakman"></a>Automating Pakman
+</h3><p>
+Setting up an auto-build server for a Pakman-based project will involve invoking Pakman from a script. The script will have to perform the following tasks:
+</p><ul>
+<li>
+<p>
+Identify how to build the package.
+</p><p>
+One approach to automating the build of a particular package would be to create a customized workspace view and write a script to execute a certain build command in a certain directory after retrieving the package with <code>pakman get</code>. This hard-codes some assumptions about the package's make command and where it lands in the workspace view.
+</p><p>
+However, we can easily write a generic script that would be able to build <i>any</i> package given only its URI. This would accommodate any changes to the package's internal structure or its root directory location, and make no assumptions about the workspace view. We can do this by creating a temporary &#8220;wrapper&#8221; pakfile that declares the package(s) to be built as dependencies and specifies a glue MAK file. The automation script can then use the generated MAK file to build the desired package(s). This is like treating the automation script as a package in its own right, with its own dependencies, and its own rules for how to build its tree of dependencies. In bash or sh it would look like this:
+</p><pre>echo 'deps = { A="'$1'" } ; glue = { "x.mak" }' &gt; tmp.pak
+pakman get tmp.pak
+make -f x.mak tree_clean tree &gt; log.txt
+</pre><p>
+We can expand upon this by adding code to construct a temporary Perforce client for the duration of the build operation. You can refer to <code>//depot/users/bhk/builds/scripts/pakmake</code> for a bash script that automates clean builds &#8220;from scratch&#8221; in a way that can be triggered remotely via ssh.
+</p>
+</li><li>
+<p>
+Determine whether any changes have been made to the project since the last build.
+</p><p>
+A simple approach would be to hard-code a set of directories to be monitored using <code>p4 changes -m 1</code>.
+</p><p>
+It is feasible to automatically and precisely determine the set of directories to monitor by traversing the tree of package files. Pakman may be extended in the future to report the most recent changelist, given a package URI.
+</p><p>
+Using <code>pakman show</code>, we get a list of all packages that will be retrieved. A script can read that output and request the most recent changelist. It is up to the script to decide how to handle what a <code>pakman get</code> would request in terms of changelist and what is available in the P4 repository.
+</p>
+</li>
+</ul><h3>
+<a name="Archiving%20Builds"></a>Archiving Builds
+</h3><p>
+As the <a href="#Switching%20Dependencies">Switching Dependencies</a> section illustrates, Pakman simplifies interchangeability of source and pre-built forms of packages.
+</p><p>
+When developing your component, you may ordinarily want to use the pre-built forms of its dependencies in order to minimize build times. Sometimes, however, you may need to modify or trace through the source of the underlying component &#8212; for example, when integrating with a new version of the dependency or debugging a failure. Also, you may want to build downstream components (clients of your component) along with the source form of your component in order to diagnose problems before releasing your package.
+</p><h4>
+<a name="Build-time%20and%20Run-time%20Dependencies"></a>Build-time and Run-time Dependencies
+</h4><p>
+In order to construct components that allow interchangeability of source and pre-built forms, we need to think about package dependencies and how they are used by the package.
+</p><p>
+In the simplest case, a package's dependencies are used only during the package's own build step. We will call these <b>opaque</b> packages. Opaque packages can be thought of as having only <i>build time</i> dependencies. After an opaque package is built, its dependencies are not referenced. Their results are a self-contained tree of files with no references to files outside of the tree. Opaque packages can easily be interchanged with a plain package (a tar'ed or zip'ed tree of previous build results).
+</p><p>
+In other cases, a package will reveal the locations of its dependencies to its own consumers, perhaps by exposing its own generated <code>MIN</code> file. Its consumers can then access its dependencies in-place when they build. We will call these <b>transparent</b> packages. Transparent packages can be thought of as having <i>run time</i> dependencies. Their dependencies need to be around even when downstream components are built. If you were to archive the result directory tree for a package as a plain package, it would not be interchangeable with the original package. The archived version would have to carry along dependency information as well.
+</p><p>
+Although transparent packages are not easily archivable, they are sometimes immensely useful for aggregating or extending other packages. A transparent package can act as a shorthand for a collection of packages. By re-exposing their dependencies in place they introduce no extra copies into the build process.
+</p><p>
+Another thing to consider is that when a package has no build step, there is not much value in archiving its build results. This leads us to the following observations and guidelines for archiving or warehousing:
+</p><ul>
+<li>
+<p>
+Purely opaque packages can be archived as plain packages (simple bundles of files without external dependencies).
+</p>
+</li><li>
+<p>
+&#8220;Purely&#8221; transparent packages &#8212; that is, packages without their own build steps &#8212; do not need to have their results archived.
+</p>
+</li><li>
+<p>
+Avoid using transparent packages that include their own lengthy build steps. It should not be difficult to re-factor such a package into purely transparent and purely opaque parts.
+</p>
+</li>
+</ul><h3>
+<a name="Bootstrapping%20Pakman"></a>Bootstrapping Pakman
+</h3><p>
+The prospect of bootstrapping Pakman &#8212; building Pakman on a new OS for which no Pakman executables currently exist &#8212; provides a good example of how to exploit the fact that a Pakman-constructed build tree is copy-deployable.
+</p><p>
+The problem is that Pakman is used to build Pakman itself. Without a functioning Pakman on the new OS, how can it be built?
+</p><p>
+The solution is to run Pakman on a supported platform (e.g. Windows) to construct a directory tree that includes the Pakman sources and all its dependencies. Then zip or tar up that directory tree, unzip it on the remote system, and build the package.
+</p><p>
+To construct such a directory tree:
+</p><ol type="1">
+<li>
+<p>
+Create a new Perforce client, edit it, delete its &#8220;View&#8221; section, and set its root to a new, empty directory.
+</p>
+</li><li>
+<pre>pakman get p4:///depot/users/bhk/proto/pakman --p4="p4 -c &lt;client&gt;"
+</pre><p>
+If you are bootstrapping Pakman on a platform that has none of the pre-built binaries Pakman depends upon, you can substitute the build-from-source alternative packages before issuing this command.
+</p>
+</li><li>
+<p>
+Tar or zip the files under the client root.
+</p>
+</li>
+</ol><h3>
+<a name="./configure"></a><code>./configure</code>
+</h3><p>
+Ideally, glue files describe everything a package needs to know about the outside world, either directly or indirectly. They can insulate packages from system, site, and local environment dependencies.
+</p><p>
+It is informative to compare this approach with the &#8220;autotools&#8221; (&#8220;./configure&#8221;) approach widely used in open source projects.
+</p><p>
+The <code>./configure</code> approach relies on <i>installation</i> to make dependencies available to a package. Installation involves each package copying its outputs into a central location, so it is fraught with security compromises and poor software hygiene (possibility of naming conflicts, etc.). It also complicates switching between alternative dependencies, or working on two different projects that utilize different versions or branches of a package.
+</p><p>
+In a Pakman environment, we can express dependencies explicitly in a pakfile instead of relying <code>./configure</code> to find them and relying on the user to have already installed them.
+</p><p>
+But what about the cases where even Pakman packages have to rely on installation and uncontrolled external dependencies? What about compilers or other system-supplied services, which for portability reasons or other pragmatic reasons, cannot be supplied as packages in VCS? Making assumptions is always dangerous. In these cases the best that can be done is to provide code that explores, evaluates, and validates the environment on the system ... just like <code>./configure</code>.
+</p><p>
+In a Pakman environment, this detection and validation of the environment could be encapsulated in one or more packages. These packages would have build steps that perform the auto-detection and generate make include files or other files.
+</p><p>
+One upside of handling environment detection as a separate package is that only one copy is needed when multiple packages share it. Another upside would be that it would only have to execute once when it is shared by multiple packages. A third upside is that the environment detection package, once it is an external package, can be more flexibly managed. For example, one could easily could substitute an alternate implementation if the standard implementation does not work with the build system being used, or perhaps an optimized implementation with partially or completely pre-built results.
+</p><h3>
+<a name="Alternatives%20to%20Pakman"></a>Alternatives to Pakman
+</h3><h4>
+<a name="“Big%20Tree”"></a>&#8220;Big Tree&#8221;
+</h4><p>
+One approach to managing a software project is to maintain a consistent, comprehensive project tree in VCS. Perforce supports this model well. This &#8220;big tree&#8221; approach can yield reliable and fully automated builds.
+</p><p>
+One downside with this approach arises when many independent code lines share ingredients (tools, compilers, system headers, etc.). Duplicating the shared resources, which can be quite large, into each big tree can get unwieldy.
+</p><p>
+Managing sandboxes and development branches when only a small sub-component is being modified becomes tedious and/or unwieldy. Branching a very large project tree to develop a localized change can be cumbersome, imposing a load on the server and on the local machine's disk space, and introducing into the development process VCS operations that are potentially very slow. The alternative of branching a sub-tree and constructing a workspace that overlays the sandboxes sub-tree within the main tree is tedious.
+</p><h4>
+<a name="Limited%20or%20no%20Automation"></a>Limited or no Automation
+</h4><p>
+This is the simplest and most common approach. In order to build the software, a user must know how to set up the client spec, install software on the build machine, and otherwise configure the local machine. These steps can theoretically be documented, but by their nature non-automated processes cannot be automatically tested and will tend to become stale and invalid. Even worse, the assumptions one project places on a build machine may conflict with the assumptions made by other projects.
+</p><p>
+Each build may also require manual steps &#8212; a specific set of 'sync' commands to be issued to the server &#8212; but these can be easily automated in a batch file or script (e.g. <code>sync.bat</code>).
+</p><p>
+Versus a &#8220;sync.bat&#8221; approach, Pakman offers the following benefits:
+</p><ol type="a">
+<li>
+<p>
+Platform independence.
+</p>
+</li><li>
+<p>
+Insulating a project from client spec mapping assumptions. Glue <code>min</code> files enable location-independent components, which avoid potential conflicts with other subsystems and enable easy substitutions of alternatives (sandboxes or alternate versions).
+</p>
+</li><li>
+<p>
+Interchangeability of packages. Pakman insulates a package from dependencies on the internal structure of packages that it consumes, such as where its results are produced, or whether a build step is required at all. This makes it easy to switch between a pre-built package or a package that is built from source.
+</p>
+</li><li>
+<p>
+Scalability. Recursive make execution times can grow exponentially with project size. Pakman-generated glue MAK files roll up the entire sub-tree into one makefile, introducing only one level of recursion.
+</p>
+</li><li>
+<p>
+Automation of client workspace construction. When a project is first retrieved, or as it evolves, each user does not have to manually add new lines to his or her client workspace.
+</p>
+</li><li>
+<p>
+Easing maintenance of projects. Package files eliminate double-entry of paths to dependencies, so makefile vars and sync.bat lines do not need to be kept in sync when developers make changes.
+</p>
+</li><li>
+<p>
+Validation. Pakman will warn when conflicting versions are requested, rather than silently corrupting the dependencies of some packages. Pakman provides reasonable error reporting when p4 invocations fail.
+</p>
+</li><li>
+<p>
+Hierarchical substitutions [Not Yet Implemented] : Alternative configurations can be even further simplified by allowing users and pakfiles to specify substitutions of packages that apply across an entire sub-tree of packages.
+</p>
+</li><li>
+<p>
+Construction of a copy-deployable build tree. The build tree constructed by <code>pakman get</code> consists of a set of directories that reference each other only via relative paths, and which have minimal dependencies on the environment. As a result, this directory tree can be copied &#8212; or zipped/tarred and then unzipped/untarred &#8212; elsewhere on the machine or on a different machine, where it can then be built.
+</p>
+</li><li>
+<p>
+Avoiding version skew. All 'sync' operations performed by Pakman specify a version. With unspecified versions, a 'submit' that occurs during the sequence of 'sync' operations could leave the user's (or build server's) workspace in a state inconsistent with any version on the server.
+</p>
+</li>
+</ol><p>
+In addition to these benefits, there are a number of conveniences enabled by Pakman, and a number of smaller, use case-specific benefits that are made possible by having package inter-dependencies expressed in a machine-readable form. The examples given herein for user-supplied actions give just a hint of the possibilities.
+</p><h4>
+<a name="Other%20Tools"></a>Other Tools
+</h4><p>
+There are a number of comprehensive, full-featured component-oriented SCM frameworks designed for supporting large-scale software development, including qpbuild and maven. Coming at the problem from a different direction there are package management tools used in Linux distros, such as APT, RPM, and pacman.
+</p><p>
+While it shares many of the same goals, Pakman offers a unique combination of features:
+</p><ul>
+<li>
+<p>
+Pakman avoids introducing dependencies on servers (aside from the VCS servers) or anything else that would impose administrative overhead. Pakman adoption requires no centralized administration.
+</p>
+</li><li>
+<p>
+Pakman has no uncontrolled run-time dependencies or installation requirements. Pakman can be deployed as a single executable file ready to run on vanilla OS installations.
+</p>
+</li><li>
+<p>
+Pakman limits its scope to the problem of retrieval and configuration of components. It does not involve itself in the mechanisms for building and testing the software. Source trees constructed by Pakman are buildable without Pakman, and can be deployed simply by copying.
+</p>
+</li><li>
+<p>
+Unlike the Linux-oriented tools, Pakman avoids the notion of &#8220;installation&#8221; of components, so a developer can work with multiple products or multiple versions of a product on the same machine, switching between builds easily.
+</p>
+</li>
+</ul><h2>
+<a name="Troubleshooting"></a>Troubleshooting
+</h2><h3>
+<a name="Frequently-Encountered%20Problems"></a>Frequently-Encountered Problems
+</h3><ol type="1">
+<li>
+<p>
+Invalid P4 configuration.
+</p><p>
+When using Perforce, Pakman relies on the <code>p4</code> command-line client and depends on its settings, including your default Perforce server. Type <code>p4 info</code> to make sure that your command line Perforce client is properly configured. Refer to the <a href="http://www.perforce.com/perforce/r10.1/manuals/p4guide/02_config.html">Perforce documentation</a> for guidance.
+</p><p>
+If <code>p4 info</code> looks correct but Pakman operations still fail, use the <a href="#--log=%3cfile%3e"><code>--log=&lt;file&gt;</code></a> or <a href="#--verbose%20/%20-v"><code>--verbose / -v</code></a> options to see what Perforce commands are issued by Pakman. Then you can try those Perforce commands directly to see why they are not working.
+</p>
+</li><li>
+<p>
+&#8220;Cannot map package&#8221;
+</p><p>
+In order to retrieve packages from Perforce, Pakman may have to add lines to the workspace view. Since Pakman never removes or shadows mappings in the view, pre-existing entries may present conflicts that the user must address. Since each mapping specifies two patterns, one for repository file names and one for local file names, there are two types of conflicts that may arise:
+</p><ol class="indent" type="a">
+<li>
+<p>
+A required repository location is already mapped into the workspace, but not completely. The resolution in this case is to manually edit the view to create a mapping that includes then entirety of the required packages.
+</p>
+</li><li>
+<p>
+The local directory chosen by Pakman for a package is not available. That is, the directory or some files beneath it are specified in existing maps. This problem can be resolved by manually editing the workspace view to move files &#8220;out of the way&#8221; of the default client location, or by creating some other map for the required package.
+</p>
+</li>
+</ol><p>
+These problems can be avoided in the first place by starting with a completely empty workspace view. See <a href="#Workspace%20Management">Workspace Management</a> for more information.
+</p>
+</li><li>
+<p>
+Cygwin P4 clients
+</p><p>
+Perforce distributes two different versions of the <code>p4</code> command line client for Windows: a &#8220;native&#8221; Windows version and a Cygwin version. Pakman will print a warning if it detects the Cygwin version, because it can cause problems for Pakman by reporting local file paths that are not valid Windows paths (e.g. &#8220;/cygdrive/c&#8221; instead of &#8220;c:/&#8221;). To avoid this warning and the potential problems, either remove the Cygwin version from your command path or point Pakman to a Windows native version of the p4 client by using the <code>-p4</code> option of the <code>p4.command</code> configuration file setting.
+</p>
+</li>
+</ol><h3>
+<a name="Reporting%20Problems"></a>Reporting Problems
+</h3><p>
+If none of the above issues seem to identify the problem, or if the problem is not machine-specific (a problem with how pakman interprets package files), then:
+</p><ol type="1">
+<li>
+<p>
+Re-issue the failing command with the <a href="#--log=%3cfile%3e"><code>--log=&lt;file&gt;</code></a> option. This will generate a log of the actions performed by Pakman, including its interaction with Perforce.
+</p>
+</li><li>
+<p>
+Raise an issue in the Github Issue Tracker, including the problem description and a log of the failing session. Please indicate whether this appears to be machine-specific problem.
+</p>
+</li>
+</ol></div>
+</body>
+</html>

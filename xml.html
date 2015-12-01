@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>XML Module</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="XML%20Module"></a>XML Module
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#xml.SAX(text,%20fnTest,%20fnStart,%20fnEnd,%20fnComm,%20fnPI)">xml.SAX(text, fnTest, fnStart, fnEnd, fnComm, fnPI)</a></div><div class="tocLevel"><a href="#xml.DOM(text,%20%5bmap%5d)">xml.DOM(text, [map])</a></div></div><div class="tocLevel"><a href="#Pruning">Pruning</a></div><div class="tocLevel"><a href="#Limitations">Limitations</a></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>xml</code> module implements a small and fast pure-Lua XML parser. It can be used in &#8220;SAX&#8221; or &#8220;DOM&#8221; mode, and the DOM mode supports parse-time pruning, allowing data to be very efficiently extracted from very large files.
+</p><div class="indent"><pre>local xml = require "xml"
+</pre></div><p>
+Entity references and numeric character references in the XML are converted to utf-8 strings, assuming (but not verifying) that the document encoding is either utf-8 or a compatible one (e.g. us-ascii).
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="xml.SAX(text,%20fnTest,%20fnStart,%20fnEnd,%20fnComm,%20fnPI)"></a><code>xml.SAX(text, fnTest, fnStart, fnEnd, fnComm, fnPI)</code>
+</h4><div class="indent"><p>
+Parse XML <code>text</code> in SAX (callback) mode.
+</p><p>
+<code>text</code> can be a string or a 'read' function that can be called repeatedly to get more text. 'read' returns a string, or nil for end of stream.
+</p><p>
+Five callbacks can be provided:
+</p><ul>
+<li>
+<p>
+<code>fnText(str, getText)</code> : a function to be called for each string of character content. getText is a function that will return the actual text with its references replaced.
+</p>
+</li><li>
+<p>
+<code>fnStart(name, attrs)</code> : called for each start tag name: element name
+</p>
+</li><li>
+<p>
+<code>fnEnd(name)</code> : called for each end tag
+</p>
+</li><li>
+<p>
+<code>fnComm(str, startPos, endPos)</code> : called for each comment
+</p>
+</li><li>
+<p>
+<code>fnPI(name, str, startPos, endPos)</code> : called for each processing instruction
+</p>
+</li>
+</ul><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xml.DOM(text,%20%5bmap%5d)"></a><code>xml.DOM(text, [map])</code>
+</h4><div class="indent"><p>
+Parse XML into a document tree.
+</p><p>
+<code>map</code> is a description of the elements to capture. If not given, the parser will capture all document contents. See <a href="#Pruning">Pruning</a> for a description of other map values.
+</p><p>
+The DOM parser returns a tree of nodes that represent a document tree. CDATA nodes are represented by string values. By default, each returned element is described by a table with the following contents:
+</p><pre>node._type  = element name
+node.attr   = value of attribute named 'attr'
+node[1...N] = child nodes 1...N
+</pre><p>
+Comments are treated as nodes with _type == &#8220;_comment&#8221;, and processing instructions are treated as nodes with _type == &#8220;_pi_&lt;name&gt;&#8221;, where &lt;name&gt; is the name of the processing instruction.
+</p></div><h3>
+<a name="Pruning"></a>Pruning
+</h3><p>
+The DOM parser accepts a <code>map</code> value, analogous to a schema, that specifies how to treat elements within the document tree. The map is structured as a graph that describes which nodes to extract in the document, similar to how a regular expression can describe what text to extract from a string.
+</p><p>
+Maps can also be viewed as state machines. The parser keeps track of a &#8220;current&#8221; map as it parses the document. If and when it descends into child elements, the map describes what map to use as the &#8220;current&#8221; map for that child element.
+</p><p>
+Each node in the map may possess the following fields:
+</p><ul>
+<li>
+<p>
+<code>node.&lt;child&gt;</code> : If present, this specifies that child elements named <code>&lt;child&gt;</code> should be captured. The value of this entry gives the map node that is to be in effect when processing that child element.
+</p>
+</li><li>
+<p>
+<code>node[xml.DefaultKey]</code> : If present, this specifies that all child nodes are to be captured. The value gives the map node to use while processing the child elements that do not match a node.&lt;child&gt; entry.
+</p><p>
+Child elements will be skipped and not added to the DOM tree unless either node.&lt;child&gt; or node[xml.DefaultKey] is found.
+</p>
+</li><li>
+<p>
+<code>node[xml.MatchTextKey]</code> : a pattern to apply to contained text. Text will be added to the DOM tree <i>only</i> if the pattern matches. Only the text matched by the pattern (or the first pattern capture) will be retained. If this value is nil or false, no text will be added to the DOM tree. If this value is <code>true</code>, all text children will be retained without modification.
+</p>
+</li><li>
+<p>
+<code>node[xml.ActionKey]</code> : If present, this is a function that will transform the parsed element's value and/or key before it is stored in its parent.
+</p>
+</li>
+</ul><p>
+Here are some constructors for map nodes:
+</p><p>
+<code>xml.CaptureAll()</code> returns a map that will capture all descendants and any text.
+</p><p>
+<code>xml.CaptureText()</code> returns a map that will capture text, but no sub-elements.
+</p><p>
+<code>xml.TextNode()</code> returns a map that will capture text, and evaluate to string, not an array of strings.
+</p><p>
+<code>xml.ByName(node)</code> = capture values as described by 'node', but place them in a named field of the parent (versus another child). Any occurrences of the element will override any attribute of the same name. If the element occurs more than once in a parent element, the last occurrence overrides the preceding ones.
+</p><p>
+<code>xml.ListByName(node)</code> = capture values as described by 'node', but append them to an array stored in a named field of the parent. Any occurrences of the element will override any attribute of the same name.
+</p><p>
+<code>xml.ByName</code> and <code>xml.ListByName</code> can be composed with other constructors but not with themselves or each other.
+</p><p>
+Here are some pre-defined node types:
+</p><p>
+<code>xml.STRING</code> : this node describes an element that appears once in its parent element and contains a string. It will appear as a named field in the document tree with a string value.
+</p><p>
+<code>xml.NUMBER</code> : this node describes an element that appears once in its parent element and contains a number. It will appear as a named field in the document tree with a number value.
+</p><p>
+Refer to <code>xml.lua</code> for more node types.
+</p><p>
+The following example map structure will capture style elements from a well-formed XHTML document, discarding the body and other head elements:
+</p><pre>local map = {
+   html = xml.ByName {
+      head = xml.ByName {
+         title = xml.STRING,
+         style = xml.STRING_LIST,
+      }
+   }
+}
+
+local tree = xml.DOM(text, map)
+
+print(tree.html.head.title)  --&gt; a string
+print(#tree.html.head.style) --&gt; number of &lt;style&gt; elements
+</pre><h3>
+<a name="Limitations"></a>Limitations
+</h3><ul>
+<li>
+<p>
+No support for declarations.
+</p>
+</li><li>
+<p>
+No support for namespaces.
+</p>
+</li><li>
+<p>
+No end-of-line normalization (CRLF &amp; CR -&gt; LF)
+</p>
+</li><li>
+<p>
+Does not ignore or validate BOM
+</p>
+</li><li>
+<p>
+Limited error detection or validation.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

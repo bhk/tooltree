@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>PSArray</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="PSArray"></a>PSArray
+</h1><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+<code>PSArray</code> (Persistent Structure Array) implements an array as a persistent data structure. &#8220;Persistent data structure&#8221; means that each instance is immutable. &#8220;Modifications&#8221; instead return a new instance.
+</p><p>
+Unlike a native JavaScript Array, accessing an item in a PSArray requires use of the <code>get</code> method.
+</p><p>
+In the descriptions below, <code>psa</code> is the name of a PSArray instance.
+</p><h2>
+<a name="Functions"></a>Functions
+</h2><h4>
+<a name="PSArray.create()"></a><code>PSArray.create()</code>
+</h4><div class="indent"><p>
+Create a new PSArray.
+</p></div><h4>
+<a name="psa.length"></a><code>psa.length</code>
+</h4><div class="indent"><p>
+The number of elements in the arrary [data property].
+</p></div><h4>
+<a name="psa.get(index)"></a><code>psa.get(index)</code>
+</h4><div class="indent"><p>
+Return the item at index <code>index</code>, or <code>undefined</code> if the entry is empty.
+</p></div><h4>
+<a name="psa.push(item1,%20...)"></a><code>psa.push(item1, ...)</code>
+</h4><div class="indent"><p>
+Return a new PSArray that contains all of the items in <code>psa</code>, followed by all of the arguments (item1, ...).
+</p></div><h4>
+<a name="psa.forEach(fn%20%5b,thisArg%5d)"></a><code>psa.forEach(fn [,thisArg])</code>
+</h4><div class="indent"><p>
+Call <code>fn(value, index)</code> with each element in the array.
+</p></div><h4>
+<a name="psa.diff(psaOld)"></a><code>psa.diff(psaOld)</code>
+</h4><div class="indent"><p>
+Return a &#8220;diff&#8221; object describing the changes from <code>psaOld</code> to <code>psa</code>.
+</p><ul>
+<li>
+<p>
+<code>diff.index</code> = where the change starts. This is the number of initial items in <code>psaOld</code> that remain in <code>psa</code>.
+</p>
+</li><li>
+<p>
+<code>diff.numDel</code> = number of items deleted. These values exist in <code>psaOld</code> starting at <code>diff.index</code> but not in <code>psa</code>.
+</p>
+</li><li>
+<p>
+<code>diff.numIns</code> = number of items inserted. These values exist in <code>psa</code> starting at <code>diff.index</code> but not in <code>psaOld</code>.
+</p>
+</li>
+</ul><p>
+Any remaining items in <code>psaOld</code> after index <code>diff.index + diff.numDel</code> appear in <code>psa</code> starting at <code>diff.index + diff.numIns</code>.
+</p><p>
+Note that when <code>diff.index == psaOld.length</code> is true, <code>diff.numDel</code> must be <code>0</code>, and the diff describes a simple <code>append</code> operation.
+</p></div></div>
+</body>
+</html>

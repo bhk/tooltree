@@ -1,0 +1,463 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>Observables</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Observables"></a>Observables
+</h1><h2>
+<a name="Synopsis"></a>Synopsis
+</h2><pre>var O = require('observable.js');
+
+var v1 = O.slot(1);
+var v2 = O.slot(2);
+var f1 = O.func(function (a, b, c) { return a + b + c; },
+                v1, v2, 5);
+O.activate(console.log.bind(console), f1);
+// console: 8
+v1.setValue(2);
+// console: 9
+</pre><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+<code>observable.js</code> provides a minimal FRP framework. In FRP we construct our program in a functional style, wherein each output is determined by its inputs. FRP adds the notion of time-variant values, so even when a function gets &#8220;called&#8221; once its return value can vary over time with its inputs.
+</p><p>
+In order to accomplish this in JavaScript, we use JavaScript function values that actually get called whenever inputs change. However, the management of the dependency chain and recalculation is &#8220;under the hood&#8221;, so we can write a program as if we were constructing it once, functionally. For example, we can construct a UI as if we were displaying a constant set of values, yet the resulting UI will dynamically respond to changes in inputs.
+</p><p>
+Our program deals with two kinds of values:
+</p><ul type="circle">
+<li>
+<p>
+Static values are ordinary JavaScript values. These values do not change over time.
+</p>
+</li><li>
+<p>
+<i>Observables</i> are objects that represent time-variant values. These are differentiated from &#8220;ordinary&#8221; values by inheriting from <code>O.Observable</code>. At any one point in time, an observable &#8220;holds&#8221; a specific static value.
+</p>
+</li>
+</ul><p>
+And we write two kinds of code:
+</p><ul type="circle">
+<li>
+<p>
+<i>Imperative</i> code runs in &#8220;ordinary&#8221; JavaScript contexts such as event handlers or timer callbacks. We control when this code executes by setting handlers or scheduling callbacks or placing it at the top level of scripts.
+</p>
+</li><li>
+<p>
+<i>Reactive</i> code consists of JavaScript functions that have been passed to <code>O.func</code> to create observables that &#8220;watch&#8221; zero or more inputs. We don't explicitly invoke this code, but it gets invoked <i>as necessary</i> to update its output value as its inputs change. Reactive code is generally purely functional, describing how its result is a function of its inputs.
+</p>
+</li>
+</ul><p>
+While the reactive code is invoked at specific points in time and only sees static values, we can read it as if it applies at all times. It describes relationships that are always true, whereas the ordinary imperative code prescribes what to do only in specific situations or at specific points in time.
+</p><h2>
+<a name="API"></a>API
+</h2><h4>
+<a name="O.slot(value)%20--%3e%20slot"></a><code>O.slot(value) --&gt; slot</code>
+</h4><div class="indent"><p>
+Return an observable that holds static value <code>value</code>.
+</p><p>
+Unlike other observables, the returned slot implements a method called <code>setValue</code>, which replaces the held value. If the new value is different (<code>!==</code>) from the previous value, the observable will be invalidated, triggering recalculation of all active downstream observables.
+</p><p>
+This is typically used by the imperative portions of your program to contribute values to the reactive domain. Do not call <code>o.setValue()</code> from within the reactive domain &#8212; i.e. from within one of the functions passed to <code>O.func()</code>.
+</p></div><h4>
+<a name="O.func(fn,%20value...)%20--%3e%20ofn"></a><code>O.func(fn, value...) --&gt; ofn</code>
+</h4><div class="indent"><p>
+Apply the reactive function <code>fn</code> to a set of arguments (<code>value...</code>), constructing a new value.
+</p><p>
+The input values <i>may</i> be observable or static, and depending on the inputs the result <code>ofn</code> will be observable or static.
+</p><p>
+If any input values are observable, <code>ofn</code> will be an observable that treats those inputs as dependencies, and a change to <i>any</i> of those inputs will cause <code>fn</code> to be called again. When <code>fn</code> is called, it will be passed the static value held by the observable.
+</p><p>
+If all input values are static, non-function values, <code>ofn</code> will be a static value, and <code>fn</code> will be called exactly once (before <code>O.func</code> returns).
+</p><p>
+<b>Lazy Evaluation</b>: Function arguments are used for lazy evaluation. These, when and if they are called, may return either static or observable values.
+</p><p>
+As with non-lazy observable arguments, lazily-evaluated observables are hidden from <code>fn</code>. When <code>fn</code> is called, it is not given a direct reference the to function arguments that were passed to <code>O.func()</code>. Instead, each function argument <code>fa</code> is wrapped with another function that inspects its return values. When value returned by <code>fa</code> is an observable, the wrapper tracks the observable as a dependency and returns the current static value held by that observable. Any static return value will be returned unchanged.
+</p><p>
+Function arguments are called <i>only</i> if the corresponding wrapper is called. When not called, there will be no observable to track. For this reason, lazy evaluation can be useful to avoid false dependencies. Observables that are conditionally (perhaps rarely) evaluated can be wrapped in functions so that changes to those inputs do not generate needless recalculations.
+</p><p>
+Function arguments can accept any number of arguments. This allows <code>fn</code> to access an unlimited number of potential observable values.
+</p><div class="indent"><p>
+For example, consider a function named &#8220;observeURI&#8221; that accepts a URI and returns and observable that monitors an HTTP transaction. The URIs mentioned by <code>fn</code> will be tracked as dependencies.
+</p></div><p>
+<b>Memoization</b>: Calls to function arguments are memoized. The scope of the memoization cache is limited to the previous update cycle. In other words, when <code>fn</code> calls a wrapper with the same arguments as it did in the previous invocation of <code>fn</code>, the previous result will be used and the wrapped function will not be called. This helps ensure &#8220;constancy&#8221; when calls to the function argument would normally construct a new observable.
+</p><div class="indent"><p>
+Consider the &#8220;observeURI&#8221; example described above, which would be created in a pending state and later transition to a completed state, triggering a recalculation and a new invocation of <code>fn</code>. If this invocation were to construct <i>another</i> HTTP transaction, the previously completed transaction would be discarded, and recalculation would repeat indefinitely.
+</p></div><p>
+<b>Constancy</b>: During each recalculation (that is, each call to <code>fn</code>) the set of lazy dependencies is refreshed. Only the lazy dependencies from the most recent invocation of <code>fn</code> will remain tracked. If, on subsequent calls to <code>fn</code>, a lazy observable is returned both times, no subscribe/unsubscribe operations will be generated. This allows a lazy dependency to remain &#8220;live&#8221; during repeated invalidate/update cycles.
+</p><div class="indent"><p>
+Consider the &#8220;observeURI&#8221; example described above: If a recalculation were to cycle the observable through a non-live state and back to a live state, it would restart the transaction, resulting indefinite repetition. Instead, the observable remains in a live state as long as <code>fn</code> continues to request the same URI.
+</p></div></div><h4>
+<a name="O.createActivator(sched)%20--%3e%20act"></a><code>O.createActivator(sched) --&gt; act</code>
+</h4><div class="indent"><p>
+Create an activator.
+</p><p>
+<code>sched</code> is an object that implements the <code>delay</code> method (see <code>scheduler.js</code>).
+</p></div><h4>
+<a name="act.activate(fn,%20value...)%20--%3e%20dereg"></a><code>act.activate(fn, value...) --&gt; dereg</code>
+</h4><div class="indent"><p>
+Activate a side-effect-producing function.
+</p><p>
+<code>fn</code> will be called immediately, and then again as soon as possible after a change to any of the input values.
+</p><pre>Rcx.activate = function () {
+    return this.track(this.act.activate.apply(this.act, arguments));
+}
+</pre><pre>Rcx.assign = function (obj, field, value) {
+    return this.activate(function (o, f, v) {
+       o[f] = v;
+    }, obj, field, value));
+}
+</pre></div><h2>
+<a name="Memoization"></a>Memoization
+</h2><p>
+Functions provided to <code>O.func</code> are subject to memoization. Lazy input values are always memoized, and the initial function parameter will be memoized when all the other parameters are static values.
+</p><p>
+Memoizing a function means cacheing the arguments and the result of an invocation, and re-using the result on the next invocation if all of the arguments are the same. <code>observable.js</code> compares arguments using the <code>===</code> comparator.
+</p><p>
+One issue to be aware of when dealing with JavaScript object values is that an object will be <code>===</code> only to itself. This means that equivalent objects will not be seen as the same, and this will defeat caching, which may impact performance.
+</p><p>
+Another issue is that changes <i>within</i> an object are not visible to the caching mechanism. When an input value is the object as it was on a previous invocation, the cached result may be used even if the contents of the object have changed. Using immutable complex data types is a generic solution to this problem.
+</p><h2>
+<a name="Theory%20of%20Operation"></a>Theory of Operation
+</h2><p>
+Aside from holding a current static value, Observables allow other objects to <b>subscribe</b> to them. Subscribers receive notifications when the observable is <b>invalidated</b>. The specifics of subscription and notification are implementation details private to the observable library.
+</p><p>
+The subscription relationships form a graph, and if we flip the direction of the arrows it becomes a data flow graph:
+</p><div class=diagram>
+<div class="html2d art" style="width:336px;height:272px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:266px;bottom:198px"></div>
+<div class=rect style="border-width:3px;left:3px;top:103px;right:266px;bottom:102px"></div>
+<div class=rect style="border-width:3px;left:3px;top:199px;right:266px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:115px;top:7px;right:154px;bottom:198px"></div>
+<div class=rect style="border-width:3px;left:227px;top:103px;right:42px;bottom:102px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:105.5px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:67px;top:39px;right:223px;bottom:231px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:217.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:67px;top:135px;right:111px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:325.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:291px;top:135px;right:3px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:105.5px;top:52px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:91px;top:55px;right:223px;bottom:184px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:67px;top:88px;right:243px;bottom:151px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:217.5px;top:116px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:179px;top:39px;right:131px;bottom:192px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:203px;top:80px;right:111px;bottom:151px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:217.5px;top:148px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:203px;top:151px;right:111px;bottom:80px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:67px;top:192px;right:131px;bottom:39px"></div>
+<div style="text-align:center;left:32px;top:32px;right:296px;bottom:224px">A</div>
+<div style="text-align:center;left:144px;top:32px;right:184px;bottom:224px">D</div>
+<div style="text-align:center;left:32px;top:128px;right:296px;bottom:128px">B</div>
+<div style="text-align:center;left:256px;top:128px;right:72px;bottom:128px">E</div>
+<div style="text-align:center;left:32px;top:224px;right:296px;bottom:32px">C</div>
+</div>
+</div>
+<p>
+In this example, A, B, and C are slots, while D and E are observable functions. D subscribes to A and B, while E subscribes to D, B, and C. A change to A will result in recalculation of D and E, whereas change to C results only in a recalculation of E.
+</p><h2>
+<a name="Invalidation%20and%20Update%20Phases"></a>Invalidation and Update Phases
+</h2><p>
+Notification works in a way that allows updates to be deferred.
+</p><p>
+During an invalidation phase, any number of observable variables may be modified, and any subscribed observers are notified. These notifications propagate downstream until they reach a node that has already been invalidated. Invalidation does not recalculate and update downstream nodes &#8212; it only marks them invalid. Invalidations are coalesced, which is to say that during an invalidation phase multiple changes to an observer will result in a single notification to its observers.
+</p><p>
+Updates occur after invalidation, typically driven by a timer. Importantly, the update does not occur synchronously during invalidation. Updates evaluate each of the invalidated nodes, in a bottom-up fashion, so that each node gets evaluated only once.
+</p><p>
+The reasons for deferring updates are performance and scalability. There are few different factors at play:
+</p><ul type="circle">
+<li>
+<p>
+Modifications can be redundant. If updates were synchronous, N changes to a single variable would result in N recalculations of all of its downstream nodes. Deferring updates allows us to recalculate each node just once.
+</p>
+</li><li>
+<p>
+Nodes can have multiple inputs. When a node observes N different inputs, deferred recalculation allows us to recalculate the node once instead of N times.
+</p>
+</li><li>
+<p>
+Nodes can have multiple outputs. When a node is observed by N other nodes, a single change could cascade to an exponential number of updates if we were to synchronously and immediately traverse all paths downstream. With deferred updates, we recalculate each node at most once.
+</p>
+</li>
+</ul><h2>
+<a name="Immutable%20Values"></a>Immutable Values
+</h2><p>
+Since updates are deferred, observers cannot rely on &#8220;seeing&#8221; every value that each input holds. Observers are not force-fed a sequence of changes. Instead, when they are invoked they see only the &#8220;current&#8221; value of their inputs.
+</p><p>
+This then brings up the question of how to handle incremental updates. For example, a small addition to an array might result in a small change to a UI component, instead of a complete recalculation of the UI component's state.
+</p><p>
+To deal with this, we treat all values held by observables as immutable. Any observer can hold on to a value provided by an input and use it in the future without fear of its contents changing.
+</p><p>
+Each change of state must therefore produce a <i>different</i> value. For complex data types, this requires the usage of &#8220;persistent&#8221; (versioned) data structures.
+</p><p>
+In order to obtain an efficient description of a change, we can compute it as a <i>function</i> of two states (the old state and the new state). For example, we could define a very simple diff operation on persistent arrays that succeeds only when an &#8220;append array&#8221; operation completely describes the change:
+</p><pre>a = newValue.diffAsAppend(oldValue);
+if (a) {
+   a.forEach(appendItem);     // append these items
+} else {
+   replaceContents(newValue); // start from scratch
+}
+</pre><p>
+This diff-based approach may seem to require more code and complexity than synchronously pushing change records, but consider the following:
+</p><ul type="circle">
+<li>
+<p>
+Synchronous push introduces potential performance issues (the ones that are the reason for observables).
+</p>
+</li><li>
+<p>
+There are potentially many different forms of changes that might allow for optimizations, varying with use cases and underlying data types.
+</p>
+</li><li>
+<p>
+Observers might differ in complexity and in which types of changes they can easily support. For example, some may simply recalculate their results from the entirety of the complex data structure. Maybe no optimization is possible, or the complexity is undesired.
+</p>
+</li><li>
+<p>
+&#8220;Changers&#8221; (clients that modify an observable variable) can likewise differ in complexity and in which types of changes they know when to apply.
+</p>
+</li><li>
+<p>
+Changers and observers might have a mismatch in the forms of change records they understand.
+</p>
+</li><li>
+<p>
+Many consecutive changes might occur between two observed versions of a data structure. Delivering many changes will be more expensive than delivering the new state, even when the changer and the observer are in synch on the types of changes they prefer. Undelivered change records might even exhaust memory.
+</p>
+</li><li>
+<p>
+While the observable framework communicates only snapshots of state, not queues of changes, an implementation of a persistent data structure may very well employ change records internally to optimize common cases for its <code>diff</code> operation. For example, version B could know that it is equal to version A plus one &#8220;append&#8221; change. In fact, data model that consists entirely of change records would be valid, and the &#8220;diff&#8221; implementation for such a model would be trivial.
+</p>
+</li>
+</ul><p>
+Using &#8220;diff&#8221; keeps observables free from the concerns of change representation and queueing.
+</p><p>
+The observed data objects decide which modification operations to expose, how to represent changes internally, and which change records to make available via &#8220;diff&#8221; operations.
+</p><p>
+A persistent data type could bridge the gap between changers and observers that understand different forms of changes. In fact, it allows incremental update to be applied to operations that one would not normally think of as a candidate for such optimizations. For example: an SQL SELECT operation produces a subset of a table. A persistent implementation of this could describe the SELECT results in terms of the original table. If an observer sees the whole table as the old value, and the SELECT results as the new table, the result of <code>newTable.diff(oldTable)</code> might be a list of rows to delete (perhaps empty). If this observer's role is populating a UI view with the contents of a table, it will not have to construct any new UI elements.
+</p><h2>
+<a name="Events"></a>Events
+</h2><p>
+Observables created with <code>O.slot</code> and <code>O.func</code> deal with &#8220;current values&#8221;, and do not directly address the concept of events, but we can build event support on top of them in various ways.
+</p><p>
+We can observe objects that describe sequences of events, and these objects could support a diff operation that returns a sequence of events that occurred since a given older state.
+</p><p>
+A simpler special case is a binary edge-triggered event, for which we can use an observed counter value. To &#8220;signal&#8221; the event we increment the counter. The observer gets notification of the changed counter, and can ignore the value (considering only whether it changed).
+</p><p>
+The case of level-triggered events is even simpler. For these we can simply use an observed value.
+</p><h2>
+<a name="Activation%20and%20Liveness"></a>Activation and Liveness
+</h2><p>
+<b>Activators</b> are objects that live at the downstream end of the data flow graph. They subscribe to one or more observables. When a notification is received, they schedule a callback that will evaluate the observables.
+</p><p>
+The presence or absence of subscription is used as an indication of &#8220;activation&#8221; or &#8220;liveness&#8221;. When an object has one or more subscribers it is activated, and should subscribe to its inputs. When an object has no subscribers, it is not activated and should not subscribe to its inputs.
+</p><p>
+In this manner, indication of liveness is propagated through the call graph, allowing nodes to release resources when not live. For example, a network observable could cease network activity when it is not activated.
+</p><p>
+Activators expose the following methods:
+</p><ul type="circle">
+<li>
+<p>
+<code>activate()</code> adds an observable to its list of active objects. As a convenience, instead of an observable it can be passed a function and arguments, in which case will construct an observable function.
+</p>
+</li><li>
+<p>
+<code>deactivate()</code> removes an observable from its list of active objects.
+</p>
+</li><li>
+<p>
+<code>destroy()</code> removes all objects from its list of active objects.
+</p>
+</li>
+</ul><p>
+Note that when an observable function is not activated, its <code>valid</code> bit and cached value can get stale, since it is not subscribing to its children. When in this state, observable functions assume they are invalid, and calls to <code>getValue</code> will query their inputs and recalculate.
+</p></div>
+</body>
+</html>

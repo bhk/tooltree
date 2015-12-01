@@ -1,0 +1,454 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Project.mak</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Project.mak"></a>Project.mak
+</h1><p>
+Project.mak builds projects that have been constructed from multiple packages.
+</p><p>
+The project directory is typically the top directory of a repository. The makefile in this directory configures the packages that constitute the project and invokes their build steps in the appropriate order.
+</p><p>
+Each package lives in a separate directory, typically a subdirectory of the project directory. Packages typically use <a href="crank.html">crank</a> as a build system, in which case typing &#8220;make&#8221; in the package directory will build all of the configured variants of that package, and &#8220;make V=&lt;variant&gt;&#8221; will build a specific variant.
+</p><h2>
+<a name="Usage"></a>Usage
+</h2><p>
+A project makefile can be invoked in the following ways:
+</p><p>
+<b><code>make [TARGETS...]</code></b>
+</p><div class="indent"><p>
+Each TARGET can be:
+</p><ul type="circle">
+<li>
+<p>
+<code>PACKAGE</code> : build all configured variants of a package
+</p>
+</li><li>
+<p>
+<code>PACKAGE@VARIANT</code> : build a specific variant of a package
+</p>
+</li>
+</ul><p>
+The package name <code>all</code> is a synthetic package that represents the entire project. Its dependencies are listed in the <code>Package</code> variable in the Makefile.
+</p><p>
+If no targets are given, <code>all</code> is the default.
+</p><p>
+If no configuration has been performed or the configuration is stale, configuration is performed.
+</p><p>
+Only one line of output is written to the console for each package that is built, unless there is an error. Console output from package builds is written to a log file (under <code>.built</code>), and on any failed package build this log file is written to the console.
+</p></div><p>
+<b><code>make graph [ root=TARGET ] [ VAR=VALUE ... ]</code></b>
+</p><div class="indent"><p>
+Display dependency tree. This will describe the packages to be built when a specified root target is built. The default root is <code>all</code>.
+</p></div><p>
+<b><code>make configure [ VAR=VALUE ... ]</code></b>
+</p><div class="indent"><p>
+Generate configuration files. Command line variable assignments may be used to modify the configuration; these assignments will remain in effect during a later auto-reconfiguration (e.g. when a Package file changes).
+</p></div><p>
+<b><code>make clean</code></b> <b><code>make clean_PACKAGE</code></b> <b><code>make clean_PACKAGE@VARIANT</code></b> <b><code>make clean_configure</code></b>
+</p><div class="indent"><p>
+Remove build/configuration results.
+</p></div><p>
+<b><code>make help</code></b>
+</p><div class="indent"><p>
+Display this message.
+</p></div><h2>
+<a name="Makefile%20Contents"></a>Makefile Contents
+</h2><p>
+The &#8220;project makefile&#8221; assigns variables to describe the project contents and then includes the file <code>project.mak</code>.
+</p><p>
+The following variables describe the contents of the project:
+</p><ul>
+<li>
+<p>
+<code>Project</code> is a list of all of the packages to be built. These will be treated as dependencies of a synthetic package called <code>all</code>.
+</p>
+</li><li>
+<p>
+<code>Variants</code> is a list of all variants of <code>all</code> that will be configured.
+</p>
+</li>
+</ul><p>
+The makefile can define properties of packages.
+</p><ul>
+<li>
+<p>
+<code>Package.dir</code> gives the location of the root directory for a package. This defaults to <code>$I</code> (in other words, by default, the package name is also the name of the directory containing the package).
+</p>
+</li><li>
+<p>
+<code>Package.file</code> gives the name of the package file. This defaults to the <code>dir</code> property followed by <code>/Package</code>.
+</p>
+</li>
+</ul><p>
+The project makefile also describes <a href="#Variants"><i>variants</i></a> by defining properties of the <code>V</code> class. Project.mak does not specify what variant names or variant properties a project can use. Individual packages, and some crank-based extensions, assign meaning to certain properties by using them in a certain way. For example, the <code>crank-c</code> package uses the <code>target</code> property of the current variant to locate the C/C++ compiler toolchain.
+</p><p>
+Package and variant properties are defined according to the rules for <a href="#Crank%20Classes">Crank Classes</a>.
+</p><h4>
+<a name="Example%20Makefile"></a>Example Makefile
+</h4><div class="indent"><pre>Project = foo bar
+Variants = dbg rel relv7
+
+Package.dir = $I
+Package[foo].dir = thirdparty/foo
+
+V.arch = ARM
+V[dbg].flags = debug warn error
+V[rel].flags = release warn error
+V[relv7].arch = ARMv7
+
+include crank/project.mak
+</pre></div><h3>
+<a name=".userconfig"></a><code>.userconfig</code>
+</h3><p>
+Local settings can be placed in a makefile file called <code>.userconfig</code>. Project.mak looks for this file in the top-level directory. If not found there, it will look in the parent directory of the top-level directory, and so on, up to a maximum of three levels up.
+</p><p>
+Local settings are those that are specific to a build system or user, and are therefore not appropriate for the top-level Makefile. For example, the location of a build tool on a particular system, or a tailored value of the <code>PATH</code> environment value. Since the Makefile will be checked in, it should contain definitions that are valid for all build environments.
+</p><p>
+When <code>.userconfig</code> is found, it is included by project.mak so that its variable definitions will be available during the configure step. All generated <code>.config</code> files will also include the <code>.userconfig</code> file, so that its settings will be available when <code>make</code> is executed within a package directory (i.e. not at the top level).
+</p><h2>
+<a name="Configuration"></a>Configuration
+</h2><p>
+When first invoked, project.mak will configure the build. This reads descriptions of each package to be built and traverses the tree of dependencies. It then generates package configuration files and a &#8220;tree&#8221; makefile.
+</p><p>
+Package configuration files &#8212; by convention named <code>.config</code> &#8212; are intended to be included by the package's makefile. They define variables that describe the current project configuration (e.g. where other package lie).
+</p><ul>
+<li>
+<p>
+<code>V</code> : a list of all of the default variant names (those that will be built by <code>make</code> or <code>make all</code>).
+</p>
+</li><li>
+<p>
+<code>V[_v_].options</code>: for each variant name _v_, a list of options that fully describe the variant.
+</p>
+</li><li>
+<p>
+Dependency variables. Each dependency variable listed in the <code>deps</code> field of the <a href="#Packages">package file</a> is assigned the location of the result directory of the corresponding dependency.
+</p>
+</li>
+</ul><p>
+The tree makefile is invoked from the top-level makefile, and is responsible for building all of the project's packages in the proper order. Since it contains the entire dependency tree in one makefile, it avoids the performance problems associated with recursive make.
+</p><h2>
+<a name="Packages"></a>Packages
+</h2><p>
+In project.mak parlance, a &#8220;package&#8221; is a composable software component. Packages can be thought of as <i>functions</i> that generate their outputs (build results) from inputs (dependencies and build options), and that can be combined in various ways with other packages.
+</p><p>
+Each package consists of a directory of source files. A package typically contains instructions (e.g. a makefile) for building output files, but some packages may have no build step and contain files that are simply used as-is.
+</p><p>
+In order to treat a package as a function, we have to know how to invoke it, how to provide its inputs, and where it will write its outputs. This is the purpose of the <code>Package</code> file. Each package is described by a file called <code>Package</code> that assigns variables in GNU Make syntax.
+</p><p>
+A missing Package file is treated the same as an empty package description (defaults are used for each variable). The default values are such that when a package without a <code>Package</code> file is encountered, it is presumed to have no build step, no dependencies, and no configuration file.
+</p><h3>
+<a name="Package%20File%20Variables"></a>Package File Variables
+</h3><ul>
+<li>
+<p>
+<code>deps</code>: a list of packages and associated variable names. A package's dependencies are the packages that must be build before the package itself is built.
+</p><p>
+<code>deps</code> is a space-delimited list of &lt;varName&#8805;&lt;pkgName&gt; pairs. &lt;pkgName&gt; is the name of the directory (relative to the project root) containing a package. &lt;varName&gt; is the name that will be used in the generated configuration file to identify the result directory of the dependency.
+</p><p>
+If not specified, the set of dependencies is assumed to be empty.
+</p>
+</li><li>
+<p>
+<code>result</code>: name of a directory containing the build results.
+</p><p>
+If not specified, this defaults to the top directory of the package.
+</p>
+</li><li>
+<p>
+<code>make</code>: the command to be used to build the package.
+</p><p>
+If not specified, no build step is performed for the package.
+</p>
+</li><li>
+<p>
+<code>clean</code>: the command to be used to clean the build results.
+</p><p>
+If not specified, no &#8220;clean&#8221; operation is performed for the package.
+</p>
+</li><li>
+<p>
+<code>conf</code>: name of a configuration file to be generated.
+</p><p>
+If not specified, no configuration file is written.
+</p>
+</li><li>
+<p>
+<code>configure</code>: name of a command to be executed during the configuration phase. Like <code>make</code>, the command will be executed in the root directory of the package. Analogously, it will be executed <i>after</i> the configure steps of any dependencies (if any).
+</p><p>
+If not specified, no command will be executed.
+</p>
+</li><li>
+<p>
+<code>v</code>: the name of the variant being built. This is described in <a href="#Variants">Variants</a>, below.
+</p>
+</li>
+</ul><h3>
+<a name="Variants"></a>Variants
+</h3><p>
+Some projects may support multiple &#8220;variants&#8221;, meaning they can be built in different ways, producing different results. In this case, we use the term &#8220;build&#8221; as a noun to refer to the result of building one variant of a package.
+</p><p>
+In multi-variant projects, it is important to keep in mind the distinction between <i>build</i> and <i>package</i>:
+</p><ul>
+<li>
+<p>
+Dependencies are relationships between <i>builds</i>, not <i>packages</i>. For example, the &#8220;debug&#8221; build of package &#8220;A&#8221; may depend upon the &#8220;debug&#8221; build of package &#8220;debugMalloc&#8221;, whereas the &#8220;release&#8221; build of package &#8220;A&#8221; might not depend on any variant of &#8220;debugMalloc&#8221;.
+</p>
+</li><li>
+<p>
+The <code>result</code> location may be different for different builds. For example, debug and release build results should be segregated to avoid corruption of one result when another is built. Keeping results separate also allows consumers of the package to treat the two variants similarly.
+</p>
+</li><li>
+<p>
+Likewise, the &#8220;make&#8221;, &#8220;clean&#8221;, and &#8220;configure&#8221; commands may evaluate to different values depending on the variant being built.
+</p>
+</li>
+</ul><p>
+As a result, variables in a <code>Package</code> file (except <code>conf</code>) may be defined in terms of the &#8220;variant being built&#8221; using the following variables:
+</p><ul>
+<li>
+<p>
+<code>$v</code> is the name of the variant.
+</p>
+</li><li>
+<p>
+<code>v.</code> is a function that returns a property value for the current variant. For example:
+</p><pre>$(call v.,flags)
+</pre><p>
+<code>$(call v.,buildDir)</code>, for example, gives the name of the output directory for the current variant.
+</p><p>
+The <a href="#Configuration">Configuration</a> section describes how variant definitions are provided to a package, and the <a href="#Makefile%20Contents">Makefile Contents</a> section describes how to specify variants for a project.
+</p>
+</li>
+</ul><h4>
+<a name="Requesting%20Variants"></a>Requesting Variants
+</h4><p>
+When a package lists another package as a dependency, it can append a &#8220;query&#8221; (as in URI syntax) to the package name, as in:
+</p><div class="indent"><pre>deps = foo?debug
+</pre></div><p>
+When a query suffix is omitted, it defaults to <code>?$v</code> (meaning: request the variant of the same name as the variant being built for the current package).
+</p><p>
+A special query string &#8212; <code>...</code> &#8212; can be used to request a <i>plain</i> variant of a package. A plain variant ignores the contents of the <code>Package</code> file; there will be no build step and no dependencies, and the result will be simply the contents of the package directory.
+</p><h4>
+<a name="Responding%20to%20Requests"></a>Responding to Requests
+</h4><p>
+When a <code>Package</code> file is evaluated, the requested query string is made available as <code>$q</code>. The variable <code>v</code> (which describes the variant actually being built) defaults to <code>$q</code>, so by default each package will build the variant requested.
+</p><p>
+However, a package file can specify a variant different from the requested variant. For example, some packages only support a finite number of variants, and can assign <code>v</code> to one of them.
+</p><p>
+For example, the <code>crank</code> package consists only of makefiles and its build step does nothing but perform tests, so it specifies:
+</p><div class="indent"><pre>v = release
+</pre></div><p>
+This will avoid invoking the package's build step multiple times when it is required by multiple other packages.
+</p><h4>
+<a name="Configuration%20Files%20and%20Variants"></a>Configuration Files and Variants
+</h4><p>
+The <code>conf</code> variable should not reference <code>v</code> directly or indirectly, because configuration files are per-package, not per-build. Configuration files contain definitions that describe all variants.
+</p><h2>
+<a name="Crank%20Classes"></a>Crank Classes
+</h2><p>
+Properties are associated with classes and items. The values of these properties are defined by variables named according to certain conventions.
+</p><ul>
+<li>
+<p>
+<code>CLASS[ITEM].PROP</code> provides a value for the <code>PROP</code> property for item <code>ITEM</code> in class <code>CLASS</code>.
+</p>
+</li><li>
+<p>
+<code>CLASS.PROP</code> provides a definition that will be used when there is no item-specific definition.
+</p>
+</li><li>
+<p>
+The definitions of <code>CLASS.PROP</code> or <code>CLASS[ITEM].PROP</code> can refer to <code>$I</code> to obtain the name of the current item, and can call the <code>.</code> function to obtain the value of other properties of the same item.
+</p><p>
+For example: <code>Class.x = $(call .,dir)/$I</code>
+</p>
+</li>
+</ul></div>
+</body>
+</html>

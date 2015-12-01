@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>XPFS Module</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="XPFS%20Module"></a>XPFS Module
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#xpfs.chdir(dirname)">xpfs.chdir(dirname)</a></div><div class="tocLevel"><a href="#xpfs.chmod(filename,%20mode)">xpfs.chmod(filename, mode)</a></div><div class="tocLevel"><a href="#xpfs.dir(dirname)">xpfs.dir(dirname)</a></div><div class="tocLevel"><a href="#xpfs.getcwd()">xpfs.getcwd()</a></div><div class="tocLevel"><a href="#xpfs.mkdir(dirname)">xpfs.mkdir(dirname)</a></div><div class="tocLevel"><a href="#xpfs.remove(filename)">xpfs.remove(filename)</a></div><div class="tocLevel"><a href="#xpfs.rename(from,%20to)">xpfs.rename(from, to)</a></div><div class="tocLevel"><a href="#xpfs.rmdir(dirname)">xpfs.rmdir(dirname)</a></div><div class="tocLevel"><a href="#xpfs.stat(filename,%20mask)">xpfs.stat(filename, mask)</a></div></div><div class="tocLevel"><a href="#Rationale">Rationale</a></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>xpfs</code> module returns a table of functions for accessing the file system.
+</p><div class="indent"><pre>local xpfs = require "xpfs"
+</pre></div><p>
+XPFS aims to enable Lua code that is portable across Windows and UNIX-based operating systems. Ideally, functionality should be provided in a way that does not require the program to detect the underlying OS and implement OS-specific code. When analogous functions exist on different OSes, the goal is to expose them as consistently as possible. When some functions or features do not exist on all OSes, the goal is to allow clients to detect the feature (rather than testing for the current OS and making an assumption about the feature).
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="xpfs.chdir(dirname)"></a><code>xpfs.chdir(dirname)</code>
+</h4><div class="indent"><p>
+Change the current working directory of the current process.
+</p><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.chmod(filename,%20mode)"></a><code>xpfs.chmod(filename, mode)</code>
+</h4><div class="indent"><p>
+Modify the mode bits associated with a file.
+</p><p>
+<code>mode</code> is a string optionally beginning with &#8220;+&#8221; or &#8220;-&#8221;, followed by any number of characters denoting flags.
+</p><ul>
+<li>
+<p>
+When <code>mode</code> begins with <code>+</code>, the named flags are added to the mode.
+</p>
+</li><li>
+<p>
+When <code>mode</code> begins with <code>-</code>, the named flags are removed from the mode.
+</p>
+</li><li>
+<p>
+Otherwise, the mode is set to the set of flags.
+</p>
+</li>
+</ul><p>
+On UNIX-based systems this function provides a subset of POSIX functionality: it modifies the &#8220;user&#8221; mode bits <code>r</code>, <code>w</code>, and <code>x</code>.
+</p><p>
+On Windows, the <code>w</code> it controls the &#8220;readonly&#8221; attribute of the file, and the <code>r</code> and <code>x</code> bits are ignored.
+</p><p>
+Unrecognized flags are ignored.
+</p><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.dir(dirname)"></a><code>xpfs.dir(dirname)</code>
+</h4><div class="indent"><p>
+Get the contents of directory <code>dirname</code>.
+</p><p>
+The return value is an array of strings on success, or <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.getcwd()"></a><code>xpfs.getcwd()</code>
+</h4><div class="indent"><p>
+Return the name of the current working directory for the current process, or <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.mkdir(dirname)"></a><code>xpfs.mkdir(dirname)</code>
+</h4><div class="indent"><p>
+Create a directory.
+</p><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.remove(filename)"></a><code>xpfs.remove(filename)</code>
+</h4><div class="indent"><p>
+Remove file <code>filename</code>.
+</p><p>
+<code>xpfs.remove</code> differs from <code>os.remove</code> in that it the &#8220;readonly&#8221; bit will not prevent <code>xpfs.remove</code> from succeeded.
+</p><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.rename(from,%20to)"></a><code>xpfs.rename(from, to)</code>
+</h4><div class="indent"><p>
+Rename the file or directory named <code>from</code> to <code>to</code>.
+</p><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.rmdir(dirname)"></a><code>xpfs.rmdir(dirname)</code>
+</h4><div class="indent"><p>
+The return value is <code>true</code> on success, <code>nil, &lt;error&gt;</code> on failure.
+</p></div><h4>
+<a name="xpfs.stat(filename,%20mask)"></a><code>xpfs.stat(filename, mask)</code>
+</h4><div class="indent"><p>
+Retrieve file status.
+</p><p>
+<code>mask</code> is a string of characters specifying which fields are to be populated in the returned table. To request a field, include the first letter of the field name in the mask. The request all fields, include <code>*</code> in the mask. If <code>mask</code> <i>begins</i> with <code>L</code>, <code>lstat</code> will be used instead of <code>stat</code> (on UNIXes). Unrecognized mask characters are ignored.
+</p><p>
+If <code>mask</code> is not provided, it defaults to <code>"*"</code>.
+</p><p>
+On success, stat returns a table with zero or more of the following fields:
+</p><table><tr><th><p>
+Field
+</p></th><th><p>
+Value
+</p></th></tr><tr><td><p>
+<code>atime</code>
+</p></td><td><p>
+time of last access
+</p></td></tr><tr><td><p>
+<code>ctime</code>
+</p></td><td><p>
+time of last status change
+</p></td></tr><tr><td><p>
+<code>dev</code>
+</p></td><td><p>
+device number
+</p></td></tr><tr><td><p>
+<code>gid</code>
+</p></td><td><p>
+group id (number)
+</p></td></tr><tr><td><p>
+<code>inode</code>
+</p></td><td><p>
+inode number
+</p></td></tr><tr><td><p>
+<code>kind</code>
+</p></td><td><p>
+First letter of one of: file, directory, link, pipe, char device, block device, socket, other.
+</p></td></tr><tr><td><p>
+<code>mtime</code>
+</p></td><td><p>
+time of last data modification
+</p></td></tr><tr><td><p>
+<code>perm</code>
+</p></td><td><p>
+POSIX mode bits: e.g. &#8220;rwxrw-r&#8212;&#8221;
+</p></td></tr><tr><td><p>
+<code>size</code>
+</p></td><td><p>
+file size
+</p></td></tr><tr><td><p>
+<code>time</code>
+</p></td><td><p>
+max of mtime and ctime
+</p></td></tr><tr><td><p>
+<code>uid</code>
+</p></td><td><p>
+user id (number)
+</p></td></tr></table><p>
+On error, stat returns <code>nil, &lt;error&gt;</code>.
+</p></div><h3>
+<a name="Rationale"></a>Rationale
+</h3><p>
+XPFS duplicates some functionality in <code>lfs</code> (LuaFileSystem) and the <code>os</code> library. XPFS provides functionality that is absent from either of those (e.g. <code>chdmod</code>) or preferred to the existing implementations. The remainder of the (duplicative) file system functions require little additional code and make <code>xpfs</code> complete, eliminating the need for <code>lfs</code>.
+</p><ul>
+<li>
+<p>
+<code>chmod</code> is not provided by luafilesystem.
+</p>
+</li><li>
+<p>
+<code>xpfs.stat</code> versus <code>lfs.attributes</code>:
+</p><ol type="a">
+<li>
+<p>
+LFS does not report mode (access rights) bits
+</p>
+</li><li>
+<p>
+LFS does not allow you to query a subset of attributes.
+</p>
+</li><li>
+<p>
+LFS annoyingly refers to file type (dir vs. file, etc.) as &#8220;mode&#8221;
+</p>
+</li>
+</ol>
+</li><li>
+<p>
+Apps using <code>os.remove</code> may have to write OS-specific code, because it will fail <i>on Windows</i> when the readonly bit is set. <code>xpfs.remove</code> will succeed as long as the running process has the ability to reset the readonly bit and remove the file.
+</p>
+</li><li>
+<p>
+<code>xpfs.dir</code> retrieves the entire directory in one call. This minimizes the number of open descriptors when traversing a directory tree, and minimizes runtime overhead and code size.
+</p><p>
+<code>lfs.dir()</code> works as an iterator which means it throws errors instead of returning <code>nil, &lt;error&gt;</code>. This requires the use of pcall() in common cases.
+</p><p>
+<code>xpfs.dir</code> may be extended in the future to support a <code>mask</code> attribute, allowing <code>stat</code> operations to be folded into the call. This would be particularly beneficial on Windows when requesting the <code>kind</code> property during <code>xpfs.dir</code>.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

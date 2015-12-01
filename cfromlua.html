@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>cfromlua</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="cfromlua"></a>cfromlua
+</h1><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Description">Description</a></div><div class="tocLevel"><a href="#Command%20Syntax">Command Syntax</a><div class="tocLevel"><a href="#Options">Options</a><div class="tocLevel"><a href="#-o%20FILE">-o FILE</a></div><div class="tocLevel"><a href="#-l%20MOD">-l MOD</a></div><div class="tocLevel"><a href="#-b%20MOD">-b MOD</a></div><div class="tocLevel"><a href="#-s%20MOD">-s MOD</a></div><div class="tocLevel"><a href="#--path=PATH%20--cpath=CPATH">--path=PATH --cpath=CPATH</a></div><div class="tocLevel"><a href="#--open=LIB">--open=LIB</a></div><div class="tocLevel"><a href="#-I%20DIR">-I DIR</a></div><div class="tocLevel"><a href="#--minify">--minify</a></div><div class="tocLevel"><a href="#-w">-w</a></div><div class="tocLevel"><a href="#-Werror">-Werror</a></div><div class="tocLevel"><a href="#-MF%20FILE">-MF FILE</a></div><div class="tocLevel"><a href="#-MP">-MP</a></div><div class="tocLevel"><a href="#-MT%20TARGET">-MT TARGET</a></div><div class="tocLevel"><a href="#--">--</a></div><div class="tocLevel"><a href="#-m%20NAME">-m NAME</a></div><div class="tocLevel"><a href="#-v">-v</a></div><div class="tocLevel"><a href="#-h%20or%20--help">-h or --help</a></div><div class="tocLevel"><a href="#--readlibs">--readlibs</a></div><div class="tocLevel"><a href="#--luaout">--luaout</a></div><div class="tocLevel"><a href="#--win">--win</a></div></div><div class="tocLevel"><a href="#Source%20Files">Source Files</a></div></div><div class="tocLevel"><a href="#Dependency%20Scanning">Dependency Scanning</a><div class="tocLevel"><a href="#requirefile">requirefile</a></div></div><div class="tocLevel"><a href="#Examples">Examples</a><div class="tocLevel"><a href="#Simple%20Program">Simple Program</a></div><div class="tocLevel"><a href="#Standalone%20Interpreter">Standalone Interpreter</a></div><div class="tocLevel"><a href="#Generating%20Dependencies">Generating Dependencies</a></div></div></div></div><h2>
+<a name="Description"></a>Description
+</h2><p>
+Cfromlua builds a C program from Lua sources. It outputs a C source file that implements <code>main()</code> and contains the required Lua sources stored as character arrays. This C program can be compiled and linked with liblua.lib to create a self-contained native executable.
+</p><h2>
+<a name="Command%20Syntax"></a>Command Syntax
+</h2><div class="indent"><pre>cfromlua [OPTION...] FILE...
+</pre></div><h3>
+<a name="Options"></a>Options
+</h3><div class="indent"><h4>
+<a name="-o%20FILE"></a><code>-o FILE</code>
+</h4><div class="indent"><p>
+Write the generated C code to <code>FILE</code>.
+</p></div><h4>
+<a name="-l%20MOD"></a><code>-l MOD</code>
+</h4><div class="indent"><p>
+In the generated C code, load module <code>MOD</code> before invoking the main module. This is analogous to the <code>-l MOD</code> option in the Lua standalone interpreter, but in cfromlua the space between <code>-l</code> and <code>MOD</code> is not optional.
+</p></div><h4>
+<a name="-b%20MOD"></a><code>-b MOD</code>
+</h4><div class="indent"><p>
+Bundle module <code>MOD</code> into the generated C file, even if it is not mentioned as a dependency of a named source file.
+</p></div><h4>
+<a name="-s%20MOD"></a><code>-s MOD</code>
+</h4><div class="indent"><p>
+Skip (do not bundle) module <code>MOD</code> even if it is required by one of the visited sources or named in a <code>-b</code> or <code>-l</code> option.
+</p></div><h4>
+<a name="--path=PATH%20--cpath=CPATH"></a><code>--path=PATH</code> <br><code>--cpath=CPATH</code>
+</h4><div class="indent"><p>
+Use <code>PATH</code> as the value for <code>LUA_PATH</code>, or <code>CPATH</code> for <code>LUA_CPATH</code>. This is additive with other <code>-I</code> and <code>--path</code> arguments. See <a href="#Dependency%20Scanning">Dependency Scanning</a>.
+</p></div><h4>
+<a name="--open=LIB"></a><code>--open=LIB</code>
+</h4><div class="indent"><p>
+In the generated C code, initialize the native library <code>LIB</code> before running <code>main()</code> by calling <code>luaopen_LIB()</code>.
+</p></div><h4>
+<a name="-I%20DIR"></a><code>-I DIR</code>
+</h4><div class="indent"><p>
+Use &#8220;DIR/?.lua&#8221; as the LUA_PATH. This is additive with other <code>-I</code> and <code>--path</code> arguments. See <a href="#Dependency%20Scanning">Dependency Scanning</a>.
+</p></div><h4>
+<a name="--minify"></a><code>--minify</code>
+</h4><div class="indent"><p>
+Remove redundant whitespace and comments from the packaged sources. Line breaks and local variables are left intact.
+</p></div><h4>
+<a name="-w"></a><code>-w</code>
+</h4><div class="indent"><p>
+Display a warning when a required file cannot be found. The default is to silently ignore modules that cannot be found.
+</p></div><h4>
+<a name="-Werror"></a><code>-Werror</code>
+</h4><div class="indent"><p>
+Treat warnings as errors (implies <code>-w</code>).
+</p></div><h4>
+<a name="-MF%20FILE"></a><code>-MF FILE</code>
+</h4><div class="indent"><p>
+Write dependencies to <code>FILE</code>. See <a href="#Generating%20Dependencies">Generating Dependencies</a>.
+</p></div><h4>
+<a name="-MP"></a><code>-MP</code>
+</h4><div class="indent"><p>
+Add an empty dependency line for each included file. See <a href="#Generating%20Dependencies">Generating Dependencies</a>.
+</p></div><h4>
+<a name="-MT%20TARGET"></a><code>-MT TARGET</code>
+</h4><div class="indent"><p>
+Specify the target for the dependencies. This is required when an output file is not specified with <code>-o</code>. See <a href="#Generating%20Dependencies">Generating Dependencies</a>.
+</p></div><h4>
+<a name="--"></a><code>--</code>
+</h4><div class="indent"><p>
+Terminate options processing. All subsequent arguments will be treated as module names even if they begin with <code>-</code>.
+</p></div><h4>
+<a name="-m%20NAME"></a><code>-m NAME</code>
+</h4><div class="indent"><p>
+Specify the main() function name.
+</p></div><h4>
+<a name="-v"></a><code>-v</code>
+</h4><div class="indent"><p>
+Display module and file names as they are visited.
+</p></div><h4>
+<a name="-h%20or%20--help"></a><code>-h</code> or <code>--help</code>
+</h4><div class="indent"><p>
+Display a summary of command usage.
+</p></div><h4>
+<a name="--readlibs"></a><code>--readlibs</code>
+</h4><div class="indent"><p>
+Read implied library dependencies. When <code>--readdeps</code> is specified, cfromlua operates in a different mode: it does not generate a C file and it ignores most options.
+</p><p>
+In this mode, cfromlua <i>reads</i> a previously generated C file, whose name is provided as an argument, and writes to stdout the list of discovered native extension libraries (.lib, .o, etc.) that must be linked with the generated executable. The <code>-M...</code> options are supported and can be used to generate a makefile that describes dependencies on the libraries.
+</p></div><h4>
+<a name="--luaout"></a><code>--luaout</code>
+</h4><div class="indent"><p>
+Generate a Lua source file instead of a C source file.
+</p><p>
+The Lua source file will contain all files referenced via <code>require</code> and <code>requirefile</code>. All native module dependencies will be silently ignored.
+</p></div><h4>
+<a name="--win"></a><code>--win</code>
+</h4><div class="indent"><p>
+Use &#8220;" as a directory separator when writing out library dependencies (with <code>--readlibs</code>).
+</p></div></div><h3>
+<a name="Source%20Files"></a>Source Files
+</h3><p>
+Arguments that do not begin with <code>-</code> (or that follow <code>--</code>) are assumed to be Lua source file names. An argument name of <code>-</code> will pull its Lua source contents from stdin.
+</p><p>
+Each named Lua source file will be bundled into the generated C file. That is, its source will be included as a byte array that will be compiled when the program runs.
+</p><p>
+The <i>first</i> Lua file named will be treated as the &#8220;main&#8221; module. It will be called when the program is run, with the global variable &#8220;arg&#8221; and &#8220;...&#8221; set to the contents of <code>argv[]</code>.
+</p><h2>
+<a name="Dependency%20Scanning"></a>Dependency Scanning
+</h2><p>
+Cfromlua will scan the specified Lua files for run-time dependencies, looking for places in the sources where <a href="http://www.lua.org/manual/5.2/manual.html#pdf-require"><code>require</code></a> and <a href="#requirefile"><code>requirefile</code></a> are called with constant strings. It will find the corresponding files in the search path and build them into the generated C file as const byte arrays. At run time, <code>require</code> and <code>requirefile</code> will load the bundled files instead of reading from the file system.
+</p><p>
+Detection of dependencies is based on a rudimentary static analysis. It looks for occurrences of a <code>require</code> keyword followed by a string, optionally in parentheses. Comments and the contents of literal strings are ignored.
+</p><p>
+This technique has limitations. However, these limitations can be used to our advantage, in order to control which files are bundled or not. For example, you can cause cfromlua to omit some dependencies:
+</p><div class="indent"><pre>local rtrequire = require
+local foo = rtrequire "foo"
+</pre></div><p>
+Cfromlua will also treat the following <code>require</code> as indicating a dependency, even though it might be rarely or never executed:
+</p><div class="indent"><pre>if condition then require("unused") end
+</pre></div><p>
+This could be used in cases in which module names are computed at run time, but there is a more efficient technique for that purpose. Cfromlua will recognize the sequence <code>@require[file] NAME</code> <i>inside a comment</i>, where <code>NAME</code> is a sequence of non-space characters.
+</p><div class="indent"><pre>-- @require abc   (bundle "abc.lua")
+</pre></div><p>
+When searching for modules, cfromlua uses the values of <code>LUA_PATH</code> and <code>LUA_CPATH</code>. It does <i>not</i> interpret <code>";;"</code> as &#8220;default path&#8221;. Instead it will ignore those path entries.
+</p><p>
+When a dynamic library is found in <code>LUA_CPATH</code>, a corresponding static library or object file is expected in the same directory, named with a different extension (<code>lib</code>, <code>a</code>, <code>o</code>, or <code>obj</code>).
+</p><p>
+The variables CFROMLUA_PATH and CFROMLUA_CPATH, if defined, will override the corresponding LUA_PATH and LUA_CPATH values. If one or more <code>--path=...</code> or <code>-I</code> options are specified, environment variables are ignored.
+</p><h3>
+<a name="requirefile"></a><code>requirefile</code>
+</h3><p>
+Cfromlua makes assumptions about the meaning of <code>requirefile</code>, both as a function name and a module name.
+</p><p>
+Functions named <code>requirefile</code> are assumed to locate and read a data file from disk. Cfromlua will locate and bundle any referenced files. See <code>luau/requirefile.lua</code> for complete documentation.
+</p><p>
+A module named <code>requirefile</code> is assumed to implement the above function. Cfromlua will replace it with its own implementation (one that reads from the bundled copies of the files).
+</p><h2>
+<a name="Examples"></a>Examples
+</h2><h3>
+<a name="Simple%20Program"></a>Simple Program
+</h3><p>
+Consider a Lua script and its dependencies: paths to search for included modules, and perhaps a <code>-l</code>-loaded module. To invoke it in a way that qualifies these dependencies, you can type:
+</p><div class="indent"><pre>$ export LUA_PATH=...luapath...
+$ export LUA_CPATH=...luacpath...
+$ lua -l a prog.lua ...args...
+</pre></div><p>
+Cfromlua generates a C program that encapsulates these dependendencies. After compiling it you can invoke it with:
+</p><div class="indent"><pre>$ prog ...args...
+</pre></div><p>
+To generate the C program, invoke cfromlua analogously to the Lua interpreter:
+</p><div class="indent"><pre>$ export LUA_PATH=...luapath...
+$ export LUA_CPATH=...luacpath...
+$ cfromlua -l a prog.lua -o prog.c
+</pre></div><p>
+When compiling, include the Lua VM headers in the include path, and lualib in the link line:
+</p><div class="indent"><pre>$ cc -o prog prog.c ../lua/bin/liblua.lib -I../lua/inc
+</pre></div><p>
+In the generated program, the <code>LUA_PATH</code> and <code>LUA_CPATH</code> environment variables are ignored, <i>not</i> used as search paths. This helps to ensure when tests are run that only the built-in dependencies are used. Otherwise the program could easily work in the build system environment but fail when deployed. The intent, after all, it to encapsulate all implied dependencies.
+</p><h3>
+<a name="Standalone%20Interpreter"></a>Standalone Interpreter
+</h3><p>
+If you want the Lua interpreter's handling of <code>-l</code> and <code>-e</code> options and <code>LUA_PATH</code>, include <code>interpreter.lua</code>. This can be used alone, or in combination with other modules.
+</p><div class="indent"><pre>$ cfromlua -o mylua.c interpreter.lua
+$ cc -o mylua mylua.c liblua.lib
+</pre></div><p>
+In this case, <code>$ ./mylua &lt;args&gt;</code> would be equivalent to <code>$ lua &lt;args&gt;</code>.
+</p><div class="indent"><pre>$ cfromlua -o prog.c interpreter.lua prog.lua
+$ cc -o prog prog.c prog.lua liblua.lub
+</pre></div><p>
+In this case, <code>$ ./prog &lt;args&gt;</code> would be equivalent to <code>$ lua prog.lua &lt;args&gt;</code>.
+</p><h3>
+<a name="Generating%20Dependencies"></a>Generating Dependencies
+</h3><p>
+Cfromlua can generate dependency files suitable for inclusion from Make.
+</p><p>
+To generate dependencies:
+</p><div class="indent"><pre>$ cfromlua -MF &lt;depfile&gt; -MT &lt;outfile&gt; -MP ...other args...
+</pre></div><p>
+To generate dependencies <i>and</i> a C file in one invocation:
+</p><div class="indent"><pre>$ cfromlua -o &lt;outfile&gt; -MF &lt;depfile&gt; -MP ...other args...
+</pre></div><p>
+<code>-MP</code> is optional, but it is almost always what you want. While admittedly awkward, this interface attempts to mimic that of gcc. See the gcc documentation for more info on <code>-MF</code>, <code>-MT</code>, and <code>-MP</code>.
+</p></div>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>Stack</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Stack"></a>Stack
+</h1><p>
+Stack is not a module; it is an interface for HTTP transactions used by the <a href="httpd.html"><code>httpd</code></a> module and others.
+</p><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Handler">Handler</a></div><div class="tocLevel"><a href="#Request">Request</a></div><div class="tocLevel"><a href="#Response">Response</a></div><div class="tocLevel"><a href="#Internal%20Header%20Names">Internal Header Names</a></div><div class="tocLevel"><a href="#Stream%20Function">Stream Function</a></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+Stack defines how HTTP requests and responses are described in Lua data structures. It is intended to be simple and generic so that it might be consumed by components other than the web server, similarly to how Python's WSGI and Ruby's Rack enable &#8220;filter&#8221; and &#8220;middleware&#8221; components.
+</p><div class=diagram>
+<div class="html2d art" style="width:408px;height:448px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="drect round" style="border-width:2px;left:43px;top:7px;right:235px;bottom:407px"></div>
+<div class="rect round" style="border-width:3px;left:43px;top:103px;right:234px;bottom:278px"></div>
+<div class="rect round" style="border-width:3px;left:43px;top:231px;right:234px;bottom:134px"></div>
+<div class="rect round" style="border-width:3px;left:43px;top:375px;right:234px;bottom:6px"></div>
+<div class=line style="border-top-width:2px;left:275px;top:71px;right:111px;bottom:375px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:275px;top:199px;right:111px;bottom:247px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:137.5px;top:276px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:67px;top:279px;right:263px;bottom:167px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:275px;top:343px;right:111px;bottom:103px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:365.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:67px;top:311px;right:339px;bottom:75px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:93.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:67px;top:39px;right:339px;bottom:347px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:40px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:147px;top:43px;right:259px;bottom:343px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:221.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:67px;top:167px;right:339px;bottom:219px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:301.5px;line-height:0"></div>
+<div class=dline style="border-left-width:2px;left:67px;top:231px;right:339px;bottom:139px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:376px;line-height:0"></div>
+<div class=dline style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:67px;top:379px;right:259px;bottom:23px"></div>
+<div class=dline style="border-left-width:2px;left:67px;top:375px;right:339px;bottom:68px;line-height:0"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:168px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:147px;top:171px;right:259px;bottom:215px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:232px;line-height:0"></div>
+<div class=dline style="border-left-width:2px;left:147px;top:235px;right:259px;bottom:135px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:312px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:147px;top:315px;right:259px;bottom:71px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:39px;right:131px;bottom:343px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:167px;right:131px;bottom:215px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:311px;right:131px;bottom:71px"></div>
+<div style="text-align:center;left:84px;top:16px;right:276px;bottom:416px">Client</div>
+<div style="text-align:right;left:-56px;top:64px;right:352px;bottom:368px">request</div>
+<div style="left:160px;top:64px;right:184px;bottom:368px">response</div>
+<div style="left:304px;top:64px;right:0px;bottom:368px">HTTP protocol</div>
+<div style="text-align:center;left:88px;top:128px;right:280px;bottom:304px">HTTPD</div>
+<div style="text-align:right;left:-56px;top:192px;right:352px;bottom:240px">request</div>
+<div style="left:160px;top:192px;right:184px;bottom:240px">response</div>
+<div style="left:304px;top:192px;right:32px;bottom:240px">Stack API</div>
+<div style="text-align:center;left:84px;top:256px;right:276px;bottom:176px">Filter</div>
+<div style="text-align:right;left:-56px;top:336px;right:352px;bottom:96px">request</div>
+<div style="left:160px;top:336px;right:184px;bottom:96px">response</div>
+<div style="left:304px;top:336px;right:32px;bottom:96px">Stack API</div>
+<div style="text-align:center;left:96px;top:400px;right:288px;bottom:32px">App</div>
+</div>
+</div>
+<h3>
+<a name="Handler"></a>Handler
+</h3><p>
+A handler function is passed one parameter describing the request, and it returns three values describing the response.
+</p><div class="indent"><pre>status, headers, response = handler(request)
+</pre></div><p>
+Once the handler returns, the server can begin sending the response.
+</p><h3>
+<a name="Request"></a>Request
+</h3><p>
+Each request is described by one parameter passed to the handler function. It is a table with the following fields:
+</p><table><tr><th><p>
+Field
+</p></th><th><p>
+Description
+</p></th><th><p>
+Example
+</p></th></tr><tr><td><p>
+method
+</p></td><td><p>
+HTTP method
+</p></td><td><p>
+<code>"GET"</code>
+</p></td></tr><tr><td><p>
+server
+</p></td><td><p>
+Scheme and authority portion of the URI
+</p></td><td><p>
+<code>"http://foo.com"</code>
+</p></td></tr><tr><td><p>
+root
+</p></td><td><p>
+Absolute path to handler (or <code>""</code>)
+</p></td><td><p>
+<code>"/cgi/foo"</code>
+</p></td></tr><tr><td><p>
+path
+</p></td><td><p>
+Path portion of URI (not including the query)
+</p></td><td><p>
+<code>"/index"</code>
+</p></td></tr><tr><td><p>
+query
+</p></td><td><p>
+Query string (if present)
+</p></td><td><p>
+<code>"?idf=123"</code>
+</p></td></tr><tr><td><p>
+headers
+</p></td><td><p>
+Table mapping header field names to values
+</p></td><td><p>
+<code>{ referer = "http://example.com", ...}</code>
+</p></td></tr><tr><td><p>
+body
+</p></td><td><p>
+Readable stream object
+</p></td><td><p>
+<code>{ read = &lt;function&gt; }</code>
+</p></td></tr><tr><td><p>
+context
+</p></td><td><p>
+Table describing the context of the transaction
+</p></td><td><p>
+<code>{ client = "74.128.39.120:3456" }</code>
+</p></td></tr></table><p>
+Notes:
+</p><ul>
+<li>
+<p>
+<code>server</code>, <code>root</code>, and <code>path</code> can be used to reconstruct the absolute URI of the request:
+</p><pre>uri = request.server .. request.root .. request.path .. request.query
+</pre><p>
+<code>root</code> and <code>path</code> together constitute the path portion of the URI. These are separated in order to decouple the handler from its location in the server's namespace.
+</p><p>
+When a handler is called directly from the web server, the <code>root</code> will be the empty string. When a handler is associated with a subtree of the namespace, then root will be a string beginning with <code>"/"</code>.
+</p>
+</li><li>
+<p>
+<code>query</code> will be the empty string unless a query portion was present in the URI.
+</p>
+</li><li>
+<p>
+The keys in the <code>headers</code> table are <a href="#Internal%20Header%20Names">Internal Header Names</a>.
+</p><p>
+There is only one value associated with each header name. When a header name appears more than once in the request message received by the HTTP server, the server will concatenate the values, separating them with a semicolon.
+</p>
+</li><li>
+<p>
+<code>body</code> is an object that implements the <a href="xpio.html#socket:read(size">read</a>) method as documented in <a href="xpio.html"><code>xpio</code></a>.
+</p><p>
+When the HTTP request does not contain a body, <code>request.body:read()</code> will immediately indicate an &#8220;end of stream&#8221; condition.
+</p><p>
+Handlers can consume the request body stream returning, or they may retain a reference and use it during execution of the <i>response</i> body <a href="#Stream%20Function">Stream Function</a>. After execution of the stream function, however, the request body object will be unavailable (calls to <code>read</code> will return an error indication).
+</p>
+</li><li>
+<p>
+<code>context</code> is a table with the following fields:
+</p><ul type="circle">
+<li>
+<p>
+<code>client</code> : the address to which the peer (client) is bound, in the <a href="xpio.html#Address%20Format"><code>xpio</code> address format</a>.
+</p>
+</li>
+</ul>
+</li>
+</ul><h3>
+<a name="Response"></a>Response
+</h3><p>
+Each response is described by three values returned by the handler:
+</p><ul>
+<li>
+<p>
+<code>status</code> is a number containing the HTTP response status code.
+</p>
+</li><li>
+<p>
+<code>headers</code> is a map from <a href="#Internal%20Header%20Names">Internal Header Names</a> to values.
+</p>
+</li><li>
+<p>
+<code>body</code> describes the response body. It is either a string or an <a href="#Stream%20Function">Stream Function</a>.
+</p>
+</li>
+</ul><p>
+Generally, the handler is responsible for ensuring that the response is correctly formed according to requirements of HTTP.
+</p><p>
+Handlers are not responsible for the conformance with the lower-level HTTP requirements &#8212; those required for proper delivery of the payload and headers to the client &#8212; such as <code>Content-Length</code> and <code>Transfer-Encoding</code> headers, and whether or not the response will include a body. Handlers should not generate these headers.
+</p><h3>
+<a name="Internal%20Header%20Names"></a>Internal Header Names
+</h3><p>
+As transmitted over the wire, HTTP header field names are case-insensitive. Each name can therefore be written many ways.
+</p><p>
+Stack request and response structures use an internal, case-sensitive format, in which there is only one way to write a header name. This internal format is obtained by converting the over-the-air name to lower case, then removing each hyphen (<code>-</code>) that precedes a letter and capitalizing that letter. Here are some examples:
+</p><table><tr><th><p>
+As received
+</p></th><th><p>
+Internal
+</p></th><th><p>
+As Sent
+</p></th></tr><tr><td><p>
+<code>Date</code>
+</p></td><td><p>
+<code>date</code>
+</p></td><td><p>
+<code>Date</code>
+</p></td></tr><tr><td><p>
+<code>Content-Length</code>
+</p></td><td><p>
+<code>contentLength</code>
+</p></td><td><p>
+<code>Content-Length</code>
+</p></td></tr><tr><td><p>
+<code>CoNtEnT-lEnGtH</code>
+</p></td><td><p>
+<code>contentLength</code>
+</p></td><td><p>
+<code>Content-Length</code>
+</p></td></tr><tr><td><p>
+<code>X--FOO-*</code>
+</p></td><td><p>
+<code>x-Foo-*</code>
+</p></td><td><p>
+<code>X--Foo-*</code>
+</p></td></tr></table><p>
+<code>HTTPD.headerIn()</code> can be used to translate a wire format HTTP header to its internal representation.
+</p><p>
+<code>HTTPD.headerOut()</code> returns the &#8220;as sent&#8221; form, given the internal form.
+</p><h3>
+<a name="Stream%20Function"></a>Stream Function
+</h3><p>
+A stream function generates the body of a request by calling an <code>emit</code> function. The <code>emit</code> function is passed as the first parameter to the stream function. <code>emit</code> accepts a single parameter: either a string or an array of strings.
+</p><pre>local function stream(emit)
+   emit("Hello ")
+   emit("world!")
+end
+</pre><p>
+When a body is provided as a stream function, any <code>content-length</code> header will be ignored.
+</p><p>
+The <code>emit</code> function returns <code>true</code> on success and <code>nil</code> on failure (for example, when a peer closed the connection). This allows the stream function to complete early when such error conditions are encountered. (The stream function is allowed to run to completion so it may release any resources it holds.)
+</p></div>
+</body>
+</html>

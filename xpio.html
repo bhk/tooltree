@@ -1,0 +1,556 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>XPIO</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="XPIO"></a>XPIO
+</h1><p>
+Cross-platform Lua bindings for network and inter-process communication.
+</p><div class="indent"><div class="toc"><div class="tocLevel"><a href="#XPIO%20Module">XPIO Module</a><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#xpio.socket(type)">xpio.socket(type)</a></div><div class="tocLevel"><a href="#xpio.tqueue()">xpio.tqueue()</a></div><div class="tocLevel"><a href="#xpio.setCurrentTask(task)">xpio.setCurrentTask(task)</a></div><div class="tocLevel"><a href="#xpio.getCurrentTask(task)">xpio.getCurrentTask(task)</a></div><div class="tocLevel"><a href="#xpio.gettime()">xpio.gettime()</a></div><div class="tocLevel"><a href="#xpio.socketpair()">xpio.socketpair()</a></div><div class="tocLevel"><a href="#xpio.fdopen(num)">xpio.fdopen(num)</a></div><div class="tocLevel"><a href="#xpio.pipe()">xpio.pipe()</a></div><div class="tocLevel"><a href="#xpio.spawn(args,%20env,%20files,%20attrs)">xpio.spawn(args, env, files, attrs)</a></div><div class="tocLevel"><a href="#xpio.env">xpio.env</a></div></div></div><div class="tocLevel"><a href="#Process%20Objects">Process Objects</a><div class="tocLevel"><a href="#Methods">Methods</a><div class="tocLevel"><a href="#process:kill()">process:kill()</a></div><div class="tocLevel"><a href="#process:wait()">process:wait()</a></div></div></div><div class="tocLevel"><a href="#Task%20Queue%20Objects">Task Queue Objects</a><div class="tocLevel"><div class="tocLevel"><a href="#tqueue:wait(timeout)">tqueue:wait(timeout)</a></div><div class="tocLevel"><a href="#tqueue:isEmpty()">tqueue:isEmpty()</a></div></div></div><div class="tocLevel"><a href="#Socket%20Objects">Socket Objects</a><div class="tocLevel"><a href="#_Methods">Methods</a><div class="tocLevel"><a href="#socket:bind(addr)">socket:bind(addr)</a></div><div class="tocLevel"><a href="#socket:listen(%5bbacklog%5d)">socket:listen([backlog])</a></div><div class="tocLevel"><a href="#socket:connect(addr)">socket:connect(addr)</a></div><div class="tocLevel"><a href="#socket:accept()">socket:accept()</a></div><div class="tocLevel"><a href="#socket:getsockname()">socket:getsockname()</a></div><div class="tocLevel"><a href="#socket:getpeername()">socket:getpeername()</a></div><div class="tocLevel"><a href="#socket:close()">socket:close()</a></div><div class="tocLevel"><a href="#socket:read(size)">socket:read(size)</a></div><div class="tocLevel"><a href="#socket:write(data)">socket:write(data)</a></div><div class="tocLevel"><a href="#socket:getsockopt(option)">socket:getsockopt(option)</a></div><div class="tocLevel"><a href="#socket:setsockopt(option,%20value)">socket:setsockopt(option, value)</a></div><div class="tocLevel"><a href="#socket:shutdown(what)">socket:shutdown(what)</a></div><div class="tocLevel"><a href="#socket:fileno()">socket:fileno()</a></div></div><div class="tocLevel"><a href="#Address%20Format">Address Format</a></div></div><div class="tocLevel"><a href="#Blocking">Blocking</a><div class="tocLevel"><a href="#“Try”%20Functions">&#8220;Try&#8221; Functions</a></div><div class="tocLevel"><a href="#“When”%20Functions">&#8220;When&#8221; Functions</a></div></div></div></div><h2>
+<a name="XPIO%20Module"></a>XPIO Module
+</h2><p>
+The XPIO module returns a table of functions.
+</p><p>
+When the XPIO module is first loaded it will cause SIGPIPE signals to be ignored in the calling process. This is important for performing network communications because any writes to a socket could potentially generate SIGPIPE, which would terminate the process by default. Unfortunately this has global side effects &#8212; programs participating in a pipeline reading from actual pipes may be expected to exit in this condition.
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="xpio.socket(type)"></a><code>xpio.socket(type)</code>
+</h4><div class="indent"><p>
+Create a socket of the specified type. Supported types are <code>"TCP"</code> and <code>"UDP"</code>. It returns the socket on success, or <code>nil, &lt;error&gt;</code> on failure.
+</p><p>
+See <a href="#Socket%20Objects">Socket Objects</a>, below.
+</p></div><h4>
+<a name="xpio.tqueue()"></a><code>xpio.tqueue()</code>
+</h4><div class="indent"><p>
+Create a new task queue. Task queues keep track of <code>task</code> objects (Lua tables) that are waiting for events.
+</p><p>
+Tasks are placed on the queue by <a href="#“When”%20Functions">&#8220;When&#8221; Functions</a>.
+</p><p>
+<a href="#tqueue:wait(timeout)"><code>tqueue:wait(timeout)</code></a> returns the tasks whose events have occurred.
+</p></div><h4>
+<a name="xpio.setCurrentTask(task)"></a><code>xpio.setCurrentTask(task)</code>
+</h4><div class="indent"><p>
+Sets <code>task</code> as the current task. The current task is used by <a href="#Blocking">Blocking</a> functions to schedule resumption of the running coroutine before it yields.
+</p></div><h4>
+<a name="xpio.getCurrentTask(task)"></a><code>xpio.getCurrentTask(task)</code>
+</h4><div class="indent"><p>
+Returns the current task.
+</p></div><h4>
+<a name="xpio.gettime()"></a><code>xpio.gettime()</code>
+</h4><div class="indent"><p>
+Returns the current time in a format compatible with the timeout in <a href="#tqueue:wait(timeout)"><code>tqueue:wait(timeout)</code></a>. Units are in seconds, and the reference point is not specified.
+</p></div><h4>
+<a name="xpio.socketpair()"></a><code>xpio.socketpair()</code>
+</h4><div class="indent"><p>
+Creates and returns two connected stream <a href="#Socket%20Objects">socket objects</a>. Data written to one is readable from the other and vice-versa.
+</p><p>
+On error, it returns <code>nil</code> and an error message.
+</p></div><h4>
+<a name="xpio.fdopen(num)"></a><code>xpio.fdopen(num)</code>
+</h4><div class="indent"><p>
+Create and return a <a href="#Socket%20Objects">socket object</a> bound to a specified file descriptor. For example, <code>xpio.fdopen(1)</code> will return an object that can be used to write to <code>stdout</code>.
+</p></div><h4>
+<a name="xpio.pipe()"></a><code>xpio.pipe()</code>
+</h4><div class="indent"><p>
+Creates a pipe and returns the two endpoints (read side followed by write side).
+</p><p>
+On error, it returns <code>nil</code> and an error message.
+</p></div><h4>
+<a name="xpio.spawn(args,%20env,%20files,%20attrs)"></a><code>xpio.spawn(args, env, files, attrs)</code>
+</h4><div class="indent"><p>
+Create a new process, returning a process object (see <a href="#Process%20Objects">Process Objects</a>).
+</p><ul type="circle">
+<li>
+<p>
+<code>args</code> is an array of strings that describes the arguments for the new process. These strings <code>args[1...#args]</code> will be available to an invoked C program as <code>argv[0...argc-1]</code>.
+</p><p>
+The first argument provides the default for <code>args.exe</code> (see below).
+</p>
+</li><li>
+<p>
+<code>env</code> is the environment for the new process in the form of a table mapping names to values. Environment names are case sensitive and may not contain <code>=</code> or null (<code>\0</code>) characters. Values may not contain null characters.
+</p>
+</li><li>
+<p>
+<code>files</code> is a sparse array describing what files will be granted to the new process.
+</p><p>
+Each key in this table is a file number (descriptor) in the <i>child</i> process. The value associated with each key identifies which of the parent's files will appear at that file number. These can be file <i>objects</i> (created via <code>socket</code>, <code>fdopen</code>, <code>pipe</code>, etc.) or file numbers. Any file <i>objects</i> provided will be closed in the parent process after the child process has been spawned.
+</p><p>
+For example, in this case:
+</p><pre>{ [0] = 0, [1] = 2, [2] = writePipe }
+</pre><p>
+the child's STDIN will be the same as that of its parent, its STDOUT will be the parent's STDERR, and its STDERR will be <code>writePipe</code>, and on success, <code>writePipe</code> will be closed in the parent process.
+</p><p>
+All files granted to the child process will be reset to blocking mode, which is what most command-line programs will require. Unfortunately, due to OS limitations, the blocking/non-blocking property is a characteristic of the file, not of the process or the software using it, so after a file is passed to a child process it should not be directly accessed via XPIO's socket API. (This is why granted file objects are closed.)
+</p><p>
+Files granted to the child process will be reset to blocking mode, and will be closed in the current process.
+</p>
+</li><li>
+<p>
+<code>attrs</code> is a table mapping field names to values, all of which are optional:
+</p><ul type="circle">
+<li>
+<p>
+<code>attrs.exe</code> gives the name of an executable file to be used as the
+</p><p>
+code image for the child process. If this value is <code>nil</code>, <code>args[1]</code> will be used.
+</p><p>
+If the file name does not contain a &#8220;/&#8221;, PATH is searched.
+</p>
+</li><li>
+<p>
+<i>[TODO]</i> <code>attrs.cwd</code> gives the current working directory for the child process.
+</p>
+</li><li>
+<p>
+<i>[TODO]</i> <code>attrs.pgroup</code>: When this value is a process object, it is the leader of a process group which the spawned process should be placed in. When this value is <code>true</code>, the spawned process will be placed in a new process group with itself as the leader.
+</p>
+</li>
+</ul>
+</li>
+</ul><p>
+Note that, unlike <code>posix_spawn()</code>, several values are <i>not</i> inherited from the current process. The <code>file</code> argument explicitly names each descriptor for the new process. Also, the signal mask and signal handlers are set to defaults (using POSIX_SPAWN_SIGDEF).
+</p><p>
+Unresolved issues:
+</p><ul type="circle">
+<li>
+<p>
+<code>umask</code> is inherited by the child process. <code>umask</code> is essentially an invisible input parameter to command-line tools, indicating how they are expected to create files, so in at least some contexts inheriting the parent's umask is the right thing. An <code>attrs.umask</code> field could allow more control.
+</p>
+</li><li>
+<p>
+ctty (Controlling terminal) is inherited. This allows the process to gain access to the terminal by calling <code>open("/dev/tty")</code>.
+</p>
+</li><li>
+<p>
+Membership in process groups and sessions is inherited. This is probably the right thing for most server and client applications. Special programs like shells would call setsid() to make themselves a session leader, and assign new processes to pgroups.
+</p>
+</li><li>
+<p>
+Sandboxing: Specifying resource limits, new UID &amp; groups, and related operations are not currently supported.
+</p>
+</li>
+</ul></div><h4>
+<a name="xpio.env"></a><code>xpio.env</code>
+</h4><div class="indent"><p>
+A table containing the environment variables of the current process. This table is initialized when the xpio library is loaded.
+</p></div><h2>
+<a name="Process%20Objects"></a>Process Objects
+</h2><h3>
+<a name="Methods"></a>Methods
+</h3><h4>
+<a name="process:kill()"></a><code>process:kill()</code>
+</h4><div class="indent"><p>
+Terminate execution of <code>process</code>.
+</p></div><h4>
+<a name="process:wait()"></a><code>process:wait()</code>
+</h4><div class="indent"><p>
+Wait for the process to exit and return its exit status. It returns one of the following values:
+</p><table><tr><td><p>
+<code>"exit", &lt;num&gt;</code>
+</p></td><td><p>
+The process exited normally with status code &lt;num&gt;.
+</p></td></tr><tr><td><p>
+<code>"signal", &lt;num&gt;</code>
+</p></td><td><p>
+The process was terminated by a signal, which is identified by &lt;num&gt;.
+</p></td></tr></table><p>
+This is a <a href="#Blocking">Blocking</a> function that must be called from a coroutine. Its corresponding &#8220;try&#8221; and &#8220;when&#8221; functions are <code>process:try_wait()</code> and <code>process:when_wait()</code>.
+</p></div><h2>
+<a name="Task%20Queue%20Objects"></a>Task Queue Objects
+</h2><h4>
+<a name="tqueue:wait(timeout)"></a><code>tqueue:wait(timeout)</code>
+</h4><div class="indent"><p>
+Wait until one or more tasks are ready.
+</p><p>
+Timeout is the maximum amount of time to wait, in seconds. A timeout of <code>nil</code> or <code>false</code> means &#8220;no timeout&#8221;.
+</p><p>
+If there are no tasks queued <i>and</i> there is no timeout, wait() returns <code>nil</code>, indicating &#8220;nothing to wait on&#8221;.
+</p><p>
+Otherwise, it returns an array that contains the tasks that are ready to run. This array may be empty if the timeout expired before any tasks were ready. All tasks returned will have been removed from the tqueue, and their <code>_dequeue</code> field will be <code>nil</code>.
+</p></div><h4>
+<a name="tqueue:isEmpty()"></a><code>tqueue:isEmpty()</code>
+</h4><div class="indent"><p>
+Return <code>true</code> if there are no tasks waiting in <code>tqueue</code>.
+</p></div><h2>
+<a name="Socket%20Objects"></a>Socket Objects
+</h2><p>
+Socket objects are minimal wrappers around native file descriptors. I/O operations are unbuffered, so performing small reads or writes will negatively impact performance.
+</p><p>
+All these functions, except where noted, return <code>true</code> on success and report error conditions by returning <code>nil, &lt;error&gt;</code>. In the cases of error codes <code>EAGAIN</code>, <code>EWOULDBLOCK</code>, <code>EINPROGRESS</code>, <code>EALREADY</code>, or <code>EINTR</code>, <code>&lt;error&gt;</code> will be the string <code>"retry"</code>. Otherwise, it will hold the string returned from the C function <code>strerror()</code>.
+</p><h3>
+<a name="_Methods"></a>Methods
+</h3><h4>
+<a name="socket:bind(addr)"></a><code>socket:bind(addr)</code>
+</h4><div class="indent"><p>
+Bind socket to a local address. <code>addr</code> is a string in the <a href="#Address%20Format">Address Format</a> described below.
+</p><p>
+IP address 0 (or <code>0.0.0.0</code>) indicates &#8220;any interface&#8221; (POSIX's <code>INADDR_ANY</code>). Port number 0 indicates &#8220;pick any available port&#8221;.
+</p></div><h4>
+<a name="socket:listen(%5bbacklog%5d)"></a><code>socket:listen([backlog])</code>
+</h4><div class="indent"><p>
+Listen for inbound TCP connections.
+</p><p>
+Backlog, if provided, is an integer giving the size of the accept queue.
+</p></div><h4>
+<a name="socket:connect(addr)"></a><code>socket:connect(addr)</code>
+</h4><div class="indent"><p>
+Initiate a TCP connection, returning a new TCP object. <code>addr</code> is a string in the <a href="#Address%20Format">Address Format</a> described below.
+</p><p>
+This is a <a href="#Blocking">Blocking</a> function that must be called from a coroutine. Its &#8220;try&#8221; and &#8220;when&#8221; functions are <code>socket:try_connect()</code> and <code>socket:when_write()</code>.
+</p></div><h4>
+<a name="socket:accept()"></a><code>socket:accept()</code>
+</h4><div class="indent"><p>
+Accept an incoming connection, returning a new socket. In &#8220;retry&#8221; cases, the caller should retry when the socket is <i>readable</i>.
+</p><p>
+This is a <a href="#Blocking">Blocking</a> function that must be called from a coroutine. Its &#8220;try&#8221; and &#8220;when&#8221; functions are <code>socket:try_accept()</code> and <code>socket:when_read()</code>.
+</p></div><h4>
+<a name="socket:getsockname()"></a><code>socket:getsockname()</code>
+</h4><div class="indent"><p>
+Get the bound local address of <code>socket</code>. On success, returns a string in the XPIO's <a href="#Address%20Format">Address Format</a>.
+</p></div><h4>
+<a name="socket:getpeername()"></a><code>socket:getpeername()</code>
+</h4><div class="indent"><p>
+Get the IP address and port of the peer connected to <code>socket</code>. On success, returns a string in the XPIO's <a href="#Address%20Format">Address Format</a>.
+</p></div><h4>
+<a name="socket:close()"></a><code>socket:close()</code>
+</h4><div class="indent"><p>
+Close the socket.
+</p></div><h4>
+<a name="socket:read(size)"></a><code>socket:read(size)</code>
+</h4><div class="indent"><p>
+<code>size</code> is the maximum number of bytes to be consumed.
+</p><table><tr><th><p>
+Condition
+</p></th><th><p>
+Return Value(s)
+</p></th></tr><tr><td><p>
+success
+</p></td><td><p>
+string
+</p></td></tr><tr><td><p>
+end
+</p></td><td><p>
+<code>nil</code>
+</p></td></tr><tr><td><p>
+error
+</p></td><td><p>
+<code>nil</code>, string
+</p></td></tr></table><p>
+The &#8220;end&#8221; condition implies that the peer gracefully closed (or shutdown writing) and all sent bytes have been received. In the error case, the &lt;string&gt; returned is the result of strerror().
+</p><p>
+When <code>size</code> is zero, the function immediately returns an empty string; no error conditions are reported. (This masks behavior undefined by POSIX).
+</p><p>
+This is a <a href="#Blocking">Blocking</a> function that must be called from a coroutine. Its corresponding &#8220;try&#8221; and &#8220;when&#8221; functions are <code>process:try_read()</code> and <code>process:when_read()</code>.
+</p></div><h4>
+<a name="socket:write(data)"></a><code>socket:write(data)</code>
+</h4><div class="indent"><p>
+<code>data</code> is a string (or number) to be written to the socket.
+</p><table><tr><th><p>
+Condition
+</p></th><th><p>
+Return Value(s)
+</p></th></tr><tr><td><p>
+success
+</p></td><td><p>
+number
+</p></td></tr><tr><td><p>
+error
+</p></td><td><p>
+<code>nil</code>, string
+</p></td></tr></table><p>
+On success the number of bytes written are returned. This might be less than the size of data. The &#8220;retry&#8221; condition indicates that the caller should retry when the socket is writable.
+</p><p>
+When <code>data</code> is an empty string, the results are not clearly defined. Refer to POSIX or specific implementations.
+</p><p>
+This is a <a href="#Blocking">Blocking</a> function that must be called from a coroutine. Its corresponding &#8220;try&#8221; and &#8220;when&#8221; functions are <code>process:try_write()</code> and <code>process:when_write()</code>.
+</p></div><h4>
+<a name="socket:getsockopt(option)"></a><code>socket:getsockopt(option)</code>
+</h4><div class="indent"><p>
+Query a socket option. See <code>xpio.setsockopt</code>, below.
+</p></div><h4>
+<a name="socket:setsockopt(option,%20value)"></a><code>socket:setsockopt(option, value)</code>
+</h4><div class="indent"><p>
+Set a socket option.
+</p><p>
+<code>xpio.setsockopt</code> provides the functionality of <code>setsockopt</code>, <code>fcntl</code>, and various other OS-level functions. Each option is named by a string that corresponds to its POSIX name.
+</p><table><tr><th><p>
+Option name
+</p></th><th><p>
+Possible values
+</p></th></tr><tr><td><p>
+<code>"TCP_NODELAY"</code>
+</p></td><td><p>
+boolean
+</p></td></tr><tr><td><p>
+<code>"SO_KEEPALIVE"</code>
+</p></td><td><p>
+boolean
+</p></td></tr><tr><td><p>
+<code>"SO_REUSEADDR"</code>
+</p></td><td><p>
+boolean
+</p></td></tr><tr><td><p>
+<code>"SO_RCVBUF"</code>
+</p></td><td><p>
+non-negative integer
+</p></td></tr><tr><td><p>
+<code>"SO_SNDBUF"</code>
+</p></td><td><p>
+non-negative integer
+</p></td></tr><tr><td><p>
+<code>"O_NONBLOCK"</code>
+</p></td><td><p>
+boolean
+</p></td></tr></table></div><h4>
+<a name="socket:shutdown(what)"></a><code>socket:shutdown(what)</code>
+</h4><div class="indent"><p>
+<code>what</code> is a string describing which end of the connection to shut down. A <code>w</code> in the string means that writing will be shut down (the peer will see and &#8220;end of stream&#8221; indication when it tries to read). An <code>r</code> in the stream will cause reading to be shut down.
+</p></div><h4>
+<a name="socket:fileno()"></a><code>socket:fileno()</code>
+</h4><div class="indent"><p>
+Return the file descriptor number associated with <code>socket</code>.
+</p></div><h3>
+<a name="Address%20Format"></a>Address Format
+</h3><p>
+Addresses are returned as strings containing an IP address and the port number, delimited by <code>:</code>. The IP address is supplied as four dot-delimited decimal numbers. For example: <code>192.168.1.1:80</code>.
+</p><p>
+Addresses are accepted in the same format, and the following variations are allowed:
+</p><ul type="circle">
+<li>
+<p>
+The IP address may be supplied as a single number.
+</p>
+</li><li>
+<p>
+The IP address may be left empty, in which case it defaults to <code>0</code> (which is equivalent to <code>0.0.0.0</code>).
+</p>
+</li><li>
+<p>
+If the <code>:</code> is absent, or if it is followed by no other characters, the port number defaults to 0.
+</p>
+</li>
+</ul><p>
+Examples:
+</p><pre>s:bind("127.0.0.1")  -- bind to any available port on localhost
+s:bind(":80")        -- bind to port 80 on all interfaces
+</pre><h2>
+<a name="Blocking"></a>Blocking
+</h2><p>
+Several functions may &#8220;block&#8221; by suspending the current co-routine until some external event such as I/O or child process termination. These functions must be called while in a running co-routine.
+</p><p>
+Each such blocking function is accompanied by a &#8220;try&#8221; function and a &#8220;when&#8221; function.
+</p><h3>
+<a name="“Try”%20Functions"></a>&#8220;Try&#8221; Functions
+</h3><p>
+A &#8220;try&#8221; function's name is the blocking function with an added &#8220;try_&#8221; prefix.
+</p><p>
+A try function accepts the same arguments as the blocking function, and returns the same values <i>except</i> that it also may return <code>nil, "retry"</code> when the request cannot be immediately satisfied and the corresponding blocking function would otherwise suspend the current coroutine.
+</p><h3>
+<a name="“When”%20Functions"></a>&#8220;When&#8221; Functions
+</h3><p>
+A &#8220;when&#8221; function's name is usually the name of the corresponding blocking function with an added &#8220;when_&#8221; prefix. In some cases, however, blocking functions can share a &#8220;when&#8221; function (e.g. <code>accept</code> and <code>read</code> both build on <code>when_read</code>).
+</p><p>
+When functions accept a <code>task</code> object as a parameter and schedule the task so that it will become ready when the corresponding &#8220;try&#8221; function should be called again. Task objects are Lua tables that typically contain user-defined data. Its contents are ignored by the queueing code except for the following fields:
+</p><ul type="circle">
+<li>
+<p>
+<code>task._queue</code> is the task queue on which a task should be scheduled. This should be assigned before calling a scheduling function.
+</p>
+</li><li>
+<p>
+<code>task._dequeue</code> is a function that will dequeue the task (prevent it from being returned from <code>tqueue:wait()</code>). This is assigned when the task is scheduled (by the &#8220;when&#8221; function) and should be <code>nil</code> when the task is not currently scheduled.
+</p>
+</li><li>
+<p>
+<code>task._dequeuedata</code> contains additional data that may be used by the <code>_dequeue</code> function (assigned when <code>_dequeue</code> is assigned).
+</p>
+</li>
+</ul></div>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Thread Module</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Thread%20Module"></a>Thread Module
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#thread.new(fn,%20...)">thread.new(fn, ...)</a></div><div class="tocLevel"><a href="#thread.kill(thread)">thread.kill(thread)</a></div><div class="tocLevel"><a href="#thread.yield()">thread.yield()</a></div><div class="tocLevel"><a href="#thread.join(thread)">thread.join(thread)</a></div><div class="tocLevel"><a href="#thread.sleep(seconds)">thread.sleep(seconds)</a></div><div class="tocLevel"><a href="#thread.sleepUntil(time)">thread.sleepUntil(time)</a></div><div class="tocLevel"><a href="#thread.atExit(fn,%20...)">thread.atExit(fn, ...)</a></div><div class="tocLevel"><a href="#thread.cancelAtExit(id)">thread.cancelAtExit(id)</a></div><div class="tocLevel"><a href="#thread.dispatch(fn,%20...)">thread.dispatch(fn, ...)</a></div></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>thread</code> module returns a table of functions for creating and manipulating independent suspendable threads of execution.
+</p><p>
+Each <b>thread</b> object owns a Lua <b>couroutine</b>, in which the thread's code executes. Threads keep track of other information that is needed for scheduling the coroutine, stopping execution, and cleaning up resources.
+</p><p>
+In this document, &#8220;thread&#8221; refers to a thread instances created with this library. These are not to be confused with OS threads (such as the one in which the VM instance runs), or coroutine instances (for which the <code>type()</code> function returns the string <code>"thread"</code>).
+</p><p>
+Generally, functions in the thread library must be called only from the context of a suspendable thread, and not from the &#8220;main&#8221; thread. <a href="#thread.dispatch(fn,%20...)"><code>thread.dispatch(fn, ...)</code></a> is an exception: it creates a dispatch context and a thread associated with that context. Any threads created using <code>thread.new</code> automatically inherit the same dispatch context. (A typicaly program has only one dispatch context.)
+</p><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="thread.new(fn,%20...)"></a><code>thread.new(fn, ...)</code>
+</h4><div class="indent"><p>
+Create a new thread.
+</p><p>
+The new thread will begin execution by calling <code>fn(...)</code>.
+</p><p>
+The thread &#8220;exits&#8221; (ceases to execute) when the function runs to completion and returns, or when <code>thread.kill</code> is used to kill the function. When a thread exits, its <code>atExit</code> handlers are called.
+</p><p>
+This function returns a thread object.
+</p></div><h4>
+<a name="thread.kill(thread)"></a><code>thread.kill(thread)</code>
+</h4><div class="indent"><p>
+Stop execution of the thread identified by <code>thread</code>. This will result in any <code>atExit</code> handler being called.
+</p><p>
+If the thread has already exited, this has no effect.
+</p></div><h4>
+<a name="thread.yield()"></a><code>thread.yield()</code>
+</h4><div class="indent"><p>
+Temporarily suspend execution of the current thread to allow other threads to execute.
+</p></div><h4>
+<a name="thread.join(thread)"></a><code>thread.join(thread)</code>
+</h4><div class="indent"><p>
+Wait for completion of the specified thread.
+</p><p>
+On completion, <code>join()</code> returns one of the following:
+</p><ul>
+<li>
+<p>
+When a coroutine returns from the start function, the thread is said to exit &#8220;normally&#8221;. In this case, <code>join()</code> will return the values returned from the start function.
+</p>
+</li><li>
+<p>
+When a thread is killed before it returns normally, <code>join()</code> will return <code>nil, "killed"</code>.
+</p>
+</li>
+</ul></div><h4>
+<a name="thread.sleep(seconds)"></a><code>thread.sleep(seconds)</code>
+</h4><div class="indent"><p>
+Suspends execution of the thread until <code>seconds</code> seconds have elapsed.
+</p></div><h4>
+<a name="thread.sleepUntil(time)"></a><code>thread.sleepUntil(time)</code>
+</h4><div class="indent"><p>
+Suspends execution of the thread until the value returned by <code>xpio.gettime()</code> is greater than or equal to <code>time</code>.
+</p></div><h4>
+<a name="thread.atExit(fn,%20...)"></a><code>thread.atExit(fn, ...)</code>
+</h4><div class="indent"><p>
+Enqueue <code>fn(...)</code> to be called when the thread terminates (returns from its start function, or is killed).
+</p><p>
+This returns a value identifying the queued operation that can be later passed to <code>cancelAtExit</code>.
+</p></div><h4>
+<a name="thread.cancelAtExit(id)"></a><code>thread.cancelAtExit(id)</code>
+</h4><div class="indent"><p>
+Cancel a previously queued at-exit operation.
+</p><p>
+This returns <code>true</code> on success, or <code>nil</code> if the ID was not present in the queue of at-exit operations.
+</p></div><h4>
+<a name="thread.dispatch(fn,%20...)"></a><code>thread.dispatch(fn, ...)</code>
+</h4><div class="indent"><p>
+Create a dispatch context and a thread within that context, and enter a dispatch loop. The new thread will be begin execution at <code>fn(...)</code> as in <a href="#thread.new(fn,%20...)"><code>thread.new(fn, ...)</code></a>.
+</p><p>
+The dispatch loop continues to execute until there are no ready treads and no threads waiting on external events, at which point it returns to the called.
+</p><p>
+Code executing within a dispatch context can call &#8220;blocking&#8221; functions, including <code>thread.yield()</code>, <code>thread.sleep()</code>, and various functions in <code>xpio</code> such as <code>socket:read()</code>. The dispatch loop transfers control to ready threads in a round-robin fashion. It also monitors any external events (e.g. data arriving on a socket) on which threads are waiting, and makes the corresponding thread runnable when its event occurs. When there are no ready threads but there are threads waiting on external events (e.g. data on a socket), the loop will block the OS thread waiting on one of the external events.
+</p><p>
+<code>dispatch()</code> calls can be nested within other <code>dispatch()</code> calls. Each invocation of dispatch will only dispatch threads that were created within its own dispatch context. This would be useful only in rare situations in which you want to suspend execution of all other coroutines in the VM.
+</p></div></div>
+</body>
+</html>
