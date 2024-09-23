@@ -579,10 +579,10 @@ XPQueue_wakeChildWaiters(XPQueue *me, lua_State *L, int ndxReady, int ndxWaiters
    //printf("wakeChildWaiters: numWaiting=%d numReady=%d\n", numWaiting, numReady);
 
    {
-      int cnt = 0;
+      //int cnt = 0;
       lua_pushvalue(L, ndxWaiters);
       for (lua_pushnil(L); lua_next(L, -2) != 0; lua_pop(L, 1)) {
-         ++cnt;
+         //++cnt;
       }
       //printf("wakeChildWaiters: %d waiters left\n", cnt);
    }
