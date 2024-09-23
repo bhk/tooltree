@@ -10,7 +10,7 @@ var ConsoleView = require('consoleview.js');
 
 
 mdb.openValue = function (name) {
-    window.open('#explore=' + name, "MDB_" + name);
+    window.open('#explore=' + name.replace(/ /g, "+"), "MDB_" + name);
 };
 
 
@@ -26,7 +26,7 @@ function hashCB() {
 
     if (hash == '#console') {
         view = ConsoleView.create(mdb);
-    } else if (null != (m = hash.match('^#explore=([A-Za-z]*)(.*)'))) {
+    } else if (null != (m = hash.match('^#explore=([A-Za-z]*)[+]?(.*)'))) {
         var desc = m[1] + ' ' + m[2];
         var mdbvalue = MDBValue.create(mdb);
         view = mdbvalue.createTableView(desc, true);
