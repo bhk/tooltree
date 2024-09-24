@@ -94,6 +94,7 @@ end
 --
 -- Note: due to changing directories, we need a LUA_PATH that consists of
 -- absolute paths, as well as arguments (like --cmd) that are asbolute.
+require "lpeg"
 
 local startdir = xpfs.getcwd()
 local workdir = assert(os.getenv("OUTDIR")) .. "/TESTEXE"

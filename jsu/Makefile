@@ -1,26 +1,13 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-js)/crank-js.min
+# The default target runs unit tests.  Demo targets (anim_demo, etc.)
+# create HTML files that can be used to visually inspect behavior.
 
+Alias(default).in = JSTest@*_q.js
 
-JSTest += $(wildcard *_q.js)
+# make 'Demo(X)'  --> create HTML from X_demo.js  & open it in a browser
 
+Demo.inherit = Run
+Demo.in = JSToHTML({inherit}_demo.js)
+Demo.exec = open {<}
 
-# To run look-and-feel tests:  make open=xxx_demo
-JSToHTML += $(wildcard *_demo.js)
-
-
-# Wishlist
-#
-#  * Observables
-#     - observable map (from PSArray -> PSArray)
-#     - element constructor that accepts observable PSArray of elements
-#     - network observable w/ deactivation
-#
-#  * DOM Utilities
-#     - accept children as observable PSArray
-#     - activate on construction / deactivate on removeElement
-
-
-$(build)
+includeImports = build-js/build-js.mk
+include ../build/tooltree.mk

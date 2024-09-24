@@ -1,5 +1,0 @@
-deps = crank luau crank-lua lua monoglot lpeg
-conf = .config
-make = make V='$v'
-clean = make V='$v' clean
-result = out/$v

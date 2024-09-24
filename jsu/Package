@@ -1,7 +1,0 @@
-deps = crank crank-js
-conf = .config
-make = make V='$v'
-clean = make clean V='$v'
-
-# The `make` step only tests; it doesn't build deliverables.
-result = .

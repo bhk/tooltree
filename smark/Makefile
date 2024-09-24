@@ -1,46 +1,19 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
-include crank-smark.min
+# This builds an executable for Smark and deploys it along with
+# documentation, and related make include files to .out/$V/exports/...
 
-#----------------------------------------------------------------
+Alias(default).in = Ship(exports) LuaTest@*_q.lua
 
-# directories to search for .lua files
-LuaEnv.luaPathDirs = . $(luau) $(lpeg) $(luau)
+exports = LuaExe(smark.lua) smark.txt hello.txt smark.mk SmarkDoc(smark.txt)
 
-# Run tests
-LuaTest += $(wildcard *_q.lua)
-LuaTest.luaPathDirs = $(call <abspath>,$(call inherit)) # some tests call `chdir`
+# ugh: smark_q.lua uses chdir, so we have to use absolute paths for LUA_PATH
+LuaEnv.luaPathDirs = $(abspath . $(package.luau) $(package.lpeg))
 
-# Generate Smark
-LuaExe += smark.lua
-@smark = $(call get,out,LuaExe,smark)
+LuaTest.exports = {inherit} OUTDIR
+LuaTest.OUTDIR = $(VOUTDIR)
 
-# Run smark_q.lua on the built *executable*
-SmarkTest.parent = LuaTest
-SmarkTest = smark_q.lua
-SmarkTest.args = --cmd='$(call <abspath>,$(@smark))'
-SmarkTest.deps = $(@smark)
+SmarkDoc.up = LuaExe(smark.lua)
+SmarkDoc.smarkExe = $(firstword {up^})
 
-# Generate HTML doc if this is not a cross-compiled variant
-SmarkDoc = $(if $(call v.,c-noExec),,smark.txt)
-SmarkDoc.exe = $(@smark)
-
-# Package results in 'ship' directory
-Ship.parent = Copy
-Ship.dir = out/$v
-Ship = $(@smark) smark.txt $(call get*,out,SmarkDoc) crank-smark.min
-Ship.deps = $(call get*,out,SmarkTest)
-
-# Make unit tests run in a precise order (debug lower-level ones first)
-testOrder = smarkmisc source markup mscgen html2d smark_art smark_lua smark_table smark
-orderDeps = $(if $1,$(if $2,$(\n)LuaTest[$(word 1,$1)].ooDeps += $2) \
-    $(call orderDeps,$(wordlist 2,999,$1),$(call get,out,LuaTest,$(word 1,$1)) $2))
-$(call <eval>,$(foreach v,$V,$(call orderDeps,$(testOrder:%=%_q.lua))))
-
-#----------------------------------------------------------------
-
-$(build)
-
-tree: ; make -C.. smark
+include smark.mk
+includeImports = build-lua/build-lua.mk
+include ../build/tooltree.mk

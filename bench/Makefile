@@ -1,23 +1,12 @@
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
+Alias(default).in = Perf(web.lua) Perf(web.js)
 
-LuaEnv.luaPathDirs = . $(luau) $(monoglot) $(lpeg)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
 
-# LuaExe += web.lua
+Perf.inherit = LuaRun
+Perf.exec = {exportPrefix} ./time.sh {webserver}
+Perf.webserver = {luaExe} {<}
+Perf(web.js).webserver = node {<}
 
-Perf += web.lua web.js
+includeImports = build-lua/build-lua.mk
+include ../build/tooltree.mk
 
-# Type 'make Perf' to run benchmarks.  `httperf` is expected to be in PATH.
-#
-Perf.prereqOf =
-Perf.parent = LuaEnv Gen
-Perf.exe = ./time.sh
-Perf.Quiet = @@
-Perf.exports = $(call inherit) webserver
-Perf.webserver = $(call .,luaExe) $I
-Perf.command = $(call .,exe)
-
-Perf[web.js].webserver = node $I
-
-$(build)

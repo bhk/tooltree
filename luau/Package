@@ -1,5 +1,0 @@
-deps = crank crank-lua lua
-conf = .config
-make = make V='$v'
-clean = make clean V='$v'
-result = out/$v

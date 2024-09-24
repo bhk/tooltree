@@ -1,74 +1,60 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
-include $(crank-js)/crank-js.min
+# make [default] : build & ship mdb executable & mdbagent.lua
+# make 'Demo(X)' : create HTML from X_demo.js & open it in a browser
+# make mdb / mdblua : run MDB executable / sources with sample debug target
+#   make ... serve=mdb_demo : use primtive state inspector for UI
+#   make ... example=... : select debug target (a, b, c, or specific file)
+# make owebtest : run owebtest
+# make size : compute size of JS bundled in MDB
 
-# GNU make bug: when exporting a target-specific PATH variable, it will
-# not be in effect when PATH is searched for the executed command.
-export LUA = $(call v.,c-emulator) $(lua)/bin/lua
+Alias(default).in = Ship(exports) LuaTest@*_q.lua JSTest@*_q.js
+Alias(mdb).in = RunMDB(LuaExe(mdb.lua))
+Alias(mdblua).in = LuaRunMDB(mdb.lua)
+Alias(owebtest).in = LuaRun(owebtest.lua)
+Alias(size).in = JSBundle(mdbapp.js)
+Alias(size).command = uglifyjs $(call get,out,{in}) -c -m | wc
 
+exports = LuaExe(mdb.lua) LuaBundle(mdbagent.lua) mdb.txt
 
-# JavaScript
+Demo.inherit = Phony
+Demo.in = JSToHTML({inherit}_demo.js)
+Demo.command = open {<}
 
-JSEnv.nodePathDirs = . $(jsu)
+# Run mdb executable.  We include LuaEnv for env vars needed by the Lua
+#    interpreter child process, which needs to run mdbagent.lua.
+RunMDB.inherit = MDB LuaEnv Run
 
-JSToHTML += $(wildcard *_demo.js) mdbapp.js
-JSTest += $(filter-out ui_q.js,$(wildcard *_q.js))
+# Run mdb.lua
+LuaRunMDB.inherit = MDB LuaRun
 
+# JS & Lua environments (for xxTest, xxRun, xxBundle, xxExe rules)
+JSEnv.nodePathDirs = . $(package.jsu)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
+LuaEnv.exports = {inherit} OUTDIR $(LuaEnv_$(_argText)_exports)
+LuaEnv.OUTDIR = $(VOUTDIR)
+LuaEnv.deps = {inherit} $(LuaEnv_$(_argText)_deps)
 
-GZip.parent = Gen
-GZip.ext = $(suffix $<).gz
-GZip.command = gzip -c $^ > $@ || (rm -f $@ ; false )
+# mdb.lua reads $(mdbJS) using `requirefile` ==> customize exports and deps.
+#   We do this at the LuaEnv level to cover LuaRun *and* LuaExe behavior.
+#   We use "..._PROP" variables for instance customization (see
+#   LuaEnv.exports, above).  Note that these are not property definitions,
+#   they are just Make variables, so {...} syntax is unsupported.
+mdbJS = GZip(JSToHTML(mdbapp.js))
+LuaEnv_mdb.lua_exports = REQUIREFILE_PATH
+LuaEnv_mdb.lua_deps = $(mdbJS)
+LuaEnv.REQUIREFILE_PATH = $(dir $(call get,out,$(mdbJS)))
 
-GZip += $(call get,out,JSToHTML,mdbapp.js)
+# MDB mixin defines properties for executing MDB via either LuaRun or Run
+MDB.execArgs = --ui {uriArg} -- {luaExe} mdbagent.lua {exampleArg}
+MDB.exampleArg = $(word 2,$(subst =, ,\
+  $(filter $(example)%,a=example.lua b=../webdemo/demo.lua c=mdb.lua $(example)=$(example))))
+MDB.uriArg = $(if $(serve),--uri='serve/$(call get,out,JSToHTML($(serve).js))')
+MDB.deps = {inherit} $(if $(serve),JSToHTML($(serve).js))
 
+# target_q.lua needs LUA environment variable
+LuaEnv_target_q.lua_exports = LUA
+LuaEnv.LUA = {luaExe}
 
-# Lua
+LuaRun(owebtest.lua).in = owebtest.lua JSToHTML(oweb_demo.js)
 
-# lpeg is an indirect dependency
-LuaEnv.luaPathDirs = . $(luau) $(monoglot) $(lpeg)
-LuaEnv.exports += REQUIREFILE_PATH
-LuaEnv.REQUIREFILE_PATH = $(subst $(\s),;,$(call <uniq>,$(call get*,dir,JSToHTML GZip)))
-LuaEnv.deps = $(call inherit)
-LuaEnv.ooDeps = $(call get*,out,JSToHTML)
-
-LuaTest += $(wildcard *_q.lua)
-LuaExe += mdb.lua
-LuaToLua += mdbagent.lua
-
-
-# Run MDB (or other server) as a script
-#    make run_mdb [example=a/b/c] [serve=mdb_demo]
-#    make run_owebtest
-
-Run += mdb.lua owebtest.lua
-
-Run.parent = LuaRun
-Run.out = run_$(basename $I)
-Run.ooDeps = $(call get*,out,LuaTest JSTest) $(call get*,out,GZip)
-Run.args = $(if $(noui),,--ui) $(call .,serveArg)
-Run.prereqOf =
-Run.command = $(LUA) $(call .,in) $(call .,args)
-Run.exports = $(call inherit) SERVEDIR
-Run.SERVEDIR = $(call get,dir,JSToHTML,$(firstword $(JSToHTML)))
-Run.serveArg = $(if $(serve),--uri=serve/$(serve).html)
-Run[mdb.lua].args      = $(call inherit) -- $(call .,luaExe) mdbagent.lua $(call .,example)
-Run[mdb.lua].example   = $(or $(call <assoc>,$(or $(example),a),a=example.lua b=../webdemo/demo.lua c=mdb.lua),$(example))
-Run[owebtest.lua].args = $(call inherit) $(call get,out,JSToHTML,oweb_demo.js)
-
-
-Phony += size
-Phony[size].command = make JSBundle=mdbapp.js && uglifyjs $(call get,out,JSBundle,mdbapp.js) -c -m | wc
-
-
-Ship/bin.parent = Copy
-Ship/bin.dir = out/$v/bin
-Ship/bin = $(call get*,out,LuaExe)
-
-Ship/src.parent = Copy
-Ship/src.dir = out/$v/src
-Ship/src = $(call get*,out,LuaToLua)
-
-
-$(build)
+includeImports = build-lua/build-lua.mk build-js/build-js.mk
+include ../build/tooltree.mk

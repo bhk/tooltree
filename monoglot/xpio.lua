@@ -260,7 +260,7 @@ function xpio.spawn(args, env, files, attrs)
    local file = assert(attrs and attrs.exe or args[1], "spawn: file not provided")
 
    if not file:match(dirSep) then
-      file = assert(searchPath(file), "file not found in PATH")
+      file = assert(searchPath(file), "file not found in PATH: " .. file)
    end
 
    local fdActions = fdjuggle(files, xpio._nextfd)

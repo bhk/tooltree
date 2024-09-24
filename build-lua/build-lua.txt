@@ -1,0 +1,101 @@
+build-lua
+#########
+
+Overview
+========
+
+`build-lua` is a package that contains the following:
+
+ - [`cfromlua`](cfromlua.html)
+
+   This program bundles one or more Lua source files, along with all of
+   their dependencies, into a single Lua file, or into a single C file that
+   can be compiled to a self-contained native executable, linking with
+   `liblua`.
+
+   Dependencies that are native extensions will also be detected and
+   incorporated into the bundled exectuable.  This will require linking with
+   objects or libraries for the native extensions.
+
+   Raw data files may also be bundled (see the `requirefile` feature in
+   `cfromlua`).
+
+ - `interpreter.lua`
+
+   By default, a `cfromlua`-generated executable will pass all command line
+   arguments to the bundled script without any of the processing that the
+   Lua interpreter would perform (e.g. `-l MOD` and `-e` options).  This
+   allows your program complete freedom to define its own command line
+   interface.  If, however, you want to include that functionality,
+   `interpreter.lua` implements it.  See [`cfromlua`](cfromlua.html) for
+   more.
+
+ - `build-lua.mk`
+
+   This implements a set of Minion builder classes for generating rules that
+   run and test Lua scripts and bundle them into native programs.
+
+
+`build-lua.mk`
+=======
+
+Here is an overview of the classes are provided.  Refer to the source file
+for more details.
+
+
+LuaRun(SOURCE), LuaExec(SOURCE), LuaTest(SOURCE)
+-------
+
+These classes are analogous to the `Run`, `Exec`, and `Test` builder
+classes, except they accept Lua scripts as inputs and invoke the Lua
+interpreter to run them.  See `LuaEnv`, below, for customization options.
+
+
+LuaExe(SOURCES)
+------
+
+Like the `Exe` class, `LuaExe` generates an executable file, but unlike
+`Exe` it construct the executable from one or more Lua scripts and their
+dependencies using `cfromlua` and a C compiler and linker.
+
+`LuaToC` is used to generate the C file, and `LuaCC` is used to compile the
+resulting file. You can tell it to use other classes by overriding the
+`l2cClass` and/or `ccClass` properties.
+
+ See `LuaEnv`, below, for customization options.
+
+
+LuaEnv
+-------
+
+`LuaEnv` is a mixin class that contains a number of properties that affect
+the Lua execution environment.  By customizing this class, you can define an
+environment that will apply consistently to `LuaTest`, `LuaRun`, `LuaExec`,
+`LuaExe`, and others.  Alternatively, you can override these properties on
+any of those classes independently.
+
+Properties:
+
+ * `exports`: a set of properties to be exported as environment variables
+   when running the Lua interpreter or `cfromlua`.  It defaults to `LUA_PATH
+   LUA_CPATH`.
+
+ * `LUA_PATH`: this property is exported as an environment variable to be
+   used by the Lua interpreter as it executes. By default, it will be
+   computed from `.luaPathDirs`.
+
+ * `LUA_CPATH`: this property is exported as an environment variable to be
+   used by the Lua interpreter as it executes. By default, it will be
+   computed from `.luaPathDirs`.
+
+ * `luaPathDirs`: a list of directories used to compute the `LUA_PATH`
+   property.  The default is `.`.
+
+ * `luaCPathDirs`: a list of directories used to compute the `LUA_CPATH`
+   property.  It defaults to the value of the `luaPathDirs` property.
+
+ * `preloads`: a set of modules that are to be `require`d before the script
+   is executed.  These are passed using the `-l MOD` argument to the Lua
+   interpreter or `cfromlua`.
+
+ * `luaExe`: the Lua interpreter.

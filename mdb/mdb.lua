@@ -168,11 +168,8 @@ POST['/console'] = function (req)
 end
 
 
-local SERVEDIR = os.getenv("SERVEDIR")
-if SERVEDIR then
-   GET['/serve/*'] = function (req, m, name)
-      return fileResponse(name, readFile(SERVEDIR .. name))
-   end
+GET['^/serve/(.+)'] = function (req, name)
+   return fileResponse(name, readFile(name))
 end
 
 
