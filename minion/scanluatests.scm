@@ -39,6 +39,6 @@
 
 (define (showdeps)
   (for (m testmods)
-    (print m " = " (filter (deps-of (.. m "_q.lua")) testmods))))
+    (print m "_q.lua = " (filter (deps-of (.. m "_q.lua")) testmods))))
 
 (showdeps)

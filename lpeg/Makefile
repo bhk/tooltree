@@ -1,13 +1,9 @@
 # Build shared and static libraries for LPEG.
 # Exports libraries and re.lua to .out/$V/exports/...
 
-lpeg-distro ?= ../opensource/lpeg-0.12
-lua-exports ?= ../lua/$(VOUTDIR)exports
-
-
-Alias(default).in = Ship(exports) LuaTest($(lpeg-distro)/test.lua)
-exports = SharedLib(@lpeg) Lib(@lpeg) $(lpeg-distro)/re.lua
-lpeg = $(wildcard $(lpeg-distro)/*.c)
+Alias(default).in = Ship(exports) LuaTest($(lpegsources-exports)/test.lua)
+exports = SharedLib(@lpeg) Lib(@lpeg) $(lpegsources-exports)/re.lua
+lpeg = $(wildcard $(lpegsources-exports)/*.c)
 
 
 CC.includes = $(lua-exports)/src
@@ -17,7 +13,7 @@ CC.warnFlags = -Werror
 CC.flags = -DLUA_COMPAT_APIINTCASTS {inherit}
 
 
-LuaTest.luaPathDirs = $(lpeg-distro)
+LuaTest.luaPathDirs = $(lpegsources-exports)
 LuaTest.luaCPathDirs = $(VOUTDIR)/exports
 LuaTest.up = {inherit} Ship(exports)
 

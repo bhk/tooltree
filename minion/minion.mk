@@ -243,8 +243,6 @@ Builder.^ = {inFiles}
 # included in `ooIDs`).
 Builder.needs = {inIDs} {upIDs} {depsIDs} {ooIDs}
 
-Builder.up^ = $(call get,out,{upIDs})
-
 # `in` is the user-supplied set of "inputs", in the form of a target list
 # (targets or indirections).  It is intended to be easily overridden
 # on a per-class or per-instance basis.
@@ -267,6 +265,7 @@ Builder.inFiles = $(call _pairFiles,{inPairs})
 # not by the instance argument or `in` property.
 Builder.up =
 Builder.upIDs = $(call _expand,{up},up)
+Builder.up^ = $(call get,out,{upIDs})
 
 # `oo` lists order-only dependencies.
 Builder.oo =

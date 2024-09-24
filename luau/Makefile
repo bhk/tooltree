@@ -1,10 +1,8 @@
 # Test Lua sources and build the XPFS Lua extension (static & dynamic).
-# Libraries and sources are deployed to .out/$V/exports/{bin,src}
+# Libraries and sources are deployed to .out/$V/exports/{lib,src}
 
-lua-exports ?= ../lua/$(VOUTDIR)exports
-
-Alias(default).in = Ship(exports/bin,exports/src) LuaTest@luaTests
-exports/bin = SharedLib(xpfs.c) Lib(xpfs.c)
+Alias(default).in = Ship(exports/lib,exports/src) LuaTest@luaTests
+exports/lib = SharedLib(xpfs.c) Lib(xpfs.c)
 exports/src = $(filter-out %_q.lua build.lua,$(wildcard *.lua))
 luaTests = $(wildcard *_q.lua)
 
@@ -35,34 +33,33 @@ LuaTest(requirefile_q.lua).deps = {inherit} LuaTest(json_q.lua)
 # tests will be re-run after their dependencies change, and also that each
 # test will NOT be run before its dependencies have been tested (to avoid
 # chasing red herrings in debugging).
-cmap = memoize qtest
-csv = qtest
-doctree = memoize qtest
-errors = qtest
-fsu = qtest
-futils = fsu lfsu qtest xpfs
-getopts = qtest
-htmlgen = doctree memoize object opairs qtest utf8utils
-json = qtest serialize utf8utils
-lfsu = fsu qtest xpfs
-list = object serialize
-memoize = qtest
-minify = qtest
-object = qtest
-opairs = qtest
-qtest = 
-redir = qtest
-requirefile = qtest
-serialize = qtest
-testexe = list object qtest redir serialize xpexec
-tree = fsu lfsu qtest xpfs
-utf8utils = qtest
-xml = qtest utf8utils
-xpexec = list object qtest serialize
-xpfs = qtest
-xuri = qtest
+cmap_q.lua = memoize qtest
+csv_q.lua = qtest
+doctree_q.lua = memoize qtest
+errors_q.lua = qtest
+fsu_q.lua = qtest
+futils_q.lua = fsu lfsu qtest xpfs
+getopts_q.lua = qtest
+htmlgen_q.lua = doctree memoize object opairs qtest utf8utils
+json_q.lua = qtest serialize utf8utils
+lfsu_q.lua = fsu qtest xpfs
+list_q.lua = object serialize
+memoize_q.lua = qtest
+minify_q.lua = qtest
+object_q.lua = qtest
+opairs_q.lua = qtest
+qtest_q.lua = 
+redir_q.lua = qtest
+requirefile_q.lua = qtest
+serialize_q.lua = qtest
+testexe_q.lua = list object qtest redir serialize xpexec
+tree_q.lua = fsu lfsu qtest xpfs
+utf8utils_q.lua = qtest
+xml_q.lua = qtest utf8utils
+xpexec_q.lua = list object qtest serialize
+xpfs_q.lua = qtest
+xuri_q.lua = qtest
 
-LuaTest.modname = $(patsubst %_q.lua,%,{<})
-LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({modname}))
+LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
 
 include ../minion/tooltree.mk

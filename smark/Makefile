@@ -1,46 +1,36 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
-include crank-smark.min
+# This builds an executable for Smark and deploys it along with
+# documentation, and related make include files to .out/$V/exports/...
 
-#----------------------------------------------------------------
+Alias(default).in = Ship(exports) LuaTest@luaTests
+exports = LuaExe(smark.lua) smark.txt smark.mk SmarkDoc(smark.txt)
+luaTests = $(wildcard *_q.lua)
 
-# directories to search for .lua files
-LuaEnv.luaPathDirs = . $(luau) $(lpeg) $(luau)
+# ugh: smark_q.lua uses chdir, so we have to use absolute paths for LUA_PATH
+LuaEnv.luaPathDirs = $(abspath . $(luau-exports)/src $(lpeg-exports))
+LuaEnv.luaCPathDirs = $(luau-exports)/lib $(lpeg-exports)
 
-# Run tests
-LuaTest += $(wildcard *_q.lua)
-LuaTest.luaPathDirs = $(call <abspath>,$(call inherit)) # some tests call `chdir`
+LuaTest.exports = {inherit} OUTDIR
+LuaTest.OUTDIR = $(VOUTDIR)
 
-# Generate Smark
-LuaExe += smark.lua
-@smark = $(call get,out,LuaExe,smark)
+SmarkDoc.up = LuaExe(smark.lua)
+SmarkDoc.exe = $(firstword {up^})
 
-# Run smark_q.lua on the built *executable*
-SmarkTest.parent = LuaTest
-SmarkTest = smark_q.lua
-SmarkTest.args = --cmd='$(call <abspath>,$(@smark))'
-SmarkTest.deps = $(@smark)
 
-# Generate HTML doc if this is not a cross-compiled variant
-SmarkDoc = $(if $(call v.,c-noExec),,smark.txt)
-SmarkDoc.exe = $(@smark)
+# Test ordering
+html2d_q.lua = 
+markup_q.lua = html2d smarkmisc source
+mscgen_q.lua = html2d
+smark_art_q.lua = smarkmisc
+smark_include_q.lua = html2d markup smarkmisc source
+smark_lua_q.lua = html2d markup smarkmisc source
+smark_msc_q.lua = html2d markup mscgen smarkmisc source
+smark_q.lua = 
+smark_table_q.lua = html2d markup smarkmisc source
+smarkmisc_q.lua = 
+source_q.lua = smarkmisc
 
-# Package results in 'ship' directory
-Ship.parent = Copy
-Ship.dir = out/$v
-Ship = $(@smark) smark.txt $(call get*,out,SmarkDoc) crank-smark.min
-Ship.deps = $(call get*,out,SmarkTest)
+LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
 
-# Make unit tests run in a precise order (debug lower-level ones first)
-testOrder = smarkmisc source markup mscgen html2d smark_art smark_lua smark_table smark
-orderDeps = $(if $1,$(if $2,$(\n)LuaTest[$(word 1,$1)].ooDeps += $2) \
-    $(call orderDeps,$(wordlist 2,999,$1),$(call get,out,LuaTest,$(word 1,$1)) $2))
-$(call <eval>,$(foreach v,$V,$(call orderDeps,$(testOrder:%=%_q.lua))))
 
-#----------------------------------------------------------------
-
-$(build)
-
-tree: ; make -C.. smark
+include smark.mk
+include ../minion/tooltree.mk
