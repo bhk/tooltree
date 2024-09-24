@@ -76,6 +76,7 @@ lpeg-exports = $(tooltree_dir)lpeg/$(VOUTDIR)exports
 
 LuaTest.inherit      = _LuaTest
 _LuaTest.inherit     = Exec
+_LuaTest.outExt      = .ok
 _LuaTest.exe         = $(lua-exports)/bin/lua
 _LuaTest.up          = {exe}
 _LuaTest.exports     = LUA_PATH LUA_CPATH

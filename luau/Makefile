@@ -1,34 +1,68 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
+# Test Lua sources and build the XPFS Lua extension (static & dynamic).
+# Libraries and sources are deployed to .out/$V/exports/{bin,src}
 
+lua-exports ?= ../lua/$(VOUTDIR)exports
 
-LuaExt = xpfs.c
+Alias(default).in = Ship(exports/bin,exports/src) LuaTest@luaTests
+exports/bin = SharedLib(xpfs.c) Lib(xpfs.c)
+exports/src = $(filter-out %_q.lua build.lua,$(wildcard *.lua))
+luaTests = $(wildcard *_q.lua)
 
+CC.includes = $(lua-exports)/src
 
-LuaTest = $(wildcard *_q.lua)
-LuaTest.LUA = $(firstword $(or $(call v.,c-emulator),$(lua)/bin/lua))
-LuaTest.LUA_FLAGS = $(if $(call v.,c-emulator),$(wordlist 2,99,$(call v.,c-emulator) $(lua)/bin/lua))
-LuaTest[xpexec_q.lua].exports = $(inherit) LUA LUA_FLAGS
-LuaTest[testexe_q.lua].exports = $(inherit) LUA LUA_FLAGS
+LuaTest.OUTDIR = {outDir}
+LuaTest.LUA = {exe}
+LuaTest.LUA_FLAGS =
+LuaTest.exports = {inherit} OUTDIR
+LuaTest(xpexec_q.lua).exports = {inherit} LUA LUA_FLAGS
+LuaTest(testexe_q.lua).exports = {inherit} LUA LUA_FLAGS
 
-LuaTest[requirefile_q.lua].exports = $(call inherit) REQUIREFILE_PATH
-LuaTest[requirefile_q.lua].REQUIREFILE_PATH = .;$(call get,dir,LuaTest,json_q.lua)
-LuaTest[requirefile_q.lua].deps = $(call inherit) $(call get,out,LuaTest,json_q.lua)
+# These tests depend on xpfs.so
+xpfs_dir = $(dir $(call get,out,SharedLib(xpfs.c)))
+LuaTest(xpfs_q.lua).luaCPathDirs = $(xpfs_dir)
+LuaTest(xpfs_q.lua).deps = {inherit} SharedLib(xpfs.c)
+LuaTest(lfsu_q.lua).luaCPathDirs = $(xpfs_dir)
+LuaTest(lfsu_q.lua).deps = {inherit} SharedLib(xpfs.c)
+LuaTest(futils_q.lua).luaCPathDirs = $(xpfs_dir)
+LuaTest(futils_q.lua).deps = {inherit} SharedLib(xpfs.c)
 
+# requirefile_q reads results json_q.lua's OK file
+LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
+LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;{outDir}
+LuaTest(requirefile_q.lua).deps = {inherit} LuaTest(json_q.lua)
 
-Ship.parent = Copy
-Ship.dir = out/$v
-Ship = $(call get*,out,LuaExt) $(filter-out %_q.lua build.lua,$(wildcard *.lua))
+# ../minion/scanluatests.scm generates this dependency map.  It ensures that
+# tests will be re-run after their dependencies change, and also that each
+# test will NOT be run before its dependencies have been tested (to avoid
+# chasing red herrings in debugging).
+cmap = memoize qtest
+csv = qtest
+doctree = memoize qtest
+errors = qtest
+fsu = qtest
+futils = fsu lfsu qtest xpfs
+getopts = qtest
+htmlgen = doctree memoize object opairs qtest utf8utils
+json = qtest serialize utf8utils
+lfsu = fsu qtest xpfs
+list = object serialize
+memoize = qtest
+minify = qtest
+object = qtest
+opairs = qtest
+qtest = 
+redir = qtest
+requirefile = qtest
+serialize = qtest
+testexe = list object qtest redir serialize xpexec
+tree = fsu lfsu qtest xpfs
+utf8utils = qtest
+xml = qtest utf8utils
+xpexec = list object qtest serialize
+xpfs = qtest
+xuri = qtest
 
+LuaTest.modname = $(patsubst %_q.lua,%,{<})
+LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({modname}))
 
-# order unit tests lower-to-higher
-testOrder = qtest xpfs fsu lfsu futils tree
-orderDeps = $(if $1,$(if $2,$(\n)LuaTest[$(word 1,$1)].deps += $2) \
-    $(call orderDeps,$(wordlist 2,999,$1),$(call get,out,LuaTest,$(word 1,$1)) $2))
-$(call <eval>,$(foreach v,$V,$(call orderDeps,$(testOrder:%=%_q.lua))))
-
-$(build)
-
-tree: ; make -C.. luau
+include ../minion/tooltree.mk
