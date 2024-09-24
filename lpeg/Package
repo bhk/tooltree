@@ -6,6 +6,6 @@ V.lpegSourcePackage ?= lpeg-0.12
 
 conf   = .config
 deps   = crank crank-c crank-lua lua lpeg=$(call v.,lpegSourcePackage)
-result = out/$v
+result = .out/$v/exports
 make   = make V='$v'
 clean  = make V='$v' clean

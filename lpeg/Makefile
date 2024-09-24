@@ -1,39 +1,24 @@
-# This project builds LPeg from sources and exports a library (liblpeg.lib)
-# and a source file (re.lua).  Build results are placed in out/release/...
+# Build shared and static libraries for LPEG.
+# Exports libraries and re.lua to .out/$V/exports/...
 
-include .config
-include $(crank)/crank.min
-include $(crank-c)/crank-c.min
-include $(crank-lua)/crank-lua.min
+lpeg-distro ?= ../opensource/lpeg-0.12
+lua-exports ?= ../lua/$(VOUTDIR)exports
 
 
-# Configuration flags
+Alias(default).in = Ship(exports) LuaTest($(lpeg-distro)/test.lua)
+exports = SharedLib(@lpeg) Lib(@lpeg) $(lpeg-distro)/re.lua
+lpeg = $(wildcard $(lpeg-distro)/*.c)
 
-Compile.flags = $(call inherit) nowarn
 
+CC.includes = $(lua-exports)/src
+# Avoid project-wide warnings so we can use the original sources unmodified
+CC.warnFlags = -Werror
 # lpeg 0.12 and older uses deprecated function luaL_checkint()
-Compile.flags += -DLUA_COMPAT_APIINTCASTS
-
-#### Build the object files
-
-LuaExt = lpeg
-
-LuaExtLib[lpeg].in = $(wildcard $(lpeg)/*.c)
-
-#### Test
-
-# Execute unit tests
-# Note: If we are building LPeg 0.10.2, we skip testing because
-#       it depends on Lua 5.1's strict.lua which depends on
-#       loadstring(), which was removed in Lua 5.2
-LuaTest = $(if $(findstring 0.10.2,$(lpeg)),,$(lpeg)/test.lua)
-LuaTest.luaPathDirs = $(lpeg)
-
-#### ship object & source
-
-Ship.parent = Copy
-Ship.dir = out/$v
-Ship += $(call get*,out,LuaExt) $(lpeg)/re.lua
+CC.flags = -DLUA_COMPAT_APIINTCASTS {inherit}
 
 
-$(build)
+LuaTest.luaPathDirs = $(lpeg-distro)
+LuaTest.luaCPathDirs = $(VOUTDIR)/exports
+LuaTest.up = {inherit} Ship(exports)
+
+include ../minion/tooltree.mk
