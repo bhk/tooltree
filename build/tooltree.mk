@@ -16,6 +16,7 @@ lpeg-exports ?= ../lpeg/$(VOUTDIR)exports
 luau-exports ?= ../luau/$(VOUTDIR)exports
 smark-exports ?= ../smark/$(VOUTDIR)exports
 build-lua-exports ?= ../build-lua
+monoglot-exports ?= ../monoglot/$(VOUTDIR)exports
 
 cfromlua ?= ../build-lua/cfromlua.lua
 

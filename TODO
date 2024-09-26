@@ -1,11 +1,12 @@
 Done:
- - lua, lpeg, luau, smark, build-lua
+ - lua, lpeg, luau, smark, build-lua, monoglot, webdemo
  - remove: p4x, pakman, simp4, cdep
 
 Todo:
- - monoglot...
-
- - webdemo
+ - luau/exports/{src,lib} --> luau/exports
+ - crank-js -> build-js
+ - jsu
+ - mdb
  - Eliminate/reduce "../" in project makefiles
       include ../build/common.mk
       ...
