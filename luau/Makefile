@@ -1,9 +1,8 @@
 # Test Lua sources and build the XPFS Lua extension (static & dynamic).
 # Libraries and sources are deployed to .out/$V/exports/{lib,src}
 
-Alias(default).in = Ship(exports/lib,exports/src) LuaTest@luaTests
-exports/lib = SharedLib(xpfs.c) Lib(xpfs.c)
-exports/src = $(filter-out %_q.lua build.lua,$(wildcard *.lua))
+Alias(default).in = Ship(exports) LuaTest@luaTests
+exports = SharedLib(xpfs.c) Lib(xpfs.c) $(filter-out %_q.lua,$(wildcard *.lua))
 luaTests = $(wildcard *_q.lua)
 
 CC.includes = $(lua-exports)/src

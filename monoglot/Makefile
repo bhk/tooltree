@@ -8,8 +8,8 @@ luaSources = $(filter-out %_q.lua,$(wildcard *.lua))
 luaTests = $(filter %_q.lua,$(wildcard *.lua))
 cTests = $(wildcard *_q.c)
 
-LuaEnv.luaPathDirs = . $(luau-exports)/src $(lpeg-exports)
-LuaEnv.luaCPathDirs = $(luau-exports)/lib $(lpeg-exports) $(dir $(call get,out,SharedLib(xpio_c.c)))
+LuaEnv.luaPathDirs = . $(luau-exports) $(lpeg-exports)
+LuaEnv.luaCPathDirs = $(luau-exports) $(lpeg-exports) $(dir $(call get,out,SharedLib(xpio_c.c)))
 
 # Compile & link Lua extensions
 Compile.includes = $(lua-exports)/src
