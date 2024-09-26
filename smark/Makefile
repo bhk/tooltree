@@ -34,4 +34,4 @@ LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
 
 include smark.mk
 include ../build-lua/build-lua.mk
-include ../minion/tooltree.mk
+include ../build/tooltree.mk

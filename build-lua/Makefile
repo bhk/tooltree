@@ -53,4 +53,4 @@ Test(E).exec = grep -q 'P1,D1,ARG,1,.. dep.lua,This' {<}
 Exec(LuaExe(test/cfl.lua)).execArgs = ARG
 
 include build-lua.mk
-include ../minion/tooltree.mk
+include ../build/tooltree.mk

@@ -19,4 +19,4 @@ LuaTest.up = {inherit} Ship(exports)
 
 
 include ../build-lua/build-lua.mk
-include ../minion/tooltree.mk
+include ../build/tooltree.mk

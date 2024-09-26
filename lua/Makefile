@@ -27,4 +27,4 @@ endif
 # Avoid project-wide warnings so we can use the original sources unmodified
 CC.warnFlags = -Werror
 
-include ../minion/tooltree.mk
+include ../build/tooltree.mk
