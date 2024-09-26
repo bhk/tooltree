@@ -1,6 +1,6 @@
 # smark
 
-deps = crank luau crank-lua lpeg
+deps = crank luau build-lua lpeg
 
 conf = .config
 

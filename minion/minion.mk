@@ -21,8 +21,8 @@ Phony.inherit ?= _Phony
 Print.inherit ?= _Print
 Remove.inherit ?= _Remove
 Run.inherit ?= _Run
-Shell.inherit ?= _Shell
 Tar.inherit ?= _Tar
+Test.inherit ?= _Test
 Touch.inherit ?= _Touch
 Unzip.inherit ?= _Unzip
 Write.inherit ?= _Write
@@ -62,12 +62,17 @@ _Variant.command = @$(MAKE) -f $(word 1,$(MAKEFILE_LIST)) --no-print-directory $
 #   considered "old", and its recipe will be executed whenever it is listed
 #   as a target.
 #
-_Phony.inherit = Builder
-_Phony.rule = .PHONY: {@}$(\n){inherit}
-_Phony.mkdirs = # not a real file => no need to create directory
-_Phony.message =
+_Phony.inherit = _IsPhony Builder
 _Phony.command = @true
-_Phony.vvFile = # always runs => no point in validating
+_Phony.message =
+
+
+# _IsPhony : Mixin that defines properties as appropriate for all phony
+#    targets; can be used to make any class phony.
+#
+_IsPhony.rule = .PHONY: {@}$(\n){inherit}
+_IsPhony.mkdirs = # not a real file => no need to create directory
+_IsPhony.vvFile = # always runs => no point in validating
 
 
 # _Compile(SOURCE) : Base class for invoking a compiler.
@@ -119,27 +124,31 @@ _LinkC++.compiler = g++
 _LinkC++.inferClasses = CC.c CC++.cpp CC++.cc
 
 
-# _Shell(PROGRAM) : This class defines properties shared by Exec and Run.
-# It does not define Builder properties.
+# _Exec(COMMAND) : Run a command, capturing what it writes to stdout.
 #
-_Shell.exec = {exportPrefix}./{<} {args}
-_Shell.inferClasses = LinkC.c LinkC.o LinkC++.cpp
-_Shell.args =
-_Shell.exports =
-_Shell.exportPrefix = $(foreach v,{exports},$v=$(call _shellQuote,{$v}) )
-
-
-# _Exec(PROGRAM) : Run PROGRAM, capturing its output (stdout).
+#    By default, the first ingredient is an executable or shell command, and
+#    it is passed as arguments the {execArgs} property and all other
+#    ingredients.  Override {exec} to change what is to be executed while
+#    retaining other behavior.
 #
-_Exec.inherit = Shell Builder
-_Exec.command = ( {exec} ) > {@} || rm {@}
+_Exec.inherit = Builder
+_Exec.command = ( {exportPrefix}{exec} ) > {@} || ( rm {@} && false )
+_Exec.exec = {<} {execArgs} $(wordlist 2,9999,{^})
+_Exec.execArgs =
 _Exec.outExt = .out
 
 
-# _Run(PROGRAM) : run program (as a Phony rule)
+# Test(COMMAND) : Run a command (as per Exec) updating an OK file on success.
 #
-_Run.inherit = Shell Phony
-_Run.command = {exec}
+_Test.inherit = Exec
+_Test.command = {exportPrefix}{exec}$(\n)touch {@}
+_Test.outExt = .ok
+
+
+# _Run(COMMAND) : run command (as per Exec).
+#
+_Run.inherit = _IsPhony Exec
+_Run.command = {exportPrefix}{exec}
 
 
 # _Copy(INPUT)
@@ -300,6 +309,11 @@ _applyExt = $(basename $1)$(subst %,$(suffix $1),$2)
 Builder.message ?= \#-> $(_self)
 
 Builder.mkdirs = $(sort $(dir {@} {vvFile}))
+
+# This may be prepended to individual command lines to export environment variables
+# listed in {exports}
+Builder.exportPrefix = $(foreach v,{exports},$v=$(call _shellQuote,{$v}) )
+Builder.exports =
 
 # Validity value
 #

@@ -1,3 +1,3 @@
--- This is dep.lua
+-- dep.lua
 a = (a or 0) + 1
 return a

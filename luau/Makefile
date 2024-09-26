@@ -9,7 +9,7 @@ luaTests = $(wildcard *_q.lua)
 CC.includes = $(lua-exports)/src
 
 LuaTest.OUTDIR = {outDir}
-LuaTest.LUA = {exe}
+LuaTest.LUA = {luaExe}
 LuaTest.LUA_FLAGS =
 LuaTest.exports = {inherit} OUTDIR
 LuaTest(xpexec_q.lua).exports = {inherit} LUA LUA_FLAGS
@@ -62,4 +62,5 @@ xuri_q.lua = qtest
 
 LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
 
+include ../build-lua/build-lua.mk
 include ../minion/tooltree.mk
