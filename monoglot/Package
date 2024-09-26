@@ -1,4 +1,4 @@
-deps = crank luau crank-lua lpeg lua
+deps = crank luau build-lua lpeg lua
 conf = .config
 make = make V='$v'
 clean = make V='$v' clean

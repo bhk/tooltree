@@ -100,6 +100,10 @@ SharedLib.inferClasses = CC.c
 Exe.inherit = LinkC
 Exe.compiler = clang
 
+# CTest(foo.c) -> Exe(foo.c) -> CC(foo.c)
+CTest.inherit = Test
+CTest.inferClasses = Exe.c
+
 
 # Ship(VAR,...): Copy files from @VAR, @..., to a ship directory.
 #

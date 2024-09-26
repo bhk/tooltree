@@ -3,7 +3,9 @@
 #    LuaRun, LuaTest, LuaExec : execute Lua scripts
 #    LuaExe, LuaToC, LuaToLua : bundle Lua scripts with dependencies
 #
-
+# Imported variables:
+#    luaLib
+#    lua-exports
 
 # LuaEnv: mixin for defining properties related to the Lua interpreter environment.
 #   Shared by LuaTest and LuaToC.

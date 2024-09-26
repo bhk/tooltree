@@ -1,37 +1,38 @@
-# External dependencies
-include .config
-include $(crank)/crank.min
-include $(crank-lua)/crank-lua.min
+# Build the XPIO native extension and test Lua modules.
+# Deploys libraries and sources to .out/$V/exports/...
 
-# this is used by LuaExe & LuaTest
-LuaEnv.luaPathDirs = . $(luau) $(lpeg)
+Alias(default).in = CTest@cTests LuaTest@luaTests Ship(exports) 
+exports = SharedLib(xpio_c.c) Lib(xpio_c.c) @luaSources
 
-# Run Lua unit tests
+luaSources = $(filter-out %_q.lua,$(wildcard *.lua))
+luaTests = $(filter %_q.lua,$(wildcard *.lua))
+cTests = $(wildcard *_q.c)
 
-LuaTest += $(wildcard *_q.lua)
+LuaEnv.luaPathDirs = . $(luau-exports)/src $(lpeg-exports)
+LuaEnv.luaCPathDirs = $(luau-exports)/lib $(lpeg-exports) $(dir $(call get,out,SharedLib(xpio_c.c)))
 
-LuaTest[xpio_c_q.lua].deps = $(call inherit) xpio_c.c
+# Compile & link Lua extensions
+Compile.includes = $(lua-exports)/src
+Exe.in = {inherit} $(lua-exports)/lib/liblua.lib
+Exe.libFlags = {inherit} -lm
 
-# Run C unit tests
+# Run unit tests in order
+bufio_q.lua = 
+dino_q.lua = 
+event_q.lua = heap queue thread xpio_c xpio
+futex_q.lua = event heap queue thread xpio_c xpio
+heap_q.lua = 
+httpd_q.lua = bufio heap queue substream thread xpio_c xpio
+popen_q.lua = bufio heap queue thread xpio_c xpio
+queue_q.lua = 
+substream_q.lua = 
+thread_q.lua = heap queue xpio_c xpio
+xpio_c_q.lua = 
+xpio_q.lua = xpio_c
 
-# TODO: LuaExeTest += xpio_q.c
-ExeTest += $(wildcard *_q.c)
-Exe[xpio_c_q.c].in = $I $(lua)/lib/liblua.lib
-Exe[xpio_c_q.c].flags = $(call inherit) lm
-Compile.includes = $(lua)/src
+LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
 
+LuaTest(xpio_c_q.lua).deps = {inherit} CTest@cTests
 
-# Make unit tests run in a precise order (debug lower-level ones first)
-testOrder = bufio xpio_c xpio thread substream httpd event
-orderDeps = $(if $1,$(if $2,$(\n)LuaTest[$(word 1,$1)].ooDeps = $$(call inherit) $2) \
-    $(call orderDeps,$(wordlist 2,999,$1),$(call get,out,LuaTest,$(word 1,$1)) $2))
-$(call <eval>,$(foreach v,$V,$(call orderDeps,$(testOrder:%=%_q.lua))))
-
-# Ship xpio library and related lua modules
-LuaExt += xpio_c.c
-
-Ship.parent = Copy
-Ship.dir = out/$v
-Ship = $(call get*,out,LuaExt) $(filter-out %_q.lua build.lua,$(wildcard *.lua))
-
-$(build)
+include ../build-lua/build-lua.mk
+include ../build/tooltree.mk

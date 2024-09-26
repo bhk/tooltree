@@ -13,7 +13,7 @@ lua-cfiles = $(wildcard $(luasources-exports)/src/*.c)
 lua = $(filter-out %/luac.c %/print.c,$(lua-cfiles))
 luac = $(filter-out %/lua.c,$(lua-cfiles))
 liblua = $(filter-out %/lua.c %/luac.c %/print.c,$(lua-cfiles))
-exports/bin = LinkC(@lua) LinkC(@luac)
+exports/bin = Exe(@lua) Exe(@luac)
 exports/lib = Lib(CC@liblua)
 exports/src = $(patsubst %,$(luasources-exports)/src/%.h, lua luaconf lualib lauxlib)
 

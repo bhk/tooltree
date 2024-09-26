@@ -1,0 +1,55 @@
+Done:
+ - lua, lpeg, luau, smark, build-lua
+ - remove: p4x, pakman, simp4, cdep
+
+Todo:
+ - monoglot...
+
+ - webdemo
+ - Eliminate/reduce "../" in project makefiles
+      include ../build/common.mk
+      ...
+      $(build)
+ - Fix: RETURN does not evaluate text in console window
+ - LuaExe,inX/inIDs/inPairs (after minion refactoring)
+ - make tree & top-level make
+ - remove crank, */Package
+
+
+Minion TODOs:
+ - Migrate changes to minion project:
+   - LinkC -> Exe
+   - Run/Exec/Test & Phony
+   - .args -> execArgs
+   - Builder.exportPrefix
+ - make clean INSTANCE
+ - make C(A).P   (without 'help' on command line)
+ - avoid repetition of $V in outBasis, as in .out/release/LuaCC.c_release/LuaToC.lua/test/cfl.o
+ - make cleaner outdir by check for default extension: LuaExe.lua vs. LuaExe, or CC.c vs. CC
+ - propagate tooltree/minion changes
+ - _Builder
+ - {inherit:NAME}
+ - Implement Infer mixin  (drop "pairs" complexity)
+      in = args                ... an "input", not behavior; no mixin]
+      inIDs = (expand {in})    Infer.inIDs = (inferclasses {inherit})
+      ^ = get out              ... always (get "out" {inIDs})
+      - delete inFiles, up^, deps^  (oops: Tilefish uses up<)
+        in/inIDs/{^,inFiles}  up/upIDs/up^  deps/depsIDs/deps^  oo/ooIDs/--
+ - Clarify: {in, oo, deps} are inputs; override xxIDs;  "up" is for class
+ - Version stamp
+
+
+Goals:
+
+ - drop WinNT support
+ - Minionize...
+    lua
+    lpeg
+    luau: lua lpeg
+    smark: luau lpeg lua
+    monoglot: luau lpeg lua
+    webdemo: monoglot luau lpeg lua
+    jsu
+    mdb: jsu monoglot luau lpeg lua
+    pages
+    ctools?
