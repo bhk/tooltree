@@ -40,6 +40,7 @@ Alias(tree).command = make -C.. V='$V'
 # return unique words in $1 without re-ordering
 <uniqX> = $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1)))
 <uniq>  = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
+_uniq   = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
 
 
 #----------------------------------------------------------------
@@ -97,9 +98,12 @@ SharedLib.outExt       = .so
 SharedLib.command      = clang -o {@} {^} -dynamiclib -undefined dynamic_lookup
 SharedLib.inferClasses = CC.c
 
+
 # Exe(OBJECTS): Create an executable.
+#
 Exe.inherit = LinkC
 Exe.compiler = clang
+
 
 # CTest(foo.c) -> Exe(foo.c) -> CC(foo.c)
 CTest.inherit = Test

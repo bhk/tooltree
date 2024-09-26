@@ -2,26 +2,18 @@
 # Libraries and sources are deployed to .out/$V/exports/{lib,src}
 
 Alias(default).in = Ship(exports) LuaTest@luaTests
-exports = SharedLib(xpfs.c) Lib(xpfs.c) $(filter-out %_q.lua,$(wildcard *.lua))
+exports = @libs $(filter-out %_q.lua,$(wildcard *.lua))
+libs = LuaSharedLib(xpfs.c) LuaLib(xpfs.c)
 luaTests = $(wildcard *_q.lua)
 
-CC.includes = $(lua-exports)/src
-
+# Export these environment variables used by tests
 LuaTest.OUTDIR = {outDir}
 LuaTest.LUA = {luaExe}
-LuaTest.LUA_FLAGS =
 LuaTest.exports = {inherit} OUTDIR
-LuaTest(xpexec_q.lua).exports = {inherit} LUA LUA_FLAGS
-LuaTest(testexe_q.lua).exports = {inherit} LUA LUA_FLAGS
-
-# These tests depend on xpfs.so
-xpfs_dir = $(dir $(call get,out,SharedLib(xpfs.c)))
-LuaTest(xpfs_q.lua).luaCPathDirs = $(xpfs_dir)
-LuaTest(xpfs_q.lua).deps = {inherit} SharedLib(xpfs.c)
-LuaTest(lfsu_q.lua).luaCPathDirs = $(xpfs_dir)
-LuaTest(lfsu_q.lua).deps = {inherit} SharedLib(xpfs.c)
-LuaTest(futils_q.lua).luaCPathDirs = $(xpfs_dir)
-LuaTest(futils_q.lua).deps = {inherit} SharedLib(xpfs.c)
+LuaTest(xpexec_q.lua).exports = {inherit} LUA 
+LuaTest(testexe_q.lua).exports = {inherit} LUA
+# Some tests depend on xpfs.so; might as well make all of them dependent.
+LuaTest.luaCPathLibs = $(libs)
 
 # requirefile_q reads results json_q.lua's OK file
 LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
@@ -59,7 +51,7 @@ xpexec_q.lua = list object qtest serialize
 xpfs_q.lua = qtest
 xuri_q.lua = qtest
 
-LuaTest.deps = $(patsubst %,LuaTest(%_q.lua),$({<}))
+LuaTest.deps += $(patsubst %,LuaTest(%_q.lua),$({<}))
 
 include ../build-lua/build-lua.mk
 include ../build/tooltree.mk

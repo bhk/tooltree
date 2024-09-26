@@ -15,13 +15,16 @@ _BuildLua.cfromlua    := $(dir $(lastword $(MAKEFILE_LIST)))cfromlua.lua
 
 # LuaEnv: mixin for defining properties related to the Lua interpreter
 #   run-time environment.  These are also used by cfromlua (LuaToExe,...).
+#   If you are building C Lua extensions, add them to `luaCPathLibs`.
 #
 LuaEnv.inherit       = _LuaEnv BuildLua
 _LuaEnv.exports      = LUA_PATH LUA_CPATH {inherit}
-_LuaEnv.LUA_PATH     = $(subst $(\s),;,$(call <uniq>,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
-_LuaEnv.LUA_CPATH    = $(subst $(\s),;,$(call <uniq>,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
+_LuaEnv.LUA_PATH     = $(subst $(\s),;,$(call _uniq,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
+_LuaEnv.LUA_CPATH    = $(subst $(\s),;,$(call _uniq,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
 _LuaEnv.luaPathDirs  = .
-_LuaEnv.luaCPathDirs = {luaPathDirs}
+_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _uniq,$(dir $(call get,out,{luaCPathLibs))))
+_LuaEnv.luaCPathLibs =
+_LuaEnv.deps         = {inherit} {luaCPathLibs}
 _LuaEnv.preloads     =
 _LuaEnv.preloadOpts  = $(addprefix -l ,{preloads})
 
@@ -40,14 +43,6 @@ _LuaCmd.exec    = {luaExe} {preloadOpts} {^} {execArgs}
 _LuaCmd.up      = {luaExe}
 
 
-# LuaCC(...) : Variant of CC for building Lua C extension sources
-#
-LuaCC.inherit  = _LuaCC
-_LuaCC.inherit  = CC BuildLua
-_LuaCC.includes = {luaIncludes} {inherit}
-_LuaCC.stdFlags = {inherit} -Wno-overlength-strings
-
-
 # LuaExe(LUASOURCES): build an executable with the Lua interpreter, named
 #    scripts, and their dependencies (scripts & C extensions). This works
 #    much like `Exe` except that one or more Lua sources are included
@@ -64,7 +59,7 @@ _LuaExe.inherit  = Exe BuildLua
 _LuaExe.up       = {luaExe} {cfromlua}
 
 # The class used to bundle Lua sources to a C executable
-_LuaExe.ccClass = LuaCC
+_LuaExe.ccClass  = LuaCC
 # The class used to compile C files
 _LuaExe.l2cClass = LuaToC
 
@@ -103,3 +98,25 @@ LuaToLua.inherit  = _LuaToLua
 _LuaToLua.inherit = LuaToC
 _LuaToLua.ext     = .lua
 _LuaToLua.flags   = --luaout {inherit}
+
+
+# LuaCC(...) : Variant of CC for building C sources that depend on
+#    Lua headers.  `no-overlength-strings` is important to accommodate
+#    cfromlua-generated C sources.
+#
+LuaCC.inherit  = _LuaCC
+_LuaCC.inherit  = CC BuildLua
+_LuaCC.includes = {luaIncludes} {inherit}
+_LuaCC.stdFlags = {inherit} -Wno-overlength-strings
+
+
+# LuaLib(SOURCES/OBJECTS): like `Lib`, but LuaCC is used.
+#
+LuaLib.inherit = Lib
+LuaLib.inferClasses = LuaCC.c
+
+
+# LuaSharedLib(SOURCES/OBJECTS): like `Lib`, but LuaCC is used.
+#
+LuaSharedLib.inherit = SharedLib
+LuaSharedLib.inferClasses = LuaCC.c
