@@ -45,7 +45,7 @@ customRules = smoke uberclean allclean
 include crank/project.mak
 
 smoke: uberclean
-	make configure Project='cdep ctools mdb p4x pakman smark pages webdemo' Variants='$(V.default) gcc'
+	make configure Project='ctools mdb smark pages webdemo' Variants='$(V.default) gcc'
 	make -j12
 
 uberclean:

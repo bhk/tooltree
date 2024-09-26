@@ -1,4 +1,0 @@
-test/a.c: test/a.h
-test/a.c: test/c.h
-test/a.c: test/b.h
-test/b.c: test/b.h
