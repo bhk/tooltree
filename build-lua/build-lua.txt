@@ -6,11 +6,6 @@ Overview
 
 `build-lua` is a package that contains the following:
 
-
-It also includes
-
-Contents:
-
  - [`cfromlua`](cfromlua.html)
 
    This program bundles one or more Lua source files, along with all of
