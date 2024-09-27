@@ -1,0 +1,53 @@
+build-js
+####
+
+Overview
+========
+
+`build-js` is a package that contains the following:
+
+ - `jsdep`
+
+   This program bundles a JavaScript source file with all of its dependencies
+   (invoked with `require`) into a single JavaScript file, or into an HTML
+   file with a `<script>` element that contains all the JavaScript sources.
+
+ - `build-js.mk`
+
+   This implements a set of Minion builder classes for generating rules that
+   run and test JavaScript sources and bundle them into native programs.
+
+
+`build-js.mk`
+========
+
+JSTest(SOURCE)
+----
+
+The argument names a JavaScript script that should exit without error on
+success when executed with `node`.   An empty `.ok` file (the `.out`
+property) is generated when the test succeeds.
+
+`JSTest` requires Node.js.  By default, `build-js.mk` expects to find an
+executable named `nodejs` or `node` in the path at build time, and will warn
+otherwise.  Override `BuildJS.node` to provide a different executable for
+node.
+
+`JSTest` ensures that a file is tested only after its dependencies are
+tested.  Files that end in `_q.js` are assumed to be tests for the
+corresponding `.js` file.  This assumption can be overridden using the
+`JSTest.getTest_fn` properties.
+file.
+
+
+JSBundle(SOURCE)
+----
+
+The named source file will be bundled with its dependencies into a single
+`.js` file.
+
+JSToHTML(SOURCE)
+----
+
+The named source file will be bundled with its dependencies into a
+`<script>` element in an `.html` file.

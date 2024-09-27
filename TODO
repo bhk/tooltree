@@ -1,12 +1,14 @@
 Done:
- - lua, lpeg, luau, smark, build-lua, monoglot, webdemo
+ - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js
  - remove: p4x, pakman, simp4, cdep
 
 Todo:
- - luau/exports/{src,lib} --> luau/exports
- - crank-js -> build-js
+ - LuaToLua -> LuaBundle
+ - luau/requirefile -> build-lua/requirefile ?
  - jsu
  - mdb
+ - smark-plugins
+ - bench
  - Eliminate/reduce "../" in project makefiles
       include ../build/common.mk
       ...
@@ -14,10 +16,12 @@ Todo:
  - Fix: RETURN does not evaluate text in console window
  - LuaExe,inX/inIDs/inPairs (after minion refactoring)
  - make tree & top-level make
- - remove crank, */Package
+ - remove crank*, */Package
 
 
 Minion TODOs:
+ - _uniq
+ - Detect simple .foo = ... {foo} ... infinite loop
  - Migrate changes to minion project:
    - LinkC -> Exe
    - Run/Exec/Test & Phony
@@ -30,7 +34,21 @@ Minion TODOs:
  - propagate tooltree/minion changes
  - _Builder
  - {inherit:NAME}
- - Implement Infer mixin  (drop "pairs" complexity)
+ - Reevaluate in/etc.
+   - Provide clear picture on...
+         Inputs             in     up     oo     deps
+         IDs/items    All  inIDs  upIDs  ooIDs  depsIDs
+                    First
+         Filenames    All    ^     up^    --     deps^^
+                    First    <     up<    --
+
+     --> translation occurs between Inputs & IDs
+          class-specific translation
+          indirection expansion
+          inferred intermediate rules
+     --> IDs<->Filenames should remain 1:1 ... e.g.  ^ == (get out inIDs)
+
+   - Implement Infer mixin  (drop "pairs" complexity)
       in = args                ... an "input", not behavior; no mixin]
       inIDs = (expand {in})    Infer.inIDs = (inferclasses {inherit})
       ^ = get out              ... always (get "out" {inIDs})
