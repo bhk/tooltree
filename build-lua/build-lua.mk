@@ -1,7 +1,7 @@
 # Minion builder classes for working with Lua sources
 #
 #    LuaRun, LuaTest, LuaExec : execute Lua scripts
-#    LuaExe, LuaToC, LuaToLua : bundle Lua scripts with dependencies
+#    LuaExe, LuaToC, LuaBundle : bundle Lua scripts with dependencies
 #
 
 # BuildLua: mixin that describes external dependencies fo this makefile.
@@ -57,13 +57,13 @@ _LuaToC.flags = --minify
 _LuaToC.openLibs =
 
 
-# LuaToLua(SOURCES): generate a single Lua file that bundles a Lua file with
+# LuaBundle(SOURCES): generate a single Lua file that bundles a Lua file with
 #    all of its dependencies.
 #
-LuaToLua.inherit = _LuaToLua
-_LuaToLua.inherit = LuaToC
-_LuaToLua.ext = .lua
-_LuaToLua.flags = --luaout {inherit}
+LuaBundle.inherit = _LuaBundle
+_LuaBundle.inherit = LuaToC
+_LuaBundle.ext = .lua
+_LuaBundle.flags = --luaout {inherit}
 
 
 # LuaCC(...) : Variant of CC for building C sources that depend on

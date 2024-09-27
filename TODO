@@ -1,9 +1,9 @@
 Done:
  - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js
  - remove: p4x, pakman, simp4, cdep
+ - LuaToLua -> LuaBundle
 
 Todo:
- - LuaToLua -> LuaBundle
  - luau/requirefile -> build-lua/requirefile ?
  - jsu
  - mdb

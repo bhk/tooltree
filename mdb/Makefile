@@ -35,7 +35,7 @@ LuaEnv.ooDeps = $(call get*,out,JSToHTML)
 
 LuaTest += $(wildcard *_q.lua)
 LuaExe += mdb.lua
-LuaToLua += mdbagent.lua
+LuaBundle += mdbagent.lua
 
 
 # Run MDB (or other server) as a script
@@ -68,7 +68,7 @@ Ship/bin = $(call get*,out,LuaExe)
 
 Ship/src.parent = Copy
 Ship/src.dir = out/$v/src
-Ship/src = $(call get*,out,LuaToLua)
+Ship/src = $(call get*,out,LuaBundle)
 
 
 $(build)
