@@ -26,10 +26,10 @@ _JSEnv.nodePathDirs = .
 JSBundle.inherit = _JSBundle
 _JSBundle.inherit = JSEnv Builder
 _JSBundle.outExt = .js
-_JSBundle.command = {jsdepExe} {flags} -o {@} --odep={depsFile} {<}
+_JSBundle.command = {exportPrefix}{jsdepExe} {flags} -o {@} --odep={depsFile} {<}
 _JSBundle.up = {jsdepExe}
 _JSBundle.flags = --bundle
-_JSBundle.depFile = {@}.d
+_JSBundle.depsFile = {@}.d
 
 
 # JSToHTML(JSSOURCE): bundle source & its dependencies into an HTML file
@@ -50,34 +50,40 @@ _JSToHTML.flags = --html
 JSTest.inherit = _JSTest
 _JSTest.inherit = JSEnv Test
 _JSTest.exec = {node} {execArgs} {^}
-_JSTest.ID1 = $(word 1,{inIDs}}
-
-# Test dependencies before running this rule
-_JSTest.oo = $(filter-out $(_self),$(patsubst %,$(_class)(%),$(call {getTest_fn},{requiredFiles})))
+_JSTest.scanID = JSScan($(word 1,{inIDs}))
+# oo = JTest(TEST_FOR_X) where X is an implied dependency.
+_JSTest.oo = $(filter-out $(_self),\
+   $(patsubst %,$(_class)(%),\
+      $(call {getTest_fn},$(call get,dependencies,{scanID}))))
+# When implied dependencies change, {scanID}.out will be updated.
+_JSTest.deps = {scanID}
+# Override {getTest_fn} for different convention for test file naming.
 _JSTest.getTest_fn = _JSTest_getTest
-_JSTest.requiredFiles = $(call get,requiredFiles,JSTestScan({ID1}))
-_JSTest.deps = JSTestScan({ID1})
 
-# Get souce files that test $1
+# Return unit tests for JS sources listed in $1. [Note that this is not a
+#   property, so it cannot use {PROP} syntax, but it can use $(call .,PROP)
+#   because it is evaulated in the context of a property definition.]
 _JSTest_getTest ?= $(wildcard $(patsubst %.js,%_q.js,$1))
 
 
-# JSTestScan(SOURCE): scan implied dependencies of JavaScript file SOURCE,
-#    and write them to a Make include file.  The `requiredFiles` property --
-#    evaluated in the rule-generation phease -- includes this output file
-#    using Make's `include` directive.
+# JSScan(SOURCE): output the implied dependencies of JavaScript file SOURCE.
 #
-#    Due to a feature in GNU Make, when an included file is stale (needs to
-#    be update during the rule execution phase) all other rules are ignored
-#    and the included file(s) are updated, and then the entire makefile is
-#    restarted.  The value of the `requiredFiles` property, therefore, can
-#    be treated as up-to-date.
+#    {dependencies} gives the dependencies described in {out}, using Make's
+#    `include` directive, but since properties are evaulated *before* any
+#    rules are executed, this property reflects the dependencies as of the
+#    previous invocation of Make!
 #
-JSTestScan.inherit = _JSTestScan
-_JSTestScan.inherit = JSEnv Builder
-#? _JSTestScan.depsFor = $(call get,out,JSTest,$I)
-_JSTestScan.outExt = .deps
-_JSTestScan.command = {jsdepExe} -o {@} --format='JSTestScan($(_argText)).scan = %s' {<}
-_JSTestScan.scan =
-_JSTestScan.requiredFiles = $(call _eval,-include {@}){scan}
-_JSTestScan.deps = {requiredFiles}
+#    Due to a feature in GNU Make, when an included file is stale (i.e. it
+#    is the target of a rule that needs to be updated) all other rules are
+#    ignored, the stale include file targets are updated, and then the
+#    entire makefile is re-invoked.  Therefore, when a JS source file is
+#    changed, all affected JSScan() outputs will be invalid, and their rules
+#    will be re-run.  On the subsequent (automatic) re-invocation of Make,
+#    the JSScan outputs will be valid and {dependencies} will be up to date.
+#
+JSScan.inherit = _JSScan
+_JSScan.inherit = JSEnv Builder
+_JSScan.outExt = .mk
+_JSScan.command = {exportPrefix}{jsdepExe} -o {@} --format='$(_self)_scan = %s' {<}
+_JSScan.dependencies = $(call _eval,$(self),-include {@})$($(_self)_scan)
+_JSScan.deps = {dependencies}

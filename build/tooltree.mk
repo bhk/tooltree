@@ -42,8 +42,6 @@ Alias(tree).command = make -C.. V='$V'
 <uniq>  = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
 _uniq   = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
 
-_eval = $(info EVAL: $1)$(eval $1)
-
 # Evaluate $(_currentDir) using ":=" to get the Makefile's directory
 # _currentDir = $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
