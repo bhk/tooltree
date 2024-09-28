@@ -26,7 +26,7 @@ _LuaEnv.luaCPathDirs = {luaPathDirs} $(call _uniq,$(dir $(call get,out,{luaCPath
 _LuaEnv.luaCPathLibs =
 _LuaEnv.deps = {inherit} {luaCPathLibs}
 _LuaEnv.preloads =
-_LuaEnv.preloadOpts  = $(addprefix -l ,{preloads})
+_LuaEnv.preloadOpts = $(addprefix -l ,{preloads})
 
 
 # LuaRun(SOURCE) : Execute Lua SOURCE.
@@ -37,7 +37,7 @@ LuaRun.inherit = LuaCmd Run
 LuaExec.inherit = LuaCmd Exec
 LuaTest.inherit = LuaCmd Test
 
-LuaCmd.inherit  = _LuaCmd
+LuaCmd.inherit = _LuaCmd
 _LuaCmd.inherit = LuaEnv
 _LuaCmd.exec = {luaExe} {preloadOpts} {^} {execArgs}
 _LuaCmd.up = {luaExe}

@@ -39,8 +39,8 @@ Alias(tree).command = make -C.. V='$V'
 
 # return unique words in $1 without re-ordering
 <uniqX> = $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1)))
-<uniq>  = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
-_uniq   = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
+<uniq> = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
+_uniq = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
 
 # Evaluate $(_currentDir) using ":=" to get the Makefile's directory
 # _currentDir = $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
@@ -87,17 +87,17 @@ __CC.warnFlags = {inherit} -Wstrict-prototypes -Wmissing-prototypes -Wold-style-
 
 # Lib(OBJECTS): Create static library
 #
-Lib.inherit 	 = Builder
-Lib.outExt  	 = .lib
-Lib.command 	 = ar -rsc {@} {^}
+Lib.inherit = Builder
+Lib.outExt = .lib
+Lib.command = ar -rsc {@} {^}
 Lib.inferClasses = CC.c
 
 
 # SharedLib(OBJECTS): Create a shared library
 #
-SharedLib.inherit      = Builder
-SharedLib.outExt       = .so
-SharedLib.command      = clang -o {@} {^} -dynamiclib -undefined dynamic_lookup
+SharedLib.inherit = Builder
+SharedLib.outExt = .so
+SharedLib.command = clang -o {@} {^} -dynamiclib -undefined dynamic_lookup
 SharedLib.inferClasses = CC.c
 
 
