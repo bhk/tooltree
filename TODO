@@ -1,14 +1,14 @@
 Done:
- - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js
+ - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js, jsu
  - remove: p4x, pakman, simp4, cdep
  - LuaToLua -> LuaBundle
 
 Todo:
- - luau/requirefile -> build-lua/requirefile ?
- - jsu
+ - eliminate "precious" aligned columns in makefiles
  - mdb
  - smark-plugins
  - bench
+ - pages
  - Eliminate/reduce "../" in project makefiles
       include ../build/common.mk
       ...
@@ -20,6 +20,7 @@ Todo:
 
 
 Minion TODOs:
+ - _log & _eval --> arg1 = important, arg2 = label
  - _uniq
  - Detect simple .foo = ... {foo} ... infinite loop
  - Migrate changes to minion project:
@@ -47,6 +48,9 @@ Minion TODOs:
           indirection expansion
           inferred intermediate rules
      --> IDs<->Filenames should remain 1:1 ... e.g.  ^ == (get out inIDs)
+
+     Consider general case of Demo or LuaToExe... a class that defers {in}
+     to a sub-class to generate and intermediate file.
 
    - Implement Infer mixin  (drop "pairs" complexity)
       in = args                ... an "input", not behavior; no mixin]
