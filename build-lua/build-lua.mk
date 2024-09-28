@@ -30,12 +30,10 @@ _LuaEnv.preloadOpts = $(addprefix -l ,{preloads})
 
 
 # LuaRun(SOURCE) : Execute Lua SOURCE.
-# LuaTest(SOURCE) : Execute Lua SOURCE, creating OK file on success.
 # LuaExec(SOURCE) : Execute Lua SOURCE, capturing output.
 #
 LuaRun.inherit = LuaCmd Run
 LuaExec.inherit = LuaCmd Exec
-LuaTest.inherit = LuaCmd Test
 
 LuaCmd.inherit = _LuaCmd
 _LuaCmd.inherit = LuaEnv
@@ -120,3 +118,46 @@ _LuaExe.inPairs = $(foreach i,{inIDs},$i$(if $(filter %$],$i),$$$(call get,out,$
 # execited.  A depsFile is written as a side effect.
 _LuaExe.command = {inherit} $$( {luaExe} {cfromlua} --readlibs -MF {depsFile} -MT {@} -MP $(call get,out,{mainC}) )
 _LuaExe.depsFile = {@}.d
+
+
+# LuaTest(SOURCE) : Execute Lua SOURCE, creating OK file on success.
+#
+LuaTest.inherit = _LuaTest
+_LuaTest.inherit = LuaCmd Test
+_LuaTest.scanID = LuaScan($(word 1,{inIDs}))
+# oo = LuaTest(TEST_FOR_X) where X is an implied dependency.
+_LuaTest.oo = $(filter-out $(_self),\
+   $(patsubst %,$(_class)(%),\
+      $(call {getTest_fn},$(call get,dependencies,{scanID}))))
+# When implied dependencies change, {scanID}.out will be updated.
+_LuaTest.deps = {scanID}
+# Override {getTest_fn} for different convention for test file naming.
+_LuaTest.getTest_fn = _LuaTest_getTest
+
+# Return unit tests for dependencies listed in $1. [Note that this is not a
+#   property, so it cannot use {PROP} syntax, but it can use $(call .,PROP)
+#   because it is evaulated in the context of a property definition.]
+_LuaTest_getTest ?= $(wildcard $(patsubst %.lua,%_q.lua,%(filter %.lua,$1)))
+
+
+# LuaScan(SOURCE): output the implied dependencies of Lua file SOURCE.
+#
+#    {dependencies} gives the dependencies described in {out}, using Make's
+#    `include` directive, but since properties are evaulated *before* any
+#    rules are executed, this property reflects the dependencies as of the
+#    previous invocation of Make!
+#
+#    Due to a feature in GNU Make, when an included file is stale (i.e. it
+#    is the target of a rule that needs to be updated) all other rules are
+#    ignored, the stale include file targets are updated, and then the
+#    entire makefile is re-invoked.  Therefore, when a Lua source file is
+#    changed, all affected LuaScan() outputs will be invalid, and their rules
+#    will be re-run.  On the subsequent (automatic) re-invocation of Make,
+#    the LuaScan outputs will be valid and {dependencies} will be up to date.
+#
+LuaScan.inherit = _LuaScan
+_LuaScan.inherit = LuaEnv Builder
+_LuaScan.outExt = .mk
+_LuaScan.command = {exportPrefix} {luaExe} {cfromlua} -MF {@} -Mfmt '$(_self)_scan = %s' -- {<}
+_LuaScan.dependencies = $(call _eval,$(_self),-include {@})$($(_self)_scan)
+_LuaScan.deps = {dependencies}

@@ -11,5 +11,6 @@ qt.eq(succ, false)
 qt.match(err, "^requirefile: ")
 
 -- Makefile must set REQUIREFILE_PATH to include .ok directory...
-local ok = requirefile("requirefile/json_q.ok")
+-- [Use (...) so dependency scanning won't fail]
+local ok = (requirefile)("requirefile/json_q.ok")
 qt.eq("", ok)

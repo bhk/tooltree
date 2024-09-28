@@ -5,6 +5,7 @@ Usage:  cfromlua [options] FILE...
 
 Options:
    -o FILE      : Output generated C source code to FILE.
+   --luaout     : Output a Lua source file, not a C file.
    -l MOD       : Exe should load and run MOD before main module.
    -b MOD       : Bundle MOD even if it is not a dependency.
    -s MOD       : Skip MOD (do not bundle) even if it is a dependency.
@@ -19,6 +20,7 @@ Options:
    -MF FILE     : Write dependencies to FILE.
    -MP          : Add an empty dependency line for each included file.
    -MT TARGET   : Specify the target for the dependencies.
+   -Mfmt FORMAT : Specify format string for dependency file (%s -> deps).
    -MX          : Include binary extensions in the dependency file.
    -m NAME      : Specify the main function name.
    --           : Stop processing options.
@@ -187,6 +189,12 @@ local function searchLuaPath(path, name)
    local repl = name:gsub("%.", "/")
    for p in path:gmatch("[^;]+") do
       local filename = p:gsub("%?", repl)
+
+      -- do some minimal normlization
+      local trimmed = filename:gsub("^%./(.*)", "%1")
+      if trimmed then
+         filename = trimmed
+      end
       if fileExists(filename) then
          return filename
       end
@@ -680,10 +688,10 @@ local function cfl_requirefile(path)
    local requirePath = os.getenv("REQUIREFILE_PATH") or "."
 
    local mod, rel = string.match(path, "([^/]+)/(.*)")
-   bailIf(not mod, "cfromlua: requirefile: module name not given in '" .. path .. "'")
+   bailIf(not mod, "requirefile(%s): no module name found", path)
 
    local modFile = searchLuaPath(package.path, mod)
-   bailIf(not modFile, "cfromlua: requirefile: module '" .. mod .. "' not found")
+   bailIf(not modFile, "requirefile(%s): module '%s' not found", path, mod)
 
    local modDir = dir(modFile)
    for pathDir in requirePath:gmatch("([^;]+)") do
@@ -694,7 +702,7 @@ local function cfl_requirefile(path)
       end
    end
 
-   return nil
+   bailIf(true, "requirefile(%s): file '%s' not found in %s", path, rel, modDir)
 end
 
 
@@ -706,8 +714,6 @@ local function addRequireFile(mod)
    rfilesByMod[mod] = true
 
    local data, filename = cfl_requirefile(mod)
-
-   bailIf(not data, "cfromlua: requirefile: file does not exist '" .. mod .. "'")
 
    rfiles[#rfiles+1] = {
       mod = mod,
@@ -948,10 +954,17 @@ local function writeLuaSource()
 end
 
 
-local function writeDepFile(target, deps)
+local function writeDepFile(deps)
+   local format = options.Mfmt
+   local target = options.MT or options.o
+   if not format and target then
+      format = target .. ": %s"
+   end
+   bailIf(not format, "-MF requires either -o, -MT, or -Mfmt.  Try -h for help.")
+
    local out = ""
    if deps[1] then
-      out = target .. ": " .. table.concat(deps, " ") .. "\n"
+      out = format:format(table.concat(deps, " ")) .. "\n"
       if options.MP then
          out = out .. table.concat(deps, ":\n") .. ":\n"
       end
@@ -976,9 +989,7 @@ local function writeDeps()
       table.insert(deps, r.filename)
    end
 
-   local lhs = options.MT or options.o
-   bailIf(not lhs, "-MF requires target name; use either -o or -MT.  Try -h for help.")
-   writeDepFile(lhs, deps)
+   writeDepFile(deps)
 end
 
 
@@ -1016,8 +1027,7 @@ local function readLibs(filename)
 
    -- write .d (dependency file)
    if options.MF then
-      bailIf(not options.MT, "--MT required with --MF and --readlibs")
-      writeDepFile(options.MT, deps)
+      writeDepFile(deps)
    end
 
    return 0
@@ -1028,7 +1038,7 @@ end
 -- Command argument processing
 ----------------------------------------------------------------
 
-local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
+local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -Mfmt= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
 
 local modnames
 modnames, options = getopts(arg, oo)

@@ -26,7 +26,7 @@ _JSEnv.nodePathDirs = .
 JSBundle.inherit = _JSBundle
 _JSBundle.inherit = JSEnv Builder
 _JSBundle.outExt = .js
-_JSBundle.command = {exportPrefix}{jsdepExe} {flags} -o {@} --odep={depsFile} {<}
+_JSBundle.command = {exportPrefix} {jsdepExe} {flags} -o {@} --odep={depsFile} {<}
 _JSBundle.up = {jsdepExe}
 _JSBundle.flags = --bundle
 _JSBundle.depsFile = {@}.d
@@ -51,7 +51,7 @@ JSTest.inherit = _JSTest
 _JSTest.inherit = JSEnv Test
 _JSTest.exec = {node} {execArgs} {^}
 _JSTest.scanID = JSScan($(word 1,{inIDs}))
-# oo = JTest(TEST_FOR_X) where X is an implied dependency.
+# oo = JSTest(TEST_FOR_X) where X is an implied dependency.
 _JSTest.oo = $(filter-out $(_self),\
    $(patsubst %,$(_class)(%),\
       $(call {getTest_fn},$(call get,dependencies,{scanID}))))
@@ -60,10 +60,10 @@ _JSTest.deps = {scanID}
 # Override {getTest_fn} for different convention for test file naming.
 _JSTest.getTest_fn = _JSTest_getTest
 
-# Return unit tests for JS sources listed in $1. [Note that this is not a
+# Return unit tests for dependencies listed in $1. [Note that this is not a
 #   property, so it cannot use {PROP} syntax, but it can use $(call .,PROP)
 #   because it is evaulated in the context of a property definition.]
-_JSTest_getTest ?= $(wildcard $(patsubst %.js,%_q.js,$1))
+_JSTest_getTest ?= $(wildcard $(patsubst %.js,%_q.js,$(filter %.js,$1)))
 
 
 # JSScan(SOURCE): output the implied dependencies of JavaScript file SOURCE.
@@ -84,6 +84,6 @@ _JSTest_getTest ?= $(wildcard $(patsubst %.js,%_q.js,$1))
 JSScan.inherit = _JSScan
 _JSScan.inherit = JSEnv Builder
 _JSScan.outExt = .mk
-_JSScan.command = {exportPrefix}{jsdepExe} -o {@} --format='$(_self)_scan = %s' {<}
-_JSScan.dependencies = $(call _eval,$(self),-include {@})$($(_self)_scan)
+_JSScan.command = {exportPrefix} {jsdepExe} -o {@} --format='$(_self)_scan = %s' {<}
+_JSScan.dependencies = $(call _eval,$(_self),-include {@})$($(_self)_scan)
 _JSScan.deps = {dependencies}

@@ -2,9 +2,9 @@ Done:
  - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js, jsu
  - remove: p4x, pakman, simp4, cdep
  - LuaToLua -> LuaBundle
+ - LuaScan
 
 Todo:
- - eliminate "precious" aligned columns in makefiles
  - mdb
  - smark-plugins
  - bench
@@ -20,6 +20,7 @@ Todo:
 
 
 Minion TODOs:
+ - {exportPrefix} does not need to include space; we can use space before it
  - _log & _eval --> arg1 = important, arg2 = label
  - _uniq
  - Detect simple .foo = ... {foo} ... infinite loop
