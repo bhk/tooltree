@@ -1,11 +1,7 @@
 # smark
 
-deps = crank luau build-lua lpeg
-
+deps = luau build-lua lpeg
 conf = .config
-
 make = make V='$v'
-
 clean = make V='$v' clean
-
-result = out/$v
+result = .out/$v/exports

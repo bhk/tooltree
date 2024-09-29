@@ -15,7 +15,7 @@ V.luaReadline      ?=
 # package description
 
 conf   = .config
-deps   = crank lua-distro=$(call v.,luaSourcePackage) crank-c
+deps   = lua-distro=$(call v.,luaSourcePackage)
 result = .out/$v/exports
 make   = make V='$v'
 clean  = make V='$v' clean

@@ -1,7 +1,7 @@
 v = $(call q.,host)
 
 result = $(call v.,buildDir)/ship
-deps = crank build-lua luau lpeg
+deps = build-lua luau lpeg
 conf = .config
 make = make V='$v'
 clean = make clean V='$v'

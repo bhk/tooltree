@@ -13,7 +13,7 @@ LuaTest.exports = {inherit} OUTDIR
 LuaTest.OUTDIR = $(VOUTDIR)
 
 SmarkDoc.up = LuaExe(smark.lua)
-SmarkDoc.exe = $(firstword {up^})
+SmarkDoc.smarkExe = $(firstword {up^})
 
 include smark.mk
 include ../build-lua/build-lua.mk

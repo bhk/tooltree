@@ -1,5 +1,5 @@
-deps = crank luau build-lua lpeg lua
+deps = luau build-lua lpeg lua
 conf = .config
 make = make V='$v'
 clean = make V='$v' clean
-result = out/$v
+result = .out/$v/exports
