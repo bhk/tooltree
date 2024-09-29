@@ -12,7 +12,7 @@ CC.inherit ?= _CC
 Compile.inherit ?= _Compile
 Copy.inherit ?= _Copy
 Exec.inherit ?= _Exec
-Gzip.inherit ?= _Gzip
+GZip.inherit ?= _GZip
 Link.inherit ?= _Link
 LinkC++.inherit ?= _LinkC++
 LinkC.inherit ?= _LinkC
@@ -132,7 +132,7 @@ _LinkC++.inferClasses = CC.c CC++.cpp CC++.cc
 #    retaining other behavior.
 #
 _Exec.inherit = Builder
-_Exec.command = ( {exportPrefix}{exec} ) > {@} || ( rm {@} && false )
+_Exec.command = ( {exportPrefix} {exec} ) > {@} || ( rm -f {@}; false )
 _Exec.exec = {<} {execArgs} $(wordlist 2,9999,{^})
 _Exec.execArgs =
 _Exec.outExt = .out
@@ -141,14 +141,14 @@ _Exec.outExt = .out
 # Test(COMMAND) : Run a command (as per Exec) updating an OK file on success.
 #
 _Test.inherit = Exec
-_Test.command = {exportPrefix}{exec}$(\n)touch {@}
+_Test.command = {exportPrefix} {exec}$(\n)touch {@}
 _Test.outExt = .ok
 
 
 # _Run(COMMAND) : run command (as per Exec).
 #
 _Run.inherit = _IsPhony Exec
-_Run.command = {exportPrefix}{exec}
+_Run.command = {exportPrefix} {exec}
 
 
 # _Copy(INPUT)
@@ -204,11 +204,11 @@ _Tar.outExt = .tar
 _Tar.command = tar -cvf {@} {^}
 
 
-# _Gzip(INPUT) :  Compress an artifact.
+# _GZip(INPUT) :  Compress an artifact.
 #
-_Gzip.inherit = Builder
-_Gzip.command = cat {<} | gzip - > {@} || rm {@}
-_Gzip.outExt = %.gz
+_GZip.inherit = Exec
+_GZip.exec = gzip -c {^}
+_GZip.outExt = %.gz
 
 
 # _Zip(INPUTS) : Construct a ZIP file

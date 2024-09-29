@@ -1,11 +1,10 @@
 Done:
- - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js, jsu
+ - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js, jsu, mdb
  - remove: p4x, pakman, simp4, cdep
  - LuaToLua -> LuaBundle
  - LuaScan
 
 Todo:
- - mdb
  - smark-plugins
  - bench
  - pages
@@ -13,54 +12,52 @@ Todo:
       include ../build/common.mk
       ...
       $(build)
+ - Update mdb/Makefile: Demo.in after minion's inX ?
  - Fix: RETURN does not evaluate text in console window
  - LuaExe,inX/inIDs/inPairs (after minion refactoring)
+ - Rename "mdb_demo.js" -> "mdb_rawview.js" (or something like that)
  - make tree & top-level make
  - remove crank*, */Package
 
 
-Minion TODOs:
- - {exportPrefix} does not need to include space; we can use space before it
- - _log & _eval --> arg1 = important, arg2 = label
- - _uniq
- - Detect simple .foo = ... {foo} ... infinite loop
- - Migrate changes to minion project:
-   - LinkC -> Exe
-   - Run/Exec/Test & Phony
-   - .args -> execArgs
-   - Builder.exportPrefix
- - make clean INSTANCE
- - make C(A).P   (without 'help' on command line)
- - avoid repetition of $V in outBasis, as in .out/release/LuaCC.c_release/LuaToC.lua/test/cfl.o
- - make cleaner outdir by check for default extension: LuaExe.lua vs. LuaExe, or CC.c vs. CC
- - propagate tooltree/minion changes
- - _Builder
- - {inherit:NAME}
- - Reevaluate in/etc.
-   - Provide clear picture on...
-         Inputs             in     up     oo     deps
-         IDs/items    All  inIDs  upIDs  ooIDs  depsIDs
-                    First
-         Filenames    All    ^     up^    --     deps^^
-                    First    <     up<    --
+Crank vs. Minion:
+ - Crank demanded to know about all potential rules.  This involved:
+    - user explicitly declares instances:  Class += I1 I2 ...
+    - classes inherit from Gen
+    - crank inspects $(.VARIABLES)
+    - inferredClasses was an afterthought
+   And enabled:
+    - `make [targetFile]` would work
+    - ALL rules are cached; no need for minion_cache
+   But...
+    - In the end, this obscured what was built and when.
 
-     --> translation occurs between Inputs & IDs
-          class-specific translation
-          indirection expansion
-          inferred intermediate rules
-     --> IDs<->Filenames should remain 1:1 ... e.g.  ^ == (get out inIDs)
+   Minion understands the dependencies between instances.  Instances can be
+   named as inputs or other dependencies, and Minion automatically
+   translates them to output file names in the appropriate contexts.
+   An instance's rule is expanded only when that instance is referenced
+   by one of the current build goals.
 
-     Consider general case of Demo or LuaToExe... a class that defers {in}
-     to a sub-class to generate and intermediate file.
+   In Crank, we would lean on classes not just as types, but as collections
+   of files.  Also, dependencies *on* items were often handled as side
+   effects, or upside-down.  Class names were available as phony targets,
+   and were implicitly a preqreq of "all" (the default goal), or perhaps
+   some other target specified by the `prereqOf` property.
 
-   - Implement Infer mixin  (drop "pairs" complexity)
-      in = args                ... an "input", not behavior; no mixin]
-      inIDs = (expand {in})    Infer.inIDs = (inferclasses {inherit})
-      ^ = get out              ... always (get "out" {inIDs})
-      - delete inFiles, up^, deps^  (oops: Tilefish uses up<)
-        in/inIDs/{^,inFiles}  up/upIDs/up^  deps/depsIDs/deps^  oo/ooIDs/--
- - Clarify: {in, oo, deps} are inputs; override xxIDs;  "up" is for class
- - Version stamp
+      CC += foo.c bar.c                    # must be named
+      Exe.in = ... $(call get,out,CC) ...  # accepts files, not items
+      Exe += prog
+
+   Instead, in Minion:
+
+      Alias(default).in = Exe(@prog)
+      prog = foo.c bar.c
+
+   Minion understands {PROP} syntax in property definitions.  Ingredient
+   lists can use indirection syntax (@var or CLASS@var).  Instances can
+   accept multiple arguments.
+
+   Crank supported `inferredItems` as an afterthought.
 
 
 Goals:

@@ -16,9 +16,11 @@ lpeg-exports ?= ../lpeg/$(VOUTDIR)exports
 luau-exports ?= ../luau/$(VOUTDIR)exports
 smark-exports ?= ../smark/$(VOUTDIR)exports
 build-lua-exports ?= ../build-lua
+build-js-exports ?= ../build-lua/$(VOUTDIR)exports
 monoglot-exports ?= ../monoglot/$(VOUTDIR)exports
+#webdemo-exports ?= ../webdemo/
+jsu-exports ?= ../jsu
 
-cfromlua ?= ../build-lua/cfromlua.lua
 
 # Supported variants
 

@@ -1,4 +1,4 @@
-deps = crank crank-js
+deps = build-js
 conf = .config
 make = make V='$v'
 clean = make clean V='$v'

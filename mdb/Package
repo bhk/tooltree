@@ -1,4 +1,4 @@
-deps = crank luau crank-lua lua monoglot lpeg crank-js jsu
+deps = crank luau build-lua lua monoglot lpeg build-js jsu
 crank-js := ../crank-js/.crank/release/ship
 conf = .config
 make = make V='$v'
