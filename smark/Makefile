@@ -3,7 +3,7 @@
 
 Alias(default).in = Ship(exports) LuaTest@luaTests
 
-exports = LuaExe(smark.lua) smark.txt smark.mk SmarkDoc(smark.txt)
+exports = LuaExe(smark.lua) smark.txt hello.txt smark.mk SmarkDoc(smark.txt)
 luaTests = $(wildcard *_q.lua)
 
 # ugh: smark_q.lua uses chdir, so we have to use absolute paths for LUA_PATH

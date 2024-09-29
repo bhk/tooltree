@@ -13,7 +13,7 @@ Alias(owebtest).in = LuaRun(owebtest.lua)
 Alias(size).in = JSBundle(mdbapp.js)
 Alias(size).command = uglifyjs $(call get,out,{in}) -c -m | wc
 
-exports = LuaExe(mdb.lua) LuaBundle(mdbagent.lua)
+exports = LuaExe(mdb.lua) LuaBundle(mdbagent.lua) mdb.txt
 luaTests = $(wildcard *_q.lua)
 jsTests = $(filter-out ui_q.js,$(wildcard *_q.js))
 

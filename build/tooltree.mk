@@ -7,19 +7,17 @@ tooltree_minion_dir := $(dir $(lastword $(MAKEFILE_LIST)))
 # Project-wide configuration
 #----------------------------------------------------------------
 
-luasources-exports ?= ../opensource/lua-5.2.3
+build-js-exports ?= ../build-js/$(VOUTDIR)exports
+build-lua-exports ?= ../build-lua
+jsu-exports ?= ../jsu
+lpeg-exports ?= ../lpeg/$(VOUTDIR)exports
 lpegsources-exports ?= ../opensource/lpeg-0.12
 lua-exports ?= ../lua/$(VOUTDIR)exports
-  luaLib ?= $(lua-exports)/lib/liblua.lib
-  luaExe ?= $(lua-exports)/bin/lua
-lpeg-exports ?= ../lpeg/$(VOUTDIR)exports
+luasources-exports ?= ../opensource/lua-5.2.3
 luau-exports ?= ../luau/$(VOUTDIR)exports
-smark-exports ?= ../smark/$(VOUTDIR)exports
-build-lua-exports ?= ../build-lua
-build-js-exports ?= ../build-lua/$(VOUTDIR)exports
+mdb-exports ?= ../mdb/$(VOUTDIR)exports
 monoglot-exports ?= ../monoglot/$(VOUTDIR)exports
-#webdemo-exports ?= ../webdemo/
-jsu-exports ?= ../jsu
+smark-exports ?= ../smark/$(VOUTDIR)exports
 
 
 # Supported variants
