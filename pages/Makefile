@@ -23,5 +23,5 @@ Deploy.command = \
   ( head -1 | grep [yY] > /dev/null && git commit -m '-' && git push || \
     echo Nothing pushed)
 
-include ../smark/.out/release/exports/smark.mk
+include-deps = $(smark-exports)/smark.mk
 include ../build/tooltree.mk

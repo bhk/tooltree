@@ -58,6 +58,5 @@ LuaEnv.LUA = {luaExe}
 
 LuaRun(owebtest.lua).in = owebtest.lua JSToHTML(oweb_demo.js)
 
-include ../build-lua/build-lua.mk
-include ../build-js/.out/release/exports/build-js.mk
+include-deps = $(build-lua-exports)/build-lua.mk $(build-js-exports)/build-js.mk
 include ../build/tooltree.mk

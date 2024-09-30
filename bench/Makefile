@@ -7,5 +7,6 @@ Perf.exec = {exportPrefix} ./time.sh {webserver}
 Perf.webserver = {luaExe} {<}
 Perf(web.js).webserver = node {<}
 
-include ../build-lua/build-lua.mk
+include-deps = $(build-lua-exports)/build-lua.mk
 include ../build/tooltree.mk
+

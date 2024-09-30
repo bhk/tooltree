@@ -1,25 +1,74 @@
 Done:
- - lua, lpeg, luau, smark, build-lua, monoglot, webdemo, build-js, jsu, mdb
- - remove: p4x, pakman, simp4, cdep
+ - lua, lpeg, luau, smark, build-lua, monoglot, webdemo,
+   build-js, jsu, mdb, bench, pages
+ - remove: p4x, pakman, simp4, cdep, ctools
  - LuaToLua -> LuaBundle
  - LuaScan
 
-Todo:
- - smark-plugins
- - bench
- - pages
- - Eliminate/reduce "../" in project makefiles
-      include ../build/common.mk
-      ...
-      $(build)
+TODO:
+ - validate package dependencies (define only used -exports)
+ - test debug builds
+ - minionize Project/Package
+ - make tree --> Package($(this-package),onlyDeps:1)
+ - tooltree/Makefile lis
  - Update mdb/Makefile: Demo.in after minion's inX ?
  - Fix: RETURN does not evaluate text in console window
  - LuaExe,inX/inIDs/inPairs (after minion refactoring)
  - Rename "mdb_demo.js" -> "mdb_rawview.js" (or something like that)
  - make tree & top-level make
- - remove crank*, */Package
+ - remove crank*, */Package, anything else?
+
+----------------------------------------------------------------
+Package/Project-level Issues
+
+Assuming no "Package" files; all deps info in tooltree.mk
+
+build/tooltree.mk
+   packages.mk
+      package source/export locations
+      package dependencies [future]
+   defs.mk
+      utilities (--> minion)
+      minion classes
+      Alias(all)
+      Alias(tree)
+      build = $(eval include $(builddir)/minion.mk)
+      process package info
+   config.mk
+      Variants.all
+
+PKG/Makefile
+   Target Defs
+   [this_package = PKG]
+   include-deps = ...
+   #include ../build/tooltree.mk
+
+tooltree/Makefile:  (just like a package)
+   Target Defs -- Alias(default).in = Alias(tree)
+   this_package = tooltree
+   (no include-deps)
+   #incude build/tooltree.mk
+
+EXTERNAL.mk =
+   local package info
+     PKG-package = DIR
+     PKG-outdir = ...
+     PKG-deps = ...
+   Target Defs
+   Config / tooltree-NOCONFIG = 1  ... or Variants.all ?
+   [this_package = EXTERNAL]
+   include-deps = ...
+   #include ...tooltree/build/tooltree.mk
 
 
+ Problem: `make tree` fails if included makefiles are not yet built
+  - Not a problem for tooltree/Makefile
+  - Big problem for EXTERNAL.mk; minor annoyance for tooltree packages
+  - `.includeFiles` property to be checked prior to every built instance?
+  - special-case when only  'tree' & "external" targets are given?
+
+
+----------------------------------------------------------------
 Crank vs. Minion:
  - Crank demanded to know about all potential rules.  This involved:
     - user explicitly declares instances:  Class += I1 I2 ...

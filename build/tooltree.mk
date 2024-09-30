@@ -1,53 +1,111 @@
 # Project-wide build rules
 
-tooltree_minion_dir := $(dir $(lastword $(MAKEFILE_LIST)))
-#tooltree_dir := $(dir $(patsubst %/,%,$(tooltree_minion_dir)))
+tooltree_build_dir := $(dir $(lastword $(MAKEFILE_LIST)))
+_tt := $(patsubst %build/,%,$(tooltree_build_dir))
 
 #----------------------------------------------------------------
-# Project-wide configuration
+# Variant configuration
 #----------------------------------------------------------------
-
-build-js-exports ?= ../build-js/$(VOUTDIR)exports
-build-lua-exports ?= ../build-lua
-jsu-exports ?= ../jsu
-lpeg-exports ?= ../lpeg/$(VOUTDIR)exports
-lpegsources-exports ?= ../opensource/lpeg-0.12
-lua-exports ?= ../lua/$(VOUTDIR)exports
-luasources-exports ?= ../opensource/lua-5.2.3
-luau-exports ?= ../luau/$(VOUTDIR)exports
-mdb-exports ?= ../mdb/$(VOUTDIR)exports
-monoglot-exports ?= ../monoglot/$(VOUTDIR)exports
-smark-exports ?= ../smark/$(VOUTDIR)exports
-
-
-# Supported variants
 
 Variants.all = release debug
-isDebug = $(filter debug,$V)
+V(debug).debug = 1
+
+#----------------------------------------------------------------
+# Package configuration
+#----------------------------------------------------------------
+#
+# Below are the packages known to Tooltree.  Makefiles external to tooltree
+# may define their own packages before including tooltree.mk.  To define a
+# package, e.g. PKG, define a variable identifying its location;
+#
+#     PKG-package = SOURCES
+#
+# *If* the package has a build step, define:
+#
+#     PKG-outdir = OUTDIR_REL
+#
+# `PKG-exports` will be defined as $(PKG-package)$(PKG-outdir).  This shoud
+# name a directory that will contain the build results (after a successful
+# build).  OUTDIR_REL may be completely empty; defining the variable
+# indicates there is a build step.
+#
+# If the package does not have a build step, `PKG-exports` will be defined
+# as $(PKG-package).
+#
+
+bench-package = $(_tt)bench
+bench-deps = luau build-lua monoglot lpeg
+
+build-js-package = $(_tt)build-js
+build-js-outdir = /$(VOUTDIR)exports
+build-js-deps = build-lua luau lpeg
+
+build-lua-package = $(_tt)build-lua
+build-lua-outdir =
+build-lua-deps = lua
+
+jsu-package = $(_tt)jsu
+jsu-deps = build-js
+
+lpeg-package = $(_tt)lpeg
+lpeg-outdir = /$(VOUTDIR)exports
+lpeg-deps = build-lua lua lpeg
+
+lpegsources-package = $(_tt)opensource/lpeg-0.12
+
+lua-package = $(_tt)lua
+lua-outdir = /$(VOUTDIR)exports
+lua-deps = luasources
+
+luasources-package = $(_tt)opensource/lua-5.2.3
+
+luau-package = $(_tt)luau
+luau-outdir = /$(VOUTDIR)exports
+luau-deps = build-lua lua
+
+mdb-package = $(_tt)mdb
+mdb-outdir = /$(VOUTDIR)exports
+mdb-deps = luau build-lua monoglot lpeg build-js jsu
+
+monoglot-package = $(_tt)monoglot
+monoglot-outdir = /$(VOUTDIR)exports
+monoglot-deps = luau build-lua lpeg lua
+
+pages-package = $(_tt)pages
+pages-outdir =
+pages-deps = smark monoglot build-lua luau mdb crank-js jsu
+
+smark-package = $(_tt)smark
+smark-outdir = /$(VOUTDIR)exports
+smark-deps = luau build-lua lpeg
+
+webdemo-package = $(_tt)webdemo
+webdemo-outdir =
+webdemo-deps = luau build-lua lua monoglot lpeg
+
+#----------------------------------------------------------------
+# Tooltree function, class, and alias definitions
+#----------------------------------------------------------------
 
 Alias(all).in = Variants(Alias(default))
 Alias(tree).command = make -C.. V='$V'
 
-
-#----------------------------------------------------------------
-# Utility functions
-#----------------------------------------------------------------
-
-# <pquote/punquote> : escape/unescape "%"
-<pquote> = $(subst %,^p,$(subst ^,^c,$1))
-<punquote> = $(subst ^c,^,$(subst ^p,%,$1))
+# _pquote/_punquote : escape/unescape "%"
+_pquote = $(subst %,^p,$(subst ^,^c,$1))
+_punquote = $(subst ^c,^,$(subst ^p,%,$1))
 
 # return unique words in $1 without re-ordering
-<uniqX> = $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1)))
-<uniq> = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
-_uniq = $(strip $(call <punquote>,$(call <uniqX>,$(call <pquote>,$1))))
+_uniqX = $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1)))
+_uniq = $(strip $(call _punquote,$(call _uniqX,$(call _pquote,$1))))
 
-# Evaluate $(_currentDir) using ":=" to get the Makefile's directory
-# _currentDir = $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+# return $1 if variable $1 is defined
+_defined = $(if $(filter undefined,$(origin $1)),,$1)
 
-#----------------------------------------------------------------
-# Builder classes 
-#----------------------------------------------------------------
+# evaluate property $1 for current variant
+_vprop = $($(or $(call _defined,V($V).$1),V.$1))
+
+_isDebug = $(call _vprop,debug)
+
 
 # TODO:
 #  - CleanGoal (expands indirections, knows aliases and warns)
@@ -70,10 +128,11 @@ __Compile.outExt = .o
 __Compile.command = {compiler} -c -o {@} {<} {flags} -MMD -MP -MF {depsFile}
 __Compile.depsFile = {@}.d
 __Compile.rule = {inherit}-include {depsFile}$(\n)
-__Compile.flags = {stdFlags} $(if $(isDebug),{dbgFlags},{optFlags}) {warnFlags} {libFlags} $(addprefix -I,{includes})
+__Compile.flags = {stdFlags} $(if {isDebug},{dbgFlags},{optFlags}) {warnFlags} {libFlags} $(addprefix -I,{includes})
 __Compile.includes =
 
 __Compile.stdFlags = -std=c99 -fno-strict-aliasing -fPIC -fstack-protector
+__Compile.isDebug = $(_isDebug)
 __Compile.dbgFlags = -D_DEBUG -ggdb
 __Compile.optFlags = -O2
 __Compile.warnFlags = -Wall -Wextra -pedantic -Wshadow -Wcast-qual -Wcast-align -Wno-unused-parameter -Werror
@@ -114,17 +173,40 @@ CTest.inferClasses = Exe.c
 
 # Ship(VAR,...): Copy files from @VAR, @..., to a ship directory.
 #
-#   Note: Ship.in cannot be overridden.  Each argument to Ship must be a
-#   variable.  The variable must contain an ingredient list of files to be
-#   copied, and the variable's name is the output directory relative to
-#   $(VOUTDIR).
+#   The ship directory is $(VOUTDIR)VAR.
+#
+#   Note: {in} cannot be overridden in instances or subclasses.  Each
+#   argument to Ship must be a variable name.  Each variable contains an
+#   ingredient list of files to be copied.
 #
 #   Each `Ship` instance is a single target that depends on zero or more
-#   `Ship1` instances.
+#   `Copy` instances.
 #
-Ship.inherit = Builder
-Ship.command = touch {@}
+Ship.inherit = Phony
 Ship.in = $(foreach a,$(_args),$(patsubst %,Copy(%,dir:$(VOUTDIR)$a/),$(call _expand,@$a)))
 
 
-include $(tooltree_minion_dir)minion.mk
+#----------------------------------------------------------------
+# Process packages
+#----------------------------------------------------------------
+
+all-packages = $(patsubst %-package,%,$(filter %-package,$(.VARIABLES)))
+
+# Define `PKG-sources` and `PKG-exports` variables
+_export_package = \
+  $(eval $1-exports = $$($1-package)$(subst |,/,$(value $1-outdir)))
+
+$(foreach _pkg,$(all-packages),$(call _export_package,$(_pkg)))
+
+minion_start = 1
+include $(_tt)build/minion.mk
+
+# include-deps : a list of makefiles that are to be included just prior to
+#    the rule-generation phase, after Minion definitions have been loaded.
+#    This enables loading makefiles exported from other packages.
+#    $(PACKAGE-exports) variables generally cannot be evaluated prior to
+#    loading of MINION because their definitions often include $(VOUTDIR) or
+#    $V which are defined or defaulted by Minion.
+$(eval include $(include-deps))
+
+$(minion_end)

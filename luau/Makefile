@@ -22,5 +22,5 @@ LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
 LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;{outDir}
 LuaTest(requirefile_q.lua).deps = {inherit} LuaTest(json_q.lua)
 
-include ../build-lua/build-lua.mk
+include-deps = $(build-lua-exports)/build-lua.mk
 include ../build/tooltree.mk

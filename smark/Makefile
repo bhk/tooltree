@@ -16,5 +16,5 @@ SmarkDoc.up = LuaExe(smark.lua)
 SmarkDoc.smarkExe = $(firstword {up^})
 
 include smark.mk
-include ../build-lua/build-lua.mk
+include-deps = $(build-lua-exports)/build-lua.mk
 include ../build/tooltree.mk
