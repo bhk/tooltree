@@ -13,24 +13,24 @@ V(debug).debug = 1
 # Package configuration
 #----------------------------------------------------------------
 #
-# Below are the packages known to Tooltree.  Makefiles external to tooltree
-# may define their own packages before including tooltree.mk.  To define a
-# package, e.g. PKG, define a variable identifying its location;
+# Below are descriptions of the packages known to Tooltree.  Makefiles
+# external to tooltree may define their own packages before including
+# tooltree.mk.
 #
-#     package.PKG.dir = DIR
+# Packages are described using variables named `package.<NAME>.property`.
+# Packages have the following properties:
 #
-# *If* the package has a build step, define:
+#   dir: the package directory.  This is where its Makefile resides.
+#   outdir: a relative path from .dir to the exports directory.
+#           If undefined, there is no build step.
+#   imports: a list of packages that must be built this package
 #
-#     package.PKG.outdir = OUTDIR
-#
-# `package.PKG` will be defined as DIR concatenated with OUTDIR.  This
-# shoud name a directory that will contain the build results (after a
-# successful build).  OUTDIR may be completely empty; defining the variable
-# indicates there is a build step.
+# When the `dir` property is defined for a package, tooltree.mk will compute
+# the variable `package.<NAME>`, which describes the location of the exports
+# directory for package <NAME>.
 #
 # If the package does not have a build step, `package.PKG` will be defined
 # as DIR (without its trailing "/").
-#
 
 package.bench.dir = $(_tt)bench/
 package.bench.imports = luau build-lua monoglot lpeg
@@ -48,7 +48,7 @@ package.jsu.imports = build-js
 
 package.lpeg.dir = $(_tt)lpeg/
 package.lpeg.outdir = $(VOUTDIR)exports
-package.lpeg.imports = build-lua lua lpeg
+package.lpeg.imports = build-lua lua
 
 package.lpegsources.dir = $(_tt)opensource/lpeg-0.12
 
@@ -183,6 +183,29 @@ CTest.inferClasses = Exe.c
 #
 Ship.inherit = Phony
 Ship.in = $(foreach a,$(_args),$(patsubst %,Copy(%,dir:$(VOUTDIR)$a/),$(call _expand,@$a)))
+
+
+
+# Package(PACKAGE) : Package PACKAGE
+#
+Package.inherit = _Package
+_Package.inherit = IsPhony Builder
+_Package.outExt = .out
+_Package.inPairs = # no dependencies (for now)
+_Package.deps = $(foreach P,{imports},$(_class)($P))
+_Package.command = $(if {hasMake},{makeCommand})
+_Package.message = $(if {hasMake},{inherit})
+_Package.makeCommand = @( cd {buildDir} && $(MAKE) ) > {@} 2>&1 || printf '**FAILED: see {@} for log\nOr: cd {buildDir} && make\n'
+
+# Package properties
+_Package.buildDir = $(package.$(_arg1).dir)
+_Package.imports = $(package.$(_arg1).imports)
+_Package.hasMake = $(package.$(_arg1).outdir)
+
+CleanPackage.inherit = _CleanPackage
+_CleanPackage.inherit = Package
+_CleanPackage.command = $(if {hasMake},@cd {buildDir} && rm -rf .out)
+
 
 
 #----------------------------------------------------------------
