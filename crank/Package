@@ -1,3 +1,0 @@
-make = make
-clean = make clean
-v = $(V.default)

@@ -1,7 +1,0 @@
-deps = smark monoglot build-lua luau mdb crank-js jsu
-conf = .config
-make = make
-result = $(call v.,buildDir)
-
-# no sense building mulitple variants
-v = $(V.default)
