@@ -130,7 +130,7 @@ _LuaTest.oo = $(filter-out $(_self),\
    $(patsubst %,$(_class)(%),\
       $(call {getTest_fn},$(call get,dependencies,{scanID}))))
 # When implied dependencies change, {scanID}.out will be updated.
-_LuaTest.deps = {scanID}
+_LuaTest.deps = {inherit} {scanID}
 # Override {getTest_fn} for different convention for test file naming.
 _LuaTest.getTest_fn = _LuaTest_getTest
 
