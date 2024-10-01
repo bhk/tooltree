@@ -29,8 +29,8 @@ RunMDB.inherit = MDB LuaEnv Run
 LuaRunMDB.inherit = MDB LuaRun
 
 # JS & Lua environments (for xxTest, xxRun, xxBundle, xxExe rules)
-JSEnv.nodePathDirs = . $(jsu-exports)
-LuaEnv.luaPathDirs = . $(luau-exports) $(monoglot-exports) $(lpeg-exports)
+JSEnv.nodePathDirs = . $(package.jsu)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
 LuaEnv.exports = {inherit} OUTDIR $(LuaEnv_$(_argText)_exports)
 LuaEnv.OUTDIR = $(VOUTDIR)
 LuaEnv.deps = {inherit} $(LuaEnv_$(_argText)_deps)
@@ -58,5 +58,5 @@ LuaEnv.LUA = {luaExe}
 
 LuaRun(owebtest.lua).in = owebtest.lua JSToHTML(oweb_demo.js)
 
-include-deps = $(build-lua-exports)/build-lua.mk $(build-js-exports)/build-js.mk
+include-imports = build-lua/build-lua.mk build-js/build-js.mk
 include ../build/tooltree.mk

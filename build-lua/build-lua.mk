@@ -7,9 +7,9 @@
 # BuildLua: mixin that describes external dependencies fo this makefile.
 #
 BuildLua.inherit = _BuildLua
-_BuildLua.luaExe = $(lua-exports)/bin/lua
-_BuildLua.luaLib = $(lua-exports)/lib/liblua.lib
-_BuildLua.luaIncludes = $(lua-exports)/src
+_BuildLua.luaExe = $(package.lua)/bin/lua
+_BuildLua.luaLib = $(package.lua)/lib/liblua.lib
+_BuildLua.luaIncludes = $(package.lua)/src
 _BuildLua.cfromlua := $(dir $(lastword $(MAKEFILE_LIST)))cfromlua.lua
 
 

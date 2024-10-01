@@ -10,5 +10,5 @@ Demo.inherit = Run
 Demo.in = JSToHTML({inherit}_demo.js)
 Demo.exec = open {<}
 
-include-deps = $(build-js-exports)/build-js.mk
+include-imports = build-js/build-js.mk
 include ../build/tooltree.mk

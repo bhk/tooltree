@@ -2,64 +2,36 @@ Done:
  - lua, lpeg, luau, smark, build-lua, monoglot, webdemo,
    build-js, jsu, mdb, bench, pages
  - remove: p4x, pakman, simp4, cdep, ctools
+ - remove */Package
  - LuaToLua -> LuaBundle
  - LuaScan
 
 TODO:
- - validate package dependencies (define only used -exports)
  - test debug builds
- - minionize Project/Package
- - make tree --> Package($(this-package),onlyDeps:1)
- - tooltree/Makefile lis
- - Update mdb/Makefile: Demo.in after minion's inX ?
- - Fix: RETURN does not evaluate text in console window
- - LuaExe,inX/inIDs/inPairs (after minion refactoring)
- - Rename "mdb_demo.js" -> "mdb_rawview.js" (or something like that)
+ - trailing "/" in package.P.dir, not in package.P.top
+ - validate package dependencies
+      warn of references to un-imported packages
+      package.this.imports
+      package.this.dir = $(dir $(word 1,$(MAKEFILE_LIST)))  (trailing "/")
+      ? package.this.name = $(notdir $(patsubst %/,%,$(word 1,$(MAKEFILE_LIST))))
+      I don't think hidden (piggyback) dependencies a problem...
+        It just means that a pickled export tree would have a dependency.
+
  - make tree & top-level make
- - remove crank*, */Package, anything else?
+    - make tree --> Package($(this-package),onlyDeps:1)
+    - minionize Project/Package
+     - rm */Packages
+
+ - package.P.top ?
+ - remove crank*, anything else?
+ - After minion update:
+    - LuaTest@*_q.lua
+    - Demo.in -> inX ?
+    - LuaExe,inX/inIDs/inPairs (after minion refactoring)
+ - Fix: RETURN does not evaluate text in console window
+ - Rename "mdb_demo.js" -> "mdb_rawview.js" (or something like that)
 
 ----------------------------------------------------------------
-Package/Project-level Issues
-
-Assuming no "Package" files; all deps info in tooltree.mk
-
-build/tooltree.mk
-   packages.mk
-      package source/export locations
-      package dependencies [future]
-   defs.mk
-      utilities (--> minion)
-      minion classes
-      Alias(all)
-      Alias(tree)
-      build = $(eval include $(builddir)/minion.mk)
-      process package info
-   config.mk
-      Variants.all
-
-PKG/Makefile
-   Target Defs
-   [this_package = PKG]
-   include-deps = ...
-   #include ../build/tooltree.mk
-
-tooltree/Makefile:  (just like a package)
-   Target Defs -- Alias(default).in = Alias(tree)
-   this_package = tooltree
-   (no include-deps)
-   #incude build/tooltree.mk
-
-EXTERNAL.mk =
-   local package info
-     PKG-package = DIR
-     PKG-outdir = ...
-     PKG-deps = ...
-   Target Defs
-   Config / tooltree-NOCONFIG = 1  ... or Variants.all ?
-   [this_package = EXTERNAL]
-   include-deps = ...
-   #include ...tooltree/build/tooltree.mk
-
 
  Problem: `make tree` fails if included makefiles are not yet built
   - Not a problem for tooltree/Makefile
@@ -67,59 +39,8 @@ EXTERNAL.mk =
   - `.includeFiles` property to be checked prior to every built instance?
   - special-case when only  'tree' & "external" targets are given?
 
-
-----------------------------------------------------------------
-Crank vs. Minion:
- - Crank demanded to know about all potential rules.  This involved:
-    - user explicitly declares instances:  Class += I1 I2 ...
-    - classes inherit from Gen
-    - crank inspects $(.VARIABLES)
-    - inferredClasses was an afterthought
-   And enabled:
-    - `make [targetFile]` would work
-    - ALL rules are cached; no need for minion_cache
-   But...
-    - In the end, this obscured what was built and when.
-
-   Minion understands the dependencies between instances.  Instances can be
-   named as inputs or other dependencies, and Minion automatically
-   translates them to output file names in the appropriate contexts.
-   An instance's rule is expanded only when that instance is referenced
-   by one of the current build goals.
-
-   In Crank, we would lean on classes not just as types, but as collections
-   of files.  Also, dependencies *on* items were often handled as side
-   effects, or upside-down.  Class names were available as phony targets,
-   and were implicitly a preqreq of "all" (the default goal), or perhaps
-   some other target specified by the `prereqOf` property.
-
-      CC += foo.c bar.c                    # must be named
-      Exe.in = ... $(call get,out,CC) ...  # accepts files, not items
-      Exe += prog
-
-   Instead, in Minion:
-
-      Alias(default).in = Exe(@prog)
-      prog = foo.c bar.c
-
-   Minion understands {PROP} syntax in property definitions.  Ingredient
-   lists can use indirection syntax (@var or CLASS@var).  Instances can
-   accept multiple arguments.
-
-   Crank supported `inferredItems` as an afterthought.
-
-
-Goals:
-
- - drop WinNT support
- - Minionize...
-    lua
-    lpeg
-    luau: lua lpeg
-    smark: luau lpeg lua
-    monoglot: luau lpeg lua
-    webdemo: monoglot luau lpeg lua
-    jsu
-    mdb: jsu monoglot luau lpeg lua
-    pages
-    ctools?
+ Problem: Each package "knows" its own name.
+ Problem: All packages have the same set of variants.
+ Problem: Dependencies are of same V.
+   - E.g. mdb cannot depend on `luaHost` and `lua` at same time,
+     and `lua` cannot build HOST and TARGET variants.

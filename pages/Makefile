@@ -6,7 +6,7 @@ Alias(deploy).in = Deploy(@htmlFiles)
 
 htmlFiles = SmarkDoc@docs
 docPackages = build-js build-lua jsu luau mdb monoglot smark
-docs = index.txt $(wildcard $(foreach P,$(docPackages),$($P-exports)/*.txt))
+docs = index.txt $(wildcard $(foreach P,$(docPackages),$(package.$P)/*.txt))
 
 # put them all in the same directory for ease of viewing
 SmarkDoc.outDir = $(VOUTDIR)
@@ -23,5 +23,5 @@ Deploy.command = \
   ( head -1 | grep [yY] > /dev/null && git commit -m '-' && git push || \
     echo Nothing pushed)
 
-include-deps = $(smark-exports)/smark.mk
+include-imports = smark/smark.mk
 include ../build/tooltree.mk

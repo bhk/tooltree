@@ -7,7 +7,7 @@ exports = LuaExe(smark.lua) smark.txt hello.txt smark.mk SmarkDoc(smark.txt)
 luaTests = $(wildcard *_q.lua)
 
 # ugh: smark_q.lua uses chdir, so we have to use absolute paths for LUA_PATH
-LuaEnv.luaPathDirs = $(abspath . $(luau-exports) $(lpeg-exports))
+LuaEnv.luaPathDirs = $(abspath . $(package.luau) $(package.lpeg))
 
 LuaTest.exports = {inherit} OUTDIR
 LuaTest.OUTDIR = $(VOUTDIR)
@@ -16,5 +16,5 @@ SmarkDoc.up = LuaExe(smark.lua)
 SmarkDoc.smarkExe = $(firstword {up^})
 
 include smark.mk
-include-deps = $(build-lua-exports)/build-lua.mk
+include-imports = build-lua/build-lua.mk
 include ../build/tooltree.mk

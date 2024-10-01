@@ -5,7 +5,7 @@ Alias(run).in = LuaRun(demo.lua)
 Alias(runExe).in = Run(LuaExe(demo.lua))
 
 # lpeg is an indirect dependency
-LuaEnv.luaPathDirs = . $(luau-exports) $(monoglot-exports) $(lpeg-exports)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
 
-include-deps = $(build-lua-exports)/build-lua.mk
+include-imports = build-lua/build-lua.mk
 include ../build/tooltree.mk

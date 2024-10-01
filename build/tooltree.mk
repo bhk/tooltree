@@ -1,7 +1,6 @@
 # Project-wide build rules
 
-tooltree_build_dir := $(dir $(lastword $(MAKEFILE_LIST)))
-_tt := $(patsubst %build/,%,$(tooltree_build_dir))
+_tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
 #----------------------------------------------------------------
 # Variant configuration
@@ -18,70 +17,70 @@ V(debug).debug = 1
 # may define their own packages before including tooltree.mk.  To define a
 # package, e.g. PKG, define a variable identifying its location;
 #
-#     PKG-package = SOURCES
+#     package.PKG.dir = DIR
 #
 # *If* the package has a build step, define:
 #
-#     PKG-outdir = OUTDIR_REL
+#     package.PKG.outdir = OUTDIR
 #
-# `PKG-exports` will be defined as $(PKG-package)$(PKG-outdir).  This shoud
-# name a directory that will contain the build results (after a successful
-# build).  OUTDIR_REL may be completely empty; defining the variable
+# `package.PKG` will be defined as DIR concatenated with OUTDIR.  This
+# shoud name a directory that will contain the build results (after a
+# successful build).  OUTDIR may be completely empty; defining the variable
 # indicates there is a build step.
 #
-# If the package does not have a build step, `PKG-exports` will be defined
-# as $(PKG-package).
+# If the package does not have a build step, `package.PKG` will be defined
+# as DIR (without its trailing "/").
 #
 
-bench-package = $(_tt)bench
-bench-deps = luau build-lua monoglot lpeg
+package.bench.dir = $(_tt)bench/
+package.bench.imports = luau build-lua monoglot lpeg
 
-build-js-package = $(_tt)build-js
-build-js-outdir = /$(VOUTDIR)exports
-build-js-deps = build-lua luau lpeg
+package.build-js.dir = $(_tt)build-js/
+package.build-js.outdir = $(VOUTDIR)exports
+package.build-js.imports = build-lua luau lpeg
 
-build-lua-package = $(_tt)build-lua
-build-lua-outdir =
-build-lua-deps = lua
+package.build-lua.dir = $(_tt)build-lua/
+package.build-lua.outdir =
+package.build-lua.imports = lua
 
-jsu-package = $(_tt)jsu
-jsu-deps = build-js
+package.jsu.dir = $(_tt)jsu/
+package.jsu.imports = build-js
 
-lpeg-package = $(_tt)lpeg
-lpeg-outdir = /$(VOUTDIR)exports
-lpeg-deps = build-lua lua lpeg
+package.lpeg.dir = $(_tt)lpeg/
+package.lpeg.outdir = $(VOUTDIR)exports
+package.lpeg.imports = build-lua lua lpeg
 
-lpegsources-package = $(_tt)opensource/lpeg-0.12
+package.lpegsources.dir = $(_tt)opensource/lpeg-0.12
 
-lua-package = $(_tt)lua
-lua-outdir = /$(VOUTDIR)exports
-lua-deps = luasources
+package.lua.dir = $(_tt)lua/
+package.lua.outdir = $(VOUTDIR)exports
+package.lua.imports = luasources
 
-luasources-package = $(_tt)opensource/lua-5.2.3
+package.luasources.dir = $(_tt)opensource/lua-5.2.3
 
-luau-package = $(_tt)luau
-luau-outdir = /$(VOUTDIR)exports
-luau-deps = build-lua lua
+package.luau.dir = $(_tt)luau/
+package.luau.outdir = $(VOUTDIR)exports
+package.luau.imports = build-lua lua
 
-mdb-package = $(_tt)mdb
-mdb-outdir = /$(VOUTDIR)exports
-mdb-deps = luau build-lua monoglot lpeg build-js jsu
+package.mdb.dir = $(_tt)mdb/
+package.mdb.outdir = $(VOUTDIR)exports
+package.mdb.imports = luau build-lua monoglot lpeg build-js jsu
 
-monoglot-package = $(_tt)monoglot
-monoglot-outdir = /$(VOUTDIR)exports
-monoglot-deps = luau build-lua lpeg lua
+package.monoglot.dir = $(_tt)monoglot/
+package.monoglot.outdir = $(VOUTDIR)exports
+package.monoglot.imports = luau build-lua lpeg lua
 
-pages-package = $(_tt)pages
-pages-outdir =
-pages-deps = smark monoglot build-lua luau mdb crank-js jsu
+package.pages.dir = $(_tt)pages/
+package.pages.outdir = $(VOUTDIR)
+package.pages.imports = smark monoglot build-lua luau mdb crank-js jsu
 
-smark-package = $(_tt)smark
-smark-outdir = /$(VOUTDIR)exports
-smark-deps = luau build-lua lpeg
+package.smark.dir = $(_tt)smark/
+package.smark.outdir = $(VOUTDIR)exports
+package.smark.imports = luau build-lua lpeg
 
-webdemo-package = $(_tt)webdemo
-webdemo-outdir =
-webdemo-deps = luau build-lua lua monoglot lpeg
+package.webdemo.dir = $(_tt)webdemo/
+package.webdemo.outdir = .
+package.webdemo.imports = luau build-lua lua monoglot lpeg
 
 #----------------------------------------------------------------
 # Tooltree function, class, and alias definitions
@@ -190,23 +189,38 @@ Ship.in = $(foreach a,$(_args),$(patsubst %,Copy(%,dir:$(VOUTDIR)$a/),$(call _ex
 # Process packages
 #----------------------------------------------------------------
 
-all-packages = $(patsubst %-package,%,$(filter %-package,$(.VARIABLES)))
+_all-packages = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
 
-# Define `PKG-sources` and `PKG-exports` variables
-_export_package = \
-  $(eval $1-exports = $$($1-package)$(subst |,/,$(value $1-outdir)))
+# Set `package.PKG` for each package defined with `package.PKG.dir`
+#
+_export-packages = \
+  $(foreach P,$(_all-packages),\
+    $(eval package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir))))\
+    $(call _log,package.$P,$(package.$P)))
 
-$(foreach _pkg,$(all-packages),$(call _export_package,$(_pkg)))
+# `include-imports` holds a list of paths to makefiles that are to be
+#    included.  The first element in the path is the name of the exporting
+#    package, and it will be replaced with that package's export directory.
+#    For example, 'p1/defs.mk' expands to `$(package.p1)/defs.mk` which
+#    might look something like '../p1/.out/exports/defs.mk.
+#
+#    These makefiles are included after minion.mk has been loaded because
+#    $(package.PKG) variables generally include $(VOUTDIR) or $V which are
+#    defined or defaulted by Minion.
+#
+_do-include-imports = \
+   $(call _eval,packageIncludes,\
+      include $(foreach P,$(include-imports),$(call _get-import-path,$P)))
+
+_get-import-path = $(call _pkg-export,$(_pathFirst))$(_pathRest)
+_pathFirst = $(word 1,$(subst /, / ,$1))
+_pathRest = $(patsubst $(_pathFirst)%,%,$1)
+_pkg-export = $(or $(package.$1),UNKNOWN_PACKAGE_$1)
+
+# Load minion
 
 minion_start = 1
 include $(_tt)build/minion.mk
-
-# include-deps : a list of makefiles that are to be included just prior to
-#    the rule-generation phase, after Minion definitions have been loaded.
-#    This enables loading makefiles exported from other packages.
-#    $(PACKAGE-exports) variables generally cannot be evaluated prior to
-#    loading of MINION because their definitions often include $(VOUTDIR) or
-#    $V which are defined or defaulted by Minion.
-$(eval include $(include-deps))
-
+$(_export-packages)
+$(_do-include-imports)
 $(minion_end)

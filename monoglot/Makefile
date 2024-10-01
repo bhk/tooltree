@@ -9,7 +9,7 @@ luaSources = $(filter-out %_q.lua,$(wildcard *.lua))
 luaTests = $(filter %_q.lua,$(wildcard *.lua))
 cTests = $(wildcard *_q.c)
 
-LuaEnv.luaPathDirs = . $(luau-exports) $(lpeg-exports)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.lpeg)
 LuaEnv.luaCPathLibs = $(libs)
 
 # test C extensions before testing Lua files
@@ -17,8 +17,8 @@ LuaTest.deps = {inherit} CTest@cTests
 
 # xpio_c_q.c depends on Lua headers and library functions (Exe inferred from CTest)
 Exe(xpio_c_q.c).inferClasses = LuaCC.c
-Exe(xpio_c_q.c).in = {inherit} $(lua-exports)/lib/liblua.lib
+Exe(xpio_c_q.c).in = {inherit} $(package.lua)/lib/liblua.lib
 Exe(xpio_c_q.c).libFlags = {inherit} -lm
 
-include-deps = $(build-lua-exports)/build-lua.mk
+include-imports = build-lua/build-lua.mk
 include ../build/tooltree.mk

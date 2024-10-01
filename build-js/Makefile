@@ -6,8 +6,8 @@ luaTests = $(wildcard *_q.lua)
 
 LuaEnv.exports = {inherit} OUTDIR
 LuaEnv.OUTDIR = $(VOUTDIR)
-LuaEnv.luaPathDirs = . $(luau-exports) $(lpeg-exports) $(monoglot-exports)
+LuaEnv.luaPathDirs = . $(package.luau) $(package.lpeg) $(package.monoglot)
 
-include-deps = $(build-lua-exports)/build-lua.mk
+include-imports = build-lua/build-lua.mk
 include ../build/tooltree.mk
 
