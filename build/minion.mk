@@ -503,9 +503,8 @@ $(word 1,$(MAKEFILE_LIST)) usage:
    make help 'C(A).P'       Compute value of property P for C(A)
    make clean               `$(call get,command,Alias(clean))`
 
-Goals can be ordinary Make targets defined by your Makefile,
-instances (`Class(Arg)`), variable indirections (`@var`), or
-aliases defined by your Makefile.  Note that instances must
+Goals can be ordinary Make targets, Minion instances (`Class(Arg)`),
+variable indirections (`@var`), or aliases. Note that instances must
 be quoted for the shell.
 
 endef

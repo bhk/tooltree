@@ -1,57 +1,36 @@
 Done:
  - lua, lpeg, luau, smark, build-lua, monoglot, webdemo,
-   build-js, jsu, mdb, bench, pages
- - remove: p4x, pakman, simp4, cdep, ctools
+   build-js, jsu, mdb, bench, pages, Makefile
+ - remove: p4x, pakman, simp4, cdep, ctools, crank, crank-js, */Package
  - remove */Package
  - LuaToLua -> LuaBundle
  - LuaScan
- - Makefile
+ - make graph
 
 TODO:
- - CleanPackage -> Clean feature: If has {cleanCommand} use that instead
- - remove crank*, anything else?
- - make graph
  - build imports from any package
      default => Alias(imports)
      make tree => Alias(imports) && `make default`
      Alias(imports) = dependencies of this module
-
- - make tree & top-level make
-    - make tree --> Package($(this-package),onlyDeps:1)
-    - minionize Project/Package
-     - rm */Packages
-
+     Deal with not-yet-existing external makefiles
+       - ignore entirely when building imports or tree
+       - warn (not fail) when file is not present
  - validate package dependencies
-      warn of references to un-imported packages
-      package.this.imports
-      package.this.dir = $(dir $(word 1,$(MAKEFILE_LIST)))  (trailing "/")
-      ? package.this.name = $(notdir $(patsubst %/,%,$(word 1,$(MAKEFILE_LIST))))
-      I don't think hidden (piggyback) dependencies a problem...
-        It just means that a pickled export tree would have a dependency.
-
+     warn of references to un-imported $(package.NAME)
+     package.this.imports
+     package.this.dir = $(dir $(word 1,$(MAKEFILE_LIST)))  (trailing "/")
+     ? package.this.name = $(notdir $(patsubst %/,%,$(word 1,$(MAKEFILE_LIST))))
+     I don't think hidden (piggyback) dependencies a problem...
+       It just means that a pickled export tree would have a dependency.
+ - CleanPackages() should clean outdir, not all of .out
  - top-level clean -> cd P && make clean (not rm -rf .out)
-
- - warn (not fail) when `include-imports` file is not present
-
+ - update docs & document how-to for exernal projects
  - After minion update:
     - LuaTest@*_q.lua
-    - Demo.in -> inX ?
-    - LuaExe,inX/inIDs/inPairs (after minion refactoring)
+    - review all .in/.inID/.inPairs definitions: LuaExe, Demo, Graph, ...
+    - `make clean` at top
+    - `make help` at top
+    - CleanPackage(P) -> Clean(Package(P)) & Package.cleanCommand  ?
  - Fix: RETURN does not evaluate text in console window
- - Rename "mdb_demo.js" -> "mdb_rawview.js" (or something like that)
- - packages can specify V of imports
-
-----------------------------------------------------------------
-
-Problem: `make tree` fails if included makefiles are not yet built
-  - Not a problem for tooltree/Makefile
-  - Big problem for EXTERNAL.mk; minor annoyance for tooltree packages
-  - `.includeFiles` property to be checked prior to every built instance?
-  - special-case when only  'tree' & "external" targets are given?
-
-
- Problem: Each package "knows" its own name.
- Problem: All packages have the same set of variants.
- Problem: Dependencies are of same V.
-   - E.g. mdb cannot depend on `luaHost` and `lua` at same time,
-     and `lua` cannot build HOST and TARGET variants.
+ - Rename "mdb_demo.js" -> "mdb_rawui.js" (or something like that)
+ - Support V='' and default V=''

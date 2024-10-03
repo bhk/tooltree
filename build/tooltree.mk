@@ -88,6 +88,7 @@ package.webdemo.imports = luau build-lua lua monoglot lpeg
 
 Alias(all).in = Variants(Alias(default))
 Alias(tree).command = make -C.. V='$V'
+Alias(graph).in = Graph(Alias(default))
 
 # _pquote/_punquote : escape/unescape "%"
 _pquote = $(subst %,^p,$(subst ^,^c,$1))
@@ -185,7 +186,6 @@ Ship.inherit = Phony
 Ship.in = $(foreach a,$(_args),$(patsubst %,Copy(%,dir:$(VOUTDIR)$a/),$(call _expand,@$a)))
 
 
-
 # Package(PACKAGE) : Package PACKAGE
 #
 Package.inherit = _Package
@@ -207,6 +207,22 @@ _CleanPackage.inherit = Package
 _CleanPackage.command = $(if {hasMake},@cd {buildDir} && rm -rf .out)
 
 
+# Graph(INSTANCES) : Draw a graph of dependencies of instances
+#
+# Set Graph_FILES=1          to include explicit files (but not implicit deps)
+# Set Graph_IGNORE=CLASSES   to omit certain classes
+#
+Graph.inherit = Phony
+Graph.in =
+Graph.inExp = $(call Graph_filter,$(call _expand,$(_args)))
+Graph.rule = {@}: ; @true $$(info $$(call Graph_draw,Graph_get-,$$(call Graph_trav,Graph_get-children,$(call _escArg,{inExp}))))
+
+Graph_filter = $(filter-out $(patsubst %,%$[%,$(Graph_IGNORE)),$(filter $(if $(Graph_FILES),%,%$]),$1))
+Graph_get-children = $(call Graph_filter,$(call get,needs,$1))
+Graph_get-name = $(patsubst Package(%),%,$(patsubst Alias(%),%,$1))
+# see graph.scm for source...
+Graph_trav = $(if $(word 1,$2),$(call $0,$1,$(call $1,$(word 1,$2)) $(wordlist 2,9999,$2),$(filter-out $(word 1,$2),$3) $(word 1,$2)),$3)
+Graph_draw = $(if $2,$(call $0,$1,$(wordlist 2,9999,$2),$(subst ``,` ,$(filter-out %9,$(subst `  ,``,$(patsubst `,` ,$(subst `$(word 1,$2)`,`,$3) `$(subst $(\s),,$(addsuffix `,$(call $1children,$(word 1,$2)))) 9)))),$4$(foreach ;,$3,$(if $(filter `,$;), ,|)  )$(\n)$(foreach ;,$3,$(if $(findstring `$(word 1,$2)`,$;),+->,$(if $(filter `,$;), ,|)  ))$(if $3, )$(call $1name,$(word 1,$2))$(\n)),$4)# Emacs wants a closing `
 
 #----------------------------------------------------------------
 # Process packages
