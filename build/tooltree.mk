@@ -2,6 +2,9 @@
 
 _tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
+# Use parallel builds for all projects
+MAKEFLAGS += -j9 -Rr
+
 #----------------------------------------------------------------
 # Variant configuration
 #----------------------------------------------------------------
