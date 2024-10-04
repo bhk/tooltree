@@ -9,7 +9,6 @@ Done:
 
 TODO:
  - update docs & document how-to for exernal projects
- - Support V='' and default V=''
  - After minion update:
     - LuaTest@*_q.lua
     - review all .in/.inID/.inPairs definitions: LuaExe, Demo, Graph, ...

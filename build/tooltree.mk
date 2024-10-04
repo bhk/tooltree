@@ -47,6 +47,8 @@ endif
 # Variant configuration
 #----------------------------------------------------------------
 
+# Default is a single variant.  Use "make V=..." to select a specific variant.
+V ?=
 Variants.all = release debug
 V(debug).debug = 1
 
