@@ -21,20 +21,19 @@
 #
 # Package descriptions
 #
-#     Packages are defined using variables named `package.NAME.PROPERTY`.
-#     Packages have the following properties:
+#    Define packages using the following variables:
 #
-#       dir: the package directory.  This is where its Makefile resides.
-#       outdir: a relative path from .dir to the exports directory.
-#               If undefined, there is no build step.
-#       imports: a list of packages that must be built this package
+#    $(package.NAME.dir) = the package directory.
+#    $(package.NAME.imports) = other packages that must be built this one.
+#    $(package.NAME.outdir) = a path RELATIVE TO `DIR` to a directory that
+#         will contain exports (build results) after the package is built.
+#         If empty or undefined, the entire package is exported.  If
+#         undefined, there is no build step.
 #
-#    When the `dir` property is defined for a package, tooltree.mk will
-#    compute the variable `package.<NAME>`, which describes the location of
-#    the exports directory for package <NAME>.
+#    Tooltree will compute the following for each package imported
+#    by the package currently being built:
 #
-#    If the package does not have a build step, `package.PKG` will be
-#    defined as DIR (without its trailing "/").
+#    $(package.NAME) = path to the export directory.
 #
 _tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
@@ -71,7 +70,7 @@ package.jsu.imports = build-js
 
 package.lpeg.dir = $(_tt)lpeg/
 package.lpeg.outdir = $(VOUTDIR)exports
-package.lpeg.imports = build-lua lua
+package.lpeg.imports = build-lua lua lpegsources
 
 package.lpegsources.dir = $(_tt)opensource/lpeg-0.12
 
@@ -256,36 +255,42 @@ Graph_draw = $(if $2,$(call $0,$1,$(wordlist 2,9999,$2),$(subst ``,` ,$(filter-o
 # Process packages
 #----------------------------------------------------------------
 
-_all-packages = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
+# Access $(package.NAME) and validate NAME
+_pkg = $(or $(package.$1),$(error Unknown package '$1'.$(\n)Named in $(or $2,in $$(call _pkg,$1))))
 
-# Set `package.PKG` for each package defined with `package.PKG.dir`
-#
-_export-packages = \
-  $(foreach P,$(_all-packages),\
-    $(eval package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir))))\
-    $(call _log,package.$P,$(package.$P)))
+_pkg-all = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
 
-# If include file is missing:
+_pkg-imported = $(call Graph_trav,_pkg-deps,$(this-package))
+_pkg-deps = $(package.$1.imports)
+
+_pkg-error = $(error Undeclared import:$(\n)$$(package.$1) is used but $1 is not in $$(package.$(this-package).imports))$(\n)))
+
+# Check existence of imported include files
 #    make clean, imports, deep, $... => ignore
 #    make help => warn
-#    other => warn
+#    other => error
 _iiCheck = $(or $(wildcard $1),$(call _iiMissing,$(MAKECMDGOALS),$(_iiMessage)))
 _iiMissing = $(if $(filter clean imports deep $$%,$1),,$(if $(filter help,$1),$(info $2),$(error $2)))
-_iiMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try `make imports`.
+_iiMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try 'make imports'.
 
-_do-include-imports = \
-   $(call _eval,packageIncludes,\
-      include $(foreach P,$(include-imports),$(call _iiCheck,$(call _get-import-path,$P))))
+# Convert PACKAGE/path to $(package.PACKAGE)/path
+_expand-import-path = $(foreach P,$(word 1,$(subst /, / ,$1)),$(call _pkg,$P,$$(include-imports) entry '$1')$(patsubst $P%,%,$1))
 
-_get-import-path = $(call _pkg-export,$(_pathFirst))$(_pathRest)
-_pathFirst = $(word 1,$(subst /, / ,$1))
-_pathRest = $(patsubst $(_pathFirst)%,%,$1)
-_pkg-export = $(or $(package.$1),$(error Unknown package '$1' named in $$(include-imports)))
+# Assign `package.PKG` for packages, and then include imported makefiles
+#   $1 = imports & their descendants.  This means that dependencies
+#        can "piggyback"; the important thing is to validate build order.
+#   $2 = all packages
+_import-packages = \
+  $(call _eval,eval-packages,\
+    $(foreach P,$1,\
+      package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir)))$(\n))$(\n)\
+    $(foreach P,$(filter-out $1,$2),\
+      package.$P = $$(call _pkg-error,$P)$(\n))$(\n)\
+    include $(foreach P,$(include-imports),$(call _iiCheck,$(call _expand-import-path,$P))))
 
 # Load minion
 
 minion_start = 1
 include $(_tt)build/minion.mk
-$(_export-packages)
-$(_do-include-imports)
+$(call _import-packages,$(_pkg-imported),$(_pkg-all))
 $(minion_end)
