@@ -1,5 +1,41 @@
 # Project-wide build rules
-
+#
+# User makefiles typically include this file after defining all their
+# build targets using Minion variables or Make rules.
+#
+# User makefiles may also define the following:
+#
+# $(this-package) = name of current package; default = name of current dir.
+#    This comes into use during `make imports` or `make deep`.
+#
+# $(include-imports) is a list of paths to makefiles that are supplied by
+#    imported packages and must be included.  The first element in each path
+#    is the name of the exporting package, and it will be replaced with that
+#    package's export directory.  For example, 'p1/defs.mk' expands to
+#    `$(package.p1)/defs.mk` which might look something like
+#    '../p1/.out/exports/defs.mk.
+#
+#    These makefiles are included after minion.mk has been loaded because
+#    $(package.PKG) variables generally include $(VOUTDIR) or $V which are
+#    defined or defaulted by Minion.
+#
+# Package descriptions
+#
+#     Packages are defined using variables named `package.NAME.PROPERTY`.
+#     Packages have the following properties:
+#
+#       dir: the package directory.  This is where its Makefile resides.
+#       outdir: a relative path from .dir to the exports directory.
+#               If undefined, there is no build step.
+#       imports: a list of packages that must be built this package
+#
+#    When the `dir` property is defined for a package, tooltree.mk will
+#    compute the variable `package.<NAME>`, which describes the location of
+#    the exports directory for package <NAME>.
+#
+#    If the package does not have a build step, `package.PKG` will be
+#    defined as DIR (without its trailing "/").
+#
 _tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
 # Use parallel builds for all projects
@@ -16,24 +52,8 @@ V(debug).debug = 1
 # Package configuration
 #----------------------------------------------------------------
 #
-# Below are descriptions of the packages known to Tooltree.  Makefiles
-# external to tooltree may define their own packages before including
-# tooltree.mk.
+# Below are descriptions of the packages known to Tooltree.
 #
-# Packages are described using variables named `package.<NAME>.property`.
-# Packages have the following properties:
-#
-#   dir: the package directory.  This is where its Makefile resides.
-#   outdir: a relative path from .dir to the exports directory.
-#           If undefined, there is no build step.
-#   imports: a list of packages that must be built this package
-#
-# When the `dir` property is defined for a package, tooltree.mk will compute
-# the variable `package.<NAME>`, which describes the location of the exports
-# directory for package <NAME>.
-#
-# If the package does not have a build step, `package.PKG` will be defined
-# as DIR (without its trailing "/").
 
 package.bench.dir = $(_tt)bench/
 package.bench.imports = luau build-lua monoglot lpeg
@@ -90,8 +110,13 @@ package.webdemo.imports = luau build-lua lua monoglot lpeg
 #----------------------------------------------------------------
 
 Alias(all).in = Variants(Alias(default))
-Alias(tree).command = make -C.. V='$V'
+Alias(deep).in = Package($(this-package))
+Alias(clean-deep).in = CleanPackage($(this-package))
 Alias(graph).in = Graph(Alias(default))
+Alias(imports).in = Package@package.$(this-package).imports
+Alias(clean-imports).in = CleanPackage@package.$(this-package).imports
+
+this-package ?= $(notdir $(abspath .))
 
 # _pquote/_punquote : escape/unescape "%"
 _pquote = $(subst %,^p,$(subst ^,^c,$1))
@@ -240,24 +265,22 @@ _export-packages = \
     $(eval package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir))))\
     $(call _log,package.$P,$(package.$P)))
 
-# `include-imports` holds a list of paths to makefiles that are to be
-#    included.  The first element in the path is the name of the exporting
-#    package, and it will be replaced with that package's export directory.
-#    For example, 'p1/defs.mk' expands to `$(package.p1)/defs.mk` which
-#    might look something like '../p1/.out/exports/defs.mk.
-#
-#    These makefiles are included after minion.mk has been loaded because
-#    $(package.PKG) variables generally include $(VOUTDIR) or $V which are
-#    defined or defaulted by Minion.
-#
+# If include file is missing:
+#    make clean, imports, deep, $... => ignore
+#    make help => warn
+#    other => warn
+_iiCheck = $(or $(wildcard $1),$(call _iiMissing,$(MAKECMDGOALS),$(_iiMessage)))
+_iiMissing = $(if $(filter clean imports deep $$%,$1),,$(if $(filter help,$1),$(info $2),$(error $2)))
+_iiMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try `make imports`.
+
 _do-include-imports = \
    $(call _eval,packageIncludes,\
-      include $(foreach P,$(include-imports),$(call _get-import-path,$P)))
+      include $(foreach P,$(include-imports),$(call _iiCheck,$(call _get-import-path,$P))))
 
 _get-import-path = $(call _pkg-export,$(_pathFirst))$(_pathRest)
 _pathFirst = $(word 1,$(subst /, / ,$1))
 _pathRest = $(patsubst $(_pathFirst)%,%,$1)
-_pkg-export = $(or $(package.$1),UNKNOWN_PACKAGE_$1)
+_pkg-export = $(or $(package.$1),$(error Unknown package '$1' named in $$(include-imports)))
 
 # Load minion
 

@@ -8,23 +8,10 @@ Done:
  - make graph
 
 TODO:
- - build imports from any package
-     default => Alias(imports)
-     make tree => Alias(imports) && `make default`
-     Alias(imports) = dependencies of this module
-     Deal with not-yet-existing external makefiles
-       - ignore entirely when building imports or tree
-       - warn (not fail) when file is not present
- - validate package dependencies
-     warn of references to un-imported $(package.NAME)
-     package.this.imports
-     package.this.dir = $(dir $(word 1,$(MAKEFILE_LIST)))  (trailing "/")
-     ? package.this.name = $(notdir $(patsubst %/,%,$(word 1,$(MAKEFILE_LIST))))
-     I don't think hidden (piggyback) dependencies a problem...
-       It just means that a pickled export tree would have a dependency.
- - CleanPackages() should clean outdir, not all of .out
- - top-level clean -> cd P && make clean (not rm -rf .out)
+ - warn of references to un-imported $(package.NAME)
+ - CleanPackages() should clean outdir, not all of .out  (cd P && make clean V='$V')
  - update docs & document how-to for exernal projects
+ - Support V='' and default V=''
  - After minion update:
     - LuaTest@*_q.lua
     - review all .in/.inID/.inPairs definitions: LuaExe, Demo, Graph, ...
@@ -33,4 +20,3 @@ TODO:
     - CleanPackage(P) -> Clean(Package(P)) & Package.cleanCommand  ?
  - Fix: RETURN does not evaluate text in console window
  - Rename "mdb_demo.js" -> "mdb_rawui.js" (or something like that)
- - Support V='' and default V=''

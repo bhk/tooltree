@@ -1,9 +1,10 @@
 # Build (and test) tooltree packages
 
-Alias(default).in = Package@project
-Alias(clean).in = CleanPackage@project
+Alias(default).in = Alias(imports)
+Alias(clean).in = Alias(clean-imports)
 
-project = smark webdemo mdb
+this-package = tooltree
+package.tooltree.imports = smark webdemo mdb
 
 include build/tooltree.mk
 
