@@ -8,7 +8,6 @@ Done:
  - make graph
 
 TODO:
- - CleanPackages() should clean outdir, not all of .out  (cd P && make clean V='$V')
  - update docs & document how-to for exernal projects
  - Support V='' and default V=''
  - After minion update:

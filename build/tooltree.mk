@@ -37,8 +37,11 @@
 #
 _tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
-# Use parallel builds for all projects
-MAKEFLAGS += -j9 -Rr
+# Use parallel builds for all projects.  Avoid setting MAKEFLAGS if already
+# non-empty; this avoided "warning: -jN forced in submake" errors.
+ifeq "$(MAKEFLAGS)" ""
+MAKEFLAGS = -j9 -Rr
+endif
 
 #----------------------------------------------------------------
 # Variant configuration
@@ -222,7 +225,7 @@ _Package.inPairs = # no dependencies (for now)
 _Package.deps = $(foreach P,{imports},$(_class)($P))
 _Package.command = $(if {hasMake},{makeCommand})
 _Package.message = $(if {hasMake},{inherit})
-_Package.makeCommand = @( cd {buildDir} && $(MAKE) ) > {@} 2>&1 || printf '**FAILED: see {@} for log\nOr: cd {buildDir} && make\n'
+_Package.makeCommand = @( cd {buildDir} && $(MAKE) V=$V) > {@} 2>&1 || printf '**FAILED: see {@} for log\nOr: cd {buildDir} && make\n'
 
 # Package properties
 _Package.buildDir = $(package.$(_arg1).dir)
@@ -231,7 +234,7 @@ _Package.hasMake = $(package.$(_arg1).outdir)
 
 CleanPackage.inherit = _CleanPackage
 _CleanPackage.inherit = Package
-_CleanPackage.command = $(if {hasMake},@cd {buildDir} && rm -rf .out)
+_CleanPackage.command = $(if {hasMake},@cd {buildDir} && $(MAKE) V=$V clean)
 
 
 # Graph(INSTANCES) : Draw a graph of dependencies of instances
@@ -286,7 +289,7 @@ _import-packages = \
       package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir)))$(\n))$(\n)\
     $(foreach P,$(filter-out $1,$2),\
       package.$P = $$(call _pkg-error,$P)$(\n))$(\n)\
-    include $(foreach P,$(include-imports),$(call _iiCheck,$(call _expand-import-path,$P))))
+    include $$(foreach P,$$(include-imports),$$(call _iiCheck,$$(call _expand-import-path,$$P))))
 
 # Load minion
 
