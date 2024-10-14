@@ -32,28 +32,42 @@ e:exec("--path=" .. outdir
 local out = e.readFile(outfile)
 qt.match(out, ".*/a.js .*/b.js .*/c.js")
 
--- "--format"
-
-e:exec("--path=" .. outdir
-          .. " --format='A%sB'"
-          .. " -o " .. outfile
-          .. " " .. srcfile)
-local out = e.readFile(outfile)
-qt.match(out, "A.*/a.js .*/b.js .*/c.js\nB")
-
-
--- "--bundle" and "--odep"
+-- "--bundle" and "-MF"
 
 e:exec("--bundle"
           .. " --path=" .. outdir
           .. " -o " .. outfile
-          .. " --odep=" .. depfile
+          .. " -MF " .. depfile
           .. " " .. srcfile)
 out = e.readFile(outfile)
 qt.match(out, "'%(main%)': ?function.-'b.js': ?function.-'c.js': ?function")
 
 out = e.readFile(depfile)
+--
 qt.match(out, outfile .. ": .*a%.js .*b%.js .*c%.js")
+-- Assert: phony rule present
+qt.match(out, "\n" .. outdir .. "a.js:\n")
+
+
+-- "-MT" & "-Moo"
+
+e:exec("--bundle"
+          .. " --path=" .. outdir
+          .. " -o " .. outfile
+          .. " -MF " .. depfile
+          .. " -MT " .. outdir .. "a_q.js"
+          .. " -Moo ^B_q^S"
+          .. " " .. srcfile)
+out = e.readFile(outfile)
+qt.match(out, "'%(main%)': ?function.-'b.js': ?function.-'c.js': ?function")
+
+out = e.readFile(depfile)
+-- Assert: -MT overrides -o as target
+-- Assert: order-only dependency present
+-- Assert: dependency matching target is omitted
+-- Assert: phony rules present for OO deps
+qt.match(out, ".*a_q%.js ?: .*a.js .*b.js .* | .*b_q.js .*c.js")
+qt.match(out, "\n" .. outdir .. "b_q.js:\n")
 
 
 -- "--html"

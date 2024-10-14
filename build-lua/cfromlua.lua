@@ -5,8 +5,8 @@ Usage:  cfromlua [options] FILE...
 
 Options:
    -o FILE      : Output generated C source code to FILE.
-   --luaout     : Output a Lua source file, not a C file.
-   -l MOD       : Exe should load and run MOD before main module.
+   --luaout     : Write a Lua bundle to FILE, not C file.
+   -l MOD       : C source should load and run MOD before main module.
    -b MOD       : Bundle MOD even if it is not a dependency.
    -s MOD       : Skip MOD (do not bundle) even if it is a dependency.
    --path=PATH  : Add PATH to the Lua search path.
@@ -17,16 +17,18 @@ Options:
    -w           : Display a warning when a required file cannot be found
                   (default = silently ignore)
    -Werror      : Treat warnings as errors (implies '-w')
-   -MF FILE     : Write dependencies to FILE.
+   -MF MKFILE   : Write Make dependency rules to to MKFILE.
    -MP          : Add an empty dependency line for each included file.
-   -MT TARGET   : Specify the target for the dependencies.
-   -Mfmt FORMAT : Specify format string for dependency file (%s -> deps).
+   -MT TARGET   : Specify the target for the dependencies in MKFILE.
+   -Moo PATTERN : Add order-only dependencues (when -MF is given),
+                  computed by expanding PATTERN for each dependency.
    -MX          : Include binary extensions in the dependency file.
    -m NAME      : Specify the main function name.
    --           : Stop processing options.
    -v           : Display module and file names as they are visited.
    -h,  --help  : Display this message.
-   --readlibs   : Read library dependences from a generated C file.
+   --readlibs   : Treat FILE as a previously-generated C file and read
+                  dependencies from embedded comments.
    --win        : Use "\" when echoing library dependencies.
 
 See cfromlua.txt for more information.
@@ -599,6 +601,111 @@ return tonumber(v) or 0
 
 
 ------------------------------------------------------------------------
+-- Pure functions
+------------------------------------------------------------------------
+
+local function isSlash(ch)
+   return ch == "/" or ch == "\\"
+end
+
+
+local function join(a, b)
+   if isSlash(b:sub(1,1)) then
+      return b
+   end
+   local file = a .. (isSlash(a:sub(-1)) and "" or "/") .. b
+   file = file:gsub("/%./", "/")
+   return file
+end
+
+local function cfl_requirefile(path)
+   local requirePath = os.getenv("REQUIREFILE_PATH") or "."
+
+   local mod, rel = string.match(path, "([^/]+)/(.*)")
+   bailIf(not mod, "requirefile(%s): no module name found", path)
+
+   local modFile = searchLuaPath(package.path, mod)
+   bailIf(not modFile, "requirefile(%s): module '%s' not found", path, mod)
+
+   local modDir = dir(modFile)
+   for pathDir in requirePath:gmatch("([^;]+)") do
+      local file = join( join(modDir, pathDir), rel)
+      local data = readFile(file)
+      if data then
+         return data, file
+      end
+   end
+
+   bailIf(true, "requirefile(%s): file '%s' not found in %s", path, rel, modDir)
+end
+
+
+local function computeOOs(files, pattern, target)
+   local oos = {}
+   for ndx, file in ipairs(files) do
+      local suffix = file:match("%.[^%./]*$") or ""
+      local basename = file:match("(.*)%.[^%./]*$") or file
+      local name = pattern:gsub("%^F", file)
+        :gsub("%^B", basename)
+        :gsub("%^S", suffix)
+      if name ~= target then
+         table.insert(oos, name)
+      end
+   end
+   return oos
+end
+
+
+-- write make-style dependencies
+--
+local function writeDepFile(deps, target, depFile, doPhony, ooPattern)
+   local out = ""
+   if deps[1] then
+      out = target .. ": " .. table.concat(deps, " ")
+      local oos
+      if ooPattern then
+         oos = computeOOs(deps, ooPattern, target)
+         out = out .. " | " .. table.concat(oos, " ")
+      end
+      out = out .. "\n"
+
+      if doPhony then
+         out = out .. table.concat(deps, ":\n") .. ":\n"
+         if oos then
+            out = out .. table.concat(oos, ":\n") .. ":\n"
+         end
+      end
+   end
+
+   writeFile(depFile, out)
+end
+
+
+-- Find a module in the search path, if we haven't already.
+--
+local function findModule(name, path, cpath)
+   local filename = searchLuaPath(path, name)
+   if filename then
+      return filename, readFile(filename)
+   end
+
+   filename = searchLuaPath(cpath, name)
+   if filename then
+      local base = basename(filename)
+      local libfile = fileExists(base..".lib")
+         or fileExists(base..".a")
+         or fileExists(base..".o")
+         or fileExists(base..".obj")
+
+      if libfile then
+         return libfile, nil
+      end
+      warn("%s found; %s missing\n", filename, libfile)
+   end
+end
+
+
+------------------------------------------------------------------------
 -- Mod processing functions
 ------------------------------------------------------------------------
 
@@ -630,30 +737,6 @@ local knownMods = {
 }
 
 
--- Find a module in the search path, if we haven't already.
---
-local function findModule(name)
-   local filename = searchLuaPath(path, name)
-   if filename then
-      return filename, readFile(filename)
-   end
-
-   filename = searchLuaPath(cpath, name)
-   if filename then
-      local base = basename(filename)
-      local libfile = fileExists(base..".lib")
-         or fileExists(base..".a")
-         or fileExists(base..".o")
-         or fileExists(base..".obj")
-
-      if libfile then
-         return libfile, nil
-      end
-      warn("%s found; %s missing\n", filename, libfile)
-   end
-end
-
-
 local function addMod(m)
    vprintf("bundling %s\n", m.filename or m.func or m.name)
    table.insert(mods, m)
@@ -666,43 +749,6 @@ local function addLib(name, libfile)
       func = "luaopen_" .. name:gsub("%.", "_"),
       libfile = libfile
    }
-end
-
-
-local function isSlash(ch)
-   return ch == "/" or ch == "\\"
-end
-
-
-local function join(a, b)
-   if isSlash(b:sub(1,1)) then
-      return b
-   end
-   local file = a .. (isSlash(a:sub(-1)) and "" or "/") .. b
-   file = file:gsub("/%./", "/")
-   return file
-end
-
-
-local function cfl_requirefile(path)
-   local requirePath = os.getenv("REQUIREFILE_PATH") or "."
-
-   local mod, rel = string.match(path, "([^/]+)/(.*)")
-   bailIf(not mod, "requirefile(%s): no module name found", path)
-
-   local modFile = searchLuaPath(package.path, mod)
-   bailIf(not modFile, "requirefile(%s): module '%s' not found", path, mod)
-
-   local modDir = dir(modFile)
-   for pathDir in requirePath:gmatch("([^;]+)") do
-      local file = join( join(modDir, pathDir), rel)
-      local data = readFile(file)
-      if data then
-         return data, file
-      end
-   end
-
-   bailIf(true, "requirefile(%s): file '%s' not found in %s", path, rel, modDir)
 end
 
 
@@ -778,7 +824,7 @@ function addRequire(name, from)
       return
    end
 
-   local filename, data = findModule(name)
+   local filename, data = findModule(name, path, cpath)
    if data then
       -- found Lua source
       addSource(name, filename, data)
@@ -954,29 +1000,7 @@ local function writeLuaSource()
 end
 
 
-local function writeDepFile(deps)
-   local format = options.Mfmt
-   local target = options.MT or options.o
-   if not format and target then
-      format = target .. ": %s"
-   end
-   bailIf(not format, "-MF requires either -o, -MT, or -Mfmt.  Try -h for help.")
-
-   local out = ""
-   if deps[1] then
-      out = format:format(table.concat(deps, " ")) .. "\n"
-      if options.MP then
-         out = out .. table.concat(deps, ":\n") .. ":\n"
-      end
-   end
-
-   writeFile(options.MF, out)
-end
-
-
--- write make-style dependencies
---
-local function writeDeps()
+local function getModDeps()
    local deps = {}
    for _, m in ipairs(mods) do
       local file = m.filename or options.MX and m.libfile
@@ -988,8 +1012,7 @@ local function writeDeps()
    for _, r in ipairs(rfiles) do
       table.insert(deps, r.filename)
    end
-
-   writeDepFile(deps)
+   return deps
 end
 
 
@@ -1025,20 +1048,45 @@ local function readLibs(filename)
       io.write(table.concat(deps, " "))
    end
 
-   -- write .d (dependency file)
-   if options.MF then
-      writeDepFile(deps)
-   end
-
-   return 0
+   return deps
 end
 
+
+local function scanSources(modnames)
+   for _, name in ipairs(modnames) do
+     local data
+     if name == '-' then
+        name = '<stdin>'
+        data = io.stdin:read('*a')
+      else
+        data = readFile(name)
+      end
+      bailIf(not data, "could not open file: %s", name)
+      addSource(nil, name, data)
+   end
+
+   -- preloads: add these to list of modules, incrementing mainndx
+   for _, name in ipairsIf(options.l) do
+      addRequire(name, "-l")
+      table.insert(preloads, name)
+   end
+
+   -- additional modules
+   for _, name in ipairsIf(options.b) do
+      addRequire(name, "-b")
+   end
+
+   -- additional luaopen...() calls
+   for _, name in ipairsIf(options.open) do
+      addLib(name)
+   end
+end
 
 ----------------------------------------------------------------
 -- Command argument processing
 ----------------------------------------------------------------
 
-local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -Mfmt= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
+local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -Moo= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
 
 local modnames
 modnames, options = getopts(arg, oo)
@@ -1055,10 +1103,6 @@ end
 if options.h or options.help then
    printf2("%s", usageString)
    os.exit(0)
-end
-
-if options.readlibs then
-   return readLibs(modnames[1])
 end
 
 bailIf(not (options.o or options.MF), "No output file provided.  Use -h for help.")
@@ -1093,55 +1137,40 @@ if options.v then
    end
 end
 
--- put preamble first
-addMod {
-   source = "(preamble)",
-   data = strip2(preamble)
-}
+local deps
+if options.readlibs then
+   -- treat arg[1] as previously-generated C file
+   assert(not modnames[2])
+   deps = readLibs(modnames[1])
+else
+   -- treat all arguments as Lua sources
+   -- put preamble first
+   addMod {
+      source = "(preamble)",
+      data = strip2(preamble)
+   }
 
-for _, name in ipairsIf(options.s) do
-   knownMods[name] = true
-end
-
--- files named as args
-for _, name in ipairs(modnames) do
-  local data
-  if name == '-' then
-     name = '<stdin>'
-     data = io.stdin:read('*a')
-   else
-     data = readFile(name)
+   for _, name in ipairsIf(options.s) do
+      knownMods[name] = true
    end
-   bailIf(not data, "could not open file: %s", name)
-   addSource(nil, name, data)
+
+   scanSources(modnames)
+   deps = getModDeps()
+
+   if options.o then
+      if options.luaout then
+         writeLuaSource()
+      else
+         writeCSource()
+      end
+   end
 end
 
--- preloads: add these to list of modules, incrementing mainndx
-for _, name in ipairsIf(options.l) do
-   addRequire(name, "-l")
-   table.insert(preloads, name)
-end
-
--- additional modules
-for _, name in ipairsIf(options.b) do
-   addRequire(name, "-b")
-end
-
--- additional luaopen...() calls
-for _, name in ipairsIf(options.open) do
-   addLib(name)
-end
-
+-- write .d (dependency file)
 if options.MF then
-   writeDeps()
-end
-
-if options.o then
-   if options.luaout then
-      writeLuaSource()
-   else
-      writeCSource()
-   end
+   local target = options.MT or options.o
+   bailIf(not target, "-MF requires either -o or -MT.  Try -h for help.")
+   writeDepFile(deps, target, options.MF, options.MP, options.Moo)
 end
 
 return 0

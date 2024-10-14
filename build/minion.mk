@@ -43,6 +43,7 @@ OUTDIR ?= .out/
 VOUTDIR ?= $(OUTDIR)$(if $V,$V/)
 
 minionCache ?=
+minionNoCache ?=
 minionStart ?=
 
 # Character constants
@@ -241,7 +242,7 @@ _Write.in =
 # Graph(GOALS) : Draw a graph of dependencies of instances
 #
 _Graph.inherit = Phony
-_Graph.roots = $(call _Graph_filter,{prune},$(call _expand,$(foreach a,$(_args),$(call _isGoal,$a)),roots))
+_Graph.roots = $(call _Graph_filter,{prune},$(call _getGoalIDs,$(_args),roots))
 _Graph.rule = {@}: ; @true $$(info $$(call get,text,$(call _escape,$(_self))))
 _Graph.text = $(call _graphDeps,_Graph_getNeeds,{nodeNameFn},{prune},{roots})
 _Graph.prune = $(_Graph_IGNORE)
@@ -374,8 +375,6 @@ _CleanGoal.goal = $(call _isGoal,$(_argText))
 _CleanGoal.inIDs = $(patsubst %,Clean(%),$(filter %$],$(call _expand,{goal})))
 _CleanGoal.command = @true $(if {goal},,$(call _lazy,$$(info Minion does not know how to clean '$(_argText)'.)))
 
-_isGoal = $(or $(_isInstance),$(_isIndirect),$(_isAlias))
-
 
 # _CleanGoal(INSTANCE) : Generate a rule that clean INSTANCE and its
 #    direct & indirect depedencies.
@@ -445,8 +444,14 @@ $(VOUTDIR)cache.mk : $(MAKEFILE_LIST) ; $(call _cacheRecipe,$(_cacheIds),$(_cach
 -include $(VOUTDIR)cache.mk
 endef
 
-_cacheExcludes = $(filter %$],$(call _expand,@minionNoCache))
-_cacheIds = $(filter-out $(_cacheExcludes),$(call _rollup,$(call _expand,@minionCache)))
+_cacheExcludes = $(filter %$],$(call _getGoalIDs,$(minionNoCache)))
+_cacheIds = $(filter-out $(_cacheExcludes),$(call _rollup,$(call _getGoalIDs,$(minionCache))))
+
+# $1 = goals, $2 = context for _expand
+_getGoalIDs = $(call _expand,$(foreach g,$1,$(or $(call _isGoal,$g),$g)),$2)
+
+#  If $1 is a goal return non-nil.  If an alias, return corresponding instance.
+_isGoal = $(or $(_isInstance),$(_isIndirect),$(_isAlias))
 
 # write out this many rules per printf command line
 _cacheGroupSize ?= 40

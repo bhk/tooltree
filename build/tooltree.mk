@@ -54,6 +54,7 @@ package.build-lua.outdir = .
 package.build-lua.imports = lua
 
 package.jsu.dir = $(_tt)jsu/
+package.jsu.outdir = .
 package.jsu.imports = build-js
 
 package.lpeg.dir = $(_tt)lpeg/
@@ -134,6 +135,8 @@ ttCC.warnFlags = -Werror -Wall -Wextra -pedantic -Wshadow -Wcast-qual\
 CC.compiler = clang
 CExe.compiler = clang
 
+# Use a simpler {outBasis} than default (no .EXT in .out/Class/... directories)
+Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),%,$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
 
 # Lib(OBJECTS): Create static library
 #

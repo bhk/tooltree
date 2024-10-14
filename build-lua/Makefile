@@ -18,6 +18,15 @@ LuaTest(A).in = test/cfl.lua
 LuaTest(A).arg = "quiet"
 
 
+# ASSERT: LuaTest() generates include file that captures direct
+#    dependencies on sources & OO dependencies on tests
+tests += Exec(Ax)
+Exec(Ax).in = LuaTest(A)
+define Exec(Ax).command
+  grep -q .out/LuaTest/test/dep_q.ok $(call get,out,LuaScan(test/cfl.lua))
+endef
+
+
 # ASSERT: LuaExec() captures output
 # ASSERT: LuaExec() passes LUA_PATH correctly
 # ASSERT: LuaExec() conveys {preloads}
