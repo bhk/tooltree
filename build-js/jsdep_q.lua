@@ -10,6 +10,10 @@ local e = TE:new("@jsdep.lua", os.getenv("jsdep_q_v"))
 
 local outdir = assert(os.getenv("OUTDIR"), "OUTDIR variable not set")
 
+local function pquote(str)
+   return (str:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%1"):gsub("%z", "%%z"))
+end
+
 local sources = {
    a = '// title: A\nrequire("b.js");\nrequire("c.js");',
    b = 'require("c.js");',
@@ -44,9 +48,9 @@ qt.match(out, "'%(main%)': ?function.-'b.js': ?function.-'c.js': ?function")
 
 out = e.readFile(depfile)
 --
-qt.match(out, outfile .. ": .*a%.js .*b%.js .*c%.js")
+qt.match(out, pquote(outfile) .. ": .*a%.js .*b%.js .*c%.js")
 -- Assert: phony rule present
-qt.match(out, "\n" .. outdir .. "a.js:\n")
+qt.match(out, "\n" .. pquote(outdir) .. "a.js:\n")
 
 
 -- "-MT" & "-Moo"
@@ -67,7 +71,7 @@ out = e.readFile(depfile)
 -- Assert: dependency matching target is omitted
 -- Assert: phony rules present for OO deps
 qt.match(out, ".*a_q%.js ?: .*a.js .*b.js .* | .*b_q.js .*c.js")
-qt.match(out, "\n" .. outdir .. "b_q.js:\n")
+qt.match(out, "\n" .. pquote(outdir) .. "b_q.js:\n")
 
 
 -- "--html"

@@ -19,10 +19,10 @@ _BuildLua.cfromlua := $(dir $(lastword $(MAKEFILE_LIST)))cfromlua.lua
 #
 LuaEnv.inherit = _LuaEnv BuildLua
 _LuaEnv.exports = LUA_PATH LUA_CPATH {inherit}
-_LuaEnv.LUA_PATH = $(subst $(\s),;,$(call _uniq,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
-_LuaEnv.LUA_CPATH = $(subst $(\s),;,$(call _uniq,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
+_LuaEnv.LUA_PATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
+_LuaEnv.LUA_CPATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
 _LuaEnv.luaPathDirs = .
-_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _uniq,$(dir $(call get,out,{luaCPathLibs))))
+_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir $(call get,out,{luaCPathLibs))))
 _LuaEnv.luaCPathLibs =
 _LuaEnv.deps = {luaCPathLibs} {inherit}
 _LuaEnv.preloads =

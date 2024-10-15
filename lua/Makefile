@@ -9,23 +9,22 @@
 
 Alias(default).in = Ship(exports/bin,exports/lib,exports/src)
 
-exports/bin = CExe(@lua) CExe(@luac)
-exports/lib = Lib(CC@liblua)
+exports/bin = CExe(lua) CExe(luac)
+exports/lib = Lib(liblua)
 exports/src = $(patsubst %,$(package.luasources)/src/%.h, lua luaconf lualib lauxlib)
-lua-cfiles = $(wildcard $(package.luasources)/src/*.c)
-lua = $(filter-out %/luac.c %/print.c,$(lua-cfiles))
-luac = $(filter-out %/lua.c,$(lua-cfiles))
-liblua = $(filter-out %/lua.c %/luac.c %/print.c,$(lua-cfiles))
 
+CExe(lua).in = $(package.luasources)/src/lua.c Lib(liblua)
+CExe(luac).in = $(package.luasources)/src/luac.c Lib(liblua)
+Lib(liblua).in = $(filter-out %/lua.c %/luac.c,$(wildcard $(package.luasources)/src/*.c))
+
+# Avoid project-wide warnings so we can use the original sources unmodified
+CC.warnFlags = -Werror
 CC.srcFlags = {inherit} -DLUA_USE_POSIX -D_GNU_SOURCE -DLUA_USE_DLOPEN
 
 ifdef lua-useReadline
   CC.srcFlags += -DLUA_USE_READLINE
-  CExe(@lua).libFlags = -lreadline # needed for MacOS
+  CExe(lua).libFlags = -lreadline # needed for MacOS
 endif
-
-# Avoid project-wide warnings so we can use the original sources unmodified
-CC.warnFlags = -Werror
 
 minionCache = default
 include ../build/tooltree.mk

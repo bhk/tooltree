@@ -141,7 +141,7 @@ _CC++.inherit = CCBase
 _CC++.compiler = g++
 
 
-# Link(INPUTS) : Link an executable.
+# Link(INPUTS) : Link an executable or shared library.
 #
 _Link.inherit = Builder
 _Link.outExt =
@@ -152,14 +152,14 @@ _Link.libFlags =
 
 # CExe(INPUTS) : Link a command-line C program.
 #
-_CExe.inherit = _Link
+_CExe.inherit = Link
 _CExe.compiler = gcc
 _CExe.inferClasses = CC.c
 
 
 # CExe++(INPUTS) : Link a command-line C++ program.
 #
-_CExe++.inherit = _Link
+_CExe++.inherit = Link
 _CExe++.compiler = g++
 _CExe++.inferClasses = CC.c CC++.cpp CC++.cc
 
@@ -336,7 +336,8 @@ _Builder.exports =
 
 # Validity values
 _Builder.vvFile ?= {outBasis}.vv
-_Builder.vvValue = $(call _vvEnc,{command},{@})
+# Use $(basename {@}) to match most of {@} and also {depsMF} as defined for CCBase
+_Builder.vvValue = $(call _vvEnc,{command},$(basename {@}))
 
 
 #--------------------------------
@@ -381,7 +382,7 @@ _CleanGoal.command = @true $(if {goal},,$(call _lazy,$$(info Minion does not kno
 #
 _Clean.inherit = _IsPhony Builder
 _Clean.in = $(patsubst %,Clean(%),$(filter %$],$(call get,needs,$(_argText))))
-_Clean.command = $(if $(call _hasProperty,cleanCommand,$(_argText)),$(call get,cleanCommand,$(_argText)),rm -f $(call get,out,$(_argText)))
+_Clean.command = $(if $(filter-out %$],$(_argText)),@echo 'Cannot clean {@}' && false,$(if $(call _hasProperty,cleanCommand,$(_argText)),$(call get,cleanCommand,$(_argText)),rm -f $(call get,out,$(_argText))))
 
 
 #--------------------------------
@@ -421,7 +422,8 @@ _safeToClean = $(if $(filter-out . ..,$(subst /, ,$1)),$1)
 
 # $(call _vvEnc,DATA,OUTFILE) : Encode DATA to be shell-safe (within single
 #   quotes) and Make-safe (within double-quotes or RHS of assignment) and
-#   echo-safe (across /bin/echo and various shell builtins)
+#   to work with /bin/echo and various shell echo builtins.  $2 is substituted
+#   with "!@" just to reduce size.
 _vvEnc = .$(subst ',`,$(subst ",!`,$(subst `,!b,$(subst $$,!S,$(subst $(\n),!n,$(subst $(\t),!+,$(subst \#,!H,$(subst $2,!@,$(subst \,!B,$(subst !,!1,$1)))))))))).#'
 
 # $(call _lazy,MAKESRC) : Encode MAKESRC for inclusion in a recipe so that
@@ -440,7 +442,7 @@ _recipe = $(subst $(\e),$$,$(subst $$,$$$$,$(subst $(\t)$(\n),,$(subst $(\n),$(\
 #    because the recipe involves computing every rule.
 #
 define _cacheRule
-$(VOUTDIR)cache.mk : $(MAKEFILE_LIST) ; $(call _cacheRecipe,$(_cacheIds),$(_cacheExcludes))
+$(VOUTDIR)cache.mk : $(MAKEFILE_LIST) ; $(info Updating Minion cache...)$(call _cacheRecipe,$(_cacheIds),$(_cacheExcludes))
 -include $(VOUTDIR)cache.mk
 endef
 
@@ -458,7 +460,6 @@ _cacheGroupSize ?= 40
 
 # $1=CACHED-IDS  $2=EXCLUDED-IDS
 define _cacheRecipe
-@echo 'Updating Minion cache...'
 @mkdir -p $(@D)
 @echo '_cachedIDs = $1' > $@_tmp_
 $(foreach g,$(call _group,$1,$(_cacheGroupSize)),

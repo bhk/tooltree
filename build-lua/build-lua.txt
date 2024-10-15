@@ -36,7 +36,7 @@ Overview
    run and test Lua scripts and bundle them into native programs.
 
 
-`build-lua.mk`
+build-lua.mk
 =======
 
 Here is an overview of the classes are provided.  Refer to the source file
@@ -54,8 +54,8 @@ interpreter to run them.  See `LuaEnv`, below, for customization options.
 LuaExe(SOURCES)
 ------
 
-Like the `Exe` class, `LuaExe` generates an executable file, but unlike
-`Exe` it construct the executable from one or more Lua scripts and their
+Like the `CExe` class, `LuaExe` generates an executable file, but unlike
+`CExe` it construct the executable from one or more Lua scripts and their
 dependencies using `cfromlua` and a C compiler and linker.
 
 `LuaToC` is used to generate the C file, and `LuaCC` is used to compile the

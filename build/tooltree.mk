@@ -15,6 +15,8 @@
 #
 _tt := $(patsubst %build/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
+_uname := $(shell uname)
+
 # Use parallel builds for all projects.  Setting "-jN" in MAKEFLAGS a
 # submake triggers "warning: -jN forced in submake" errors.
 #
@@ -25,13 +27,32 @@ MAKEFLAGS += -j -Rr
 endif
 
 #----------------------------------------------------------------
-# Variant configuration
+# Variants and variant properties
 #----------------------------------------------------------------
 
 # Default is a single variant.  Use "make V=..." to select a specific variant.
 V ?=
 Variants.all = release debug
-V(debug).debug = 1
+
+V.compiler = gcc
+V.debug =
+# Fall back to `true` if node is not present; this bypasses unit tests.
+# We direct stderr to /dev/null because `which` on Linux is noisy.
+V.node := $(notdir $(firstword $(shell which node nodejs 2>/dev/null) true))
+
+# V-FLAG.prop will apply when FLAG appears in $V (dash-delimited).
+V-debug.debug = 1
+V-llvm.compiler = clang
+
+# Allow local customization in a separate file.  We use $(wildcard ...) here
+# because if we pass a non-existent file to `-include` Make will match it
+# with the "%:" pattern rule Minion uses when `$(...)` targets are handled.
+include $(wildcard $(_tt).tooltree.mk)
+
+# Evaluate property $1 for current variant.
+_v = $($(firstword $(foreach v,$(patsubst %,V-%,$(subst -, ,$V)) V,$(call _defined,$v.$1)) _vgetError))
+_vgetError = $(error Undefined property: V($V).$1$(\n)$(call _whereAmI,call _v$;$1))
+
 
 #----------------------------------------------------------------
 # Package configuration
@@ -83,7 +104,7 @@ package.monoglot.imports = luau build-lua lpeg lua
 
 package.pages.dir = $(_tt)pages/
 package.pages.outdir = $(VOUTDIR)
-package.pages.imports = build build-js build-lua jsu luau mdb monoglot smark
+package.pages.imports = smark
 
 package.smark.dir = $(_tt)smark/
 package.smark.outdir = $(VOUTDIR)exports
@@ -97,46 +118,43 @@ package.webdemo.imports = luau build-lua lua monoglot lpeg
 # Tooltree function, class, and alias definitions
 #----------------------------------------------------------------
 
-Alias(all).in = Variants(Alias(default))
+Alias(all).in = Variants(deep)
 Alias(deep).in = Package($(thisPackage))
 Alias(imports).in = Package@package.$(thisPackage).imports
-
-thisPackage ?= $(notdir $(abspath .))
-
-# _pquote/_punquote : escape/unescape "%"
-_pquote = $(subst %,^p,$(subst ^,^c,$1))
-_punquote = $(subst ^c,^,$(subst ^p,%,$1))
-
-# return unique words in $1 without re-ordering
-_uniqX = $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1)))
-_uniq = $(strip $(call _punquote,$(call _uniqX,$(call _pquote,$1))))
 
 # return $1 if variable $1 is defined
 _defined = $(if $(filter undefined,$(origin $1)),,$1)
 
-# evaluate property $1 for current variant
-_vprop = $($(or $(call _defined,V($V).$1),V.$1))
-
-_isDebug = $(call _vprop,debug)
+# Use a simpler {outBasis} than default (no .EXT in .out/Class/... directories)
+Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),%,$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
 
 
 # Tooltree C compilation defaults
 #
 CC.inherit = ttCC CCBase
 ttCC.objFlags = $(if {isDebug},{dbgFlags},{optFlags})
-ttCC.isDebug = $(_isDebug)
+ttCC.isDebug = $(call _v,debug)
 ttCC.dbgFlags = -D_DEBUG -ggdb
 ttCC.optFlags = -O2
 ttCC.srcFlags = {warnFlags} -std=c99 -fno-strict-aliasing -fPIC -fstack-protector
 ttCC.warnFlags = -Werror -Wall -Wextra -pedantic -Wshadow -Wcast-qual\
   -Wcast-align -Wno-unused-parameter -Wstrict-prototypes -Wmissing-prototypes\
   -Wold-style-definition -Wnested-externs -Wbad-function-cast -Winit-self
+ttCC.compiler = $(call _v,compiler)
 
-CC.compiler = clang
-CExe.compiler = clang
 
-# Use a simpler {outBasis} than default (no .EXT in .out/Class/... directories)
-Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),%,$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
+CExe.inherit = CExe-$(_uname) _CExe
+CExe.compiler = $(call _v,compiler)
+CExe-Linux.libFlags = -lm -ldl -Wl,--export-dynamic 
+
+
+# SharedLib(OBJECTS): Create a shared library
+#
+SharedLib.inherit = SharedLib-$(_uname) CExe
+SharedLib.outExt = .so
+SharedLib-Darwin.libFlags = -dynamiclib -undefined dynamic_lookup
+SharedLib-Linux.libFlags = -shared -Wl,-unresolved-symbols=ignore-all
+
 
 # Lib(OBJECTS): Create static library
 #
@@ -144,14 +162,6 @@ Lib.inherit = Builder
 Lib.outExt = .lib
 Lib.command = ar -rsc {@} {^}
 Lib.inferClasses = CC.c
-
-
-# SharedLib(OBJECTS): Create a shared library
-#
-SharedLib.inherit = Builder
-SharedLib.outExt = .so
-SharedLib.command = clang -o {@} {^} -dynamiclib -undefined dynamic_lookup
-SharedLib.inferClasses = CC.c
 
 
 # CTest(foo.c) infers CExe(foo.c) infers CC(foo.c)
@@ -195,44 +205,56 @@ _Package.p-outdir = $(package.$(_arg1).outdir)
 
 
 #----------------------------------------------------------------
-# Process packages
+# Import Packages
 #----------------------------------------------------------------
+
+thisPackage ?= $(notdir $(abspath .))
+includeImports ?=
 
 # Access $(package.NAME) and validate NAME
 _pkg = $(or $(package.$1),$(error Unknown package '$1'.$(\n)Named in $(or $2,in $$(call _pkg,$1))))
 
-_pkg-all = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
+_allPackages = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
 
-_pkg-imported = $(call _traverse,_pkg-deps,,$(thisPackage))
-_pkg-deps = $(package.$2.imports)
+_importedPackages = $(call _traverse,_pkgDeps,,$(thisPackage))
+_pkgDeps = $(package.$2.imports)
 
-_pkg-error = $(error Undeclared import:$(\n)$$(package.$1) is used but $1 is not in $$(package.$(thisPackage).imports))$(\n)))
+_pkgError = $(error Undeclared import:$(\n)$$(package.$1) was used but $1 is not in $$(package.$(thisPackage).imports))$(\n)))
 
-# Check existence of imported include files
-#    make clean, imports, deep, $... => ignore
-#    make help => warn
-#    other => error
+# $(includeImports) will fail if imported packages have not been built.  We
+# still want `clean`, `imports`, and other simple targets to succeed, and
+# they should, so we avoid warnings and errors for them, and disable caching
+# (which would probably fail).  For other targets, we warn or error out:
+#
+#    Ignore: clean, imports, deep, all
+#    Warn:   help, $...
+#    Error:  (others)
+#
+_iiDisableCache = $(call _eval,minionCache =,missingImport)
 _iiCheck = $(or $(wildcard $1),$(call _iiMissing,$(MAKECMDGOALS),$(_iiMessage)))
-_iiMissing = $(if $(filter clean imports deep $$%,$1),,$(if $(filter help,$1),$(info $2),$(error $2)))
+_iiMissing = $(_iiDisableCache)$(if $(filter clean imports deep all,$1),,$(if $(filter help $$%,$1),$(info $2),$(error $2)))
 _iiMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try 'make imports'.
 
 # Convert PACKAGE/path to $(package.PACKAGE)/path
-_expand-import-path = $(foreach P,$(word 1,$(subst /, / ,$1)),$(call _pkg,$P,$$(includeImports) entry '$1')$(patsubst $P%,%,$1))
+_expandImportPath = $(foreach P,$(word 1,$(subst /, / ,$1)),$(call _pkg,$P,$$(includeImports) entry '$1')$(patsubst $P%,%,$1))
 
 # Assign `package.PKG` for packages, and then include imported makefiles
 #   $1 = imports & their descendants.  This means that dependencies
 #        can "piggyback"; the important thing is to validate build order.
 #   $2 = all packages
-_import-packages = \
+_importDefs = \
   $(foreach P,$1,\
-    package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir)))$(\n))$(\n)\
+    package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir)))$(\n))\
   $(foreach P,$(filter-out $1,$2),\
-    package.$P = $$(call _pkg-error,$P)$(\n))$(\n)\
-  include $$(foreach P,$$(includeImports),$$(call _iiCheck,$$(call _expand-import-path,$$P)))
+    package.$P = $$(call _pkgError,$P)$(\n))
+
+_importPackages = \
+  $(call _eval,$(call _importDefs,$(_importedPackages),$(_allPackages)),imports)\
+  $(call _eval,include $(foreach P,$(includeImports),$(call _iiCheck,$(call _expandImportPath,$P))),imports)
 
 # Load minion
 
 minionStart = 1
 include $(_tt)build/minion.mk
-$(call _eval,$(call _import-packages,$(_pkg-imported),$(_pkg-all)),eval-packages)
+$(_importPackages)
 $(minionEnd)

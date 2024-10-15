@@ -216,8 +216,8 @@ In more detail, the changes comprise the following:
 
    Minion supports more readable syntax for property definitions -- `{prop}`
    vs. `$(call .,prop)`-- and more powerful, function-like syntax for
-   constructing instances from other isntances -- as in
-   `Copy(Exe(foo.c),dir:exports)`.
+   constructing instances from other instances -- as in
+   `Copy(CExe(foo.c),dir:exports)`.
 
    Minion understands dependencies between instances, because inputs and
    dependencies can be specified as instance names, not just file names.

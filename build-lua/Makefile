@@ -23,7 +23,7 @@ LuaTest(A).arg = "quiet"
 tests += Exec(Ax)
 Exec(Ax).in = LuaTest(A)
 define Exec(Ax).command
-  grep -q .out/LuaTest/test/dep_q.ok $(call get,out,LuaScan(test/cfl.lua))
+  grep -q .out/.*LuaTest/test/dep_q.ok $(call get,out,LuaScan(test/cfl.lua))
 endef
 
 

@@ -10,7 +10,7 @@
 #
 BuildJS.inherit = _BuildJS
 _BuildJS.jsdepExe := $(dir $(lastword $(MAKEFILE_LIST)))jsdep
-_BuildJS.node = $(or $(firstword $(shell which nodejs node)),$(error "node not in path!"))
+_BuildJS.node = $(call _v,node)
 
 
 # JSEnv: mixin that describes the environment for running Node
@@ -19,6 +19,7 @@ JSEnv.inherit = _JSEnv BuildJS
 _JSEnv.exports = {inherit} NODE_PATH
 _JSEnv.NODE_PATH = $(subst $(\s),:,{nodePathDirs})
 _JSEnv.nodePathDirs = .
+
 
 # JSBundle(JSSOURCE): bundle source & its dependencies into one source file
 #

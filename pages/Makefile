@@ -5,15 +5,17 @@ Alias(default).in = @htmlFiles
 Alias(deploy).in = Deploy(@htmlFiles)
 
 htmlFiles = SmarkDoc@docs
-docPackages = $(package.pages.imports)
-docs = index.txt $(wildcard $(foreach P,$(docPackages),$(package.$P)/*.txt))
+docs = index.txt \
+  $(filter-out %/todo.txt,\
+    $(wildcard $(foreach P,$(docPackages),$(package.$P.dir)*.txt)))
+docPackages = build build-js build-lua jsu luau mdb monoglot smark
 
 # put them all in the same directory for ease of viewing
 SmarkDoc.outDir = $(VOUTDIR)
 SmarkDoc.css = pages.css
 
 Deploy.inherit = Phony
-Deploy.in = $(foreach a,$(call _expand,$(_args)),Copy($a,dir:{toDir}/))
+Deploy.in = $(patsubst %,Copy(%,dir:{toDir}/),$(wildcard .out/*.html))
 Deploy.toDir = $(or $(DEPLOYDIR),\
    $(error DEPLOYDIR variable must be set by user for 'make deploy'))
 Deploy.command = \

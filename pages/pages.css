@@ -105,7 +105,7 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 14px;
+  font-size: 90%;
 }
 
 code {
