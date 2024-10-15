@@ -20,6 +20,7 @@ Options:
    -MF MKFILE   : Write Make dependency rules to to MKFILE.
    -MP          : Add an empty dependency line for each included file.
    -MT TARGET   : Specify the target for the dependencies in MKFILE.
+   -MTF         : Declare MKFILE as a target for (non-oo) dependencies.
    -Moo PATTERN : Add order-only dependencues (when -MF is given),
                   computed by expanding PATTERN for each dependency.
    -MX          : Include binary extensions in the dependency file.
@@ -658,10 +659,14 @@ end
 
 -- write make-style dependencies
 --
-local function writeDepFile(deps, target, depFile, doPhony, ooPattern)
+local function writeDepFile(deps, target, depFile, isMTF, doPhony, ooPattern)
    local out = ""
    if deps[1] then
-      out = target .. ": " .. table.concat(deps, " ")
+      out = ""
+      if isMTF then
+         out = depFile .. ": " .. table.concat(deps, " ") .. "\n"
+      end
+      out = out .. target .. ": " .. table.concat(deps, " ")
       local oos
       if ooPattern then
          oos = computeOOs(deps, ooPattern, target)
@@ -1086,7 +1091,7 @@ end
 -- Command argument processing
 ----------------------------------------------------------------
 
-local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -Moo= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
+local oo = "-o= -h/--help -v -w -Werror -MF= -MP -MT= -MTF -Moo= -MX --path=* -s=* --deps -I=* --minify -m= -l=* -b=* --open=* --readlibs --win --luaout"
 
 local modnames
 modnames, options = getopts(arg, oo)
@@ -1170,7 +1175,7 @@ end
 if options.MF then
    local target = options.MT or options.o
    bailIf(not target, "-MF requires either -o or -MT.  Try -h for help.")
-   writeDepFile(deps, target, options.MF, options.MP, options.Moo)
+   writeDepFile(deps, target, options.MF, options.MTF, options.MP, options.Moo)
 end
 
 return 0

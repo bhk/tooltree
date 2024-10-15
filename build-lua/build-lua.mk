@@ -146,9 +146,12 @@ _LuaTest.deps = LuaScan($(word 1,{inIDs})) {inherit}
 LuaScan.inherit = _LuaScan
 _LuaScan.inherit = LuaEnv Builder
 _LuaScan.outExt = .d
-_LuaScan.command = {exportPrefix} {luaExe} {cfromlua} {<} -MF {@} -Moo {Moo} -MT {MT} -MP
+# Work around tooltree/build/makebug.mk by omitting test file from the prereqs in
+# this rule, and relying on the generated file to declare that dependency.
+_LuaScan.hidden< = $(call get,out,$(_arg1))
+_LuaScan.in = 
+_LuaScan.command = {exportPrefix} {luaExe} {cfromlua} {hidden<} -MF {@} -Moo {Moo} -MT {MT} -MTF -MP
 _LuaScan.up = {luaExe} {cfromlua}
 _LuaScan.MT = $(call get,out,LuaTest($(_argText)))
 _LuaScan.Moo = $(call get,out,LuaTest(^B_q.lua))
 _LuaScan.rule = {inherit}-include {@}$(\n)
-
