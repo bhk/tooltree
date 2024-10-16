@@ -9,12 +9,20 @@ local utf8utils = require "utf8utils"
 local Object = require "object"
 local Source = require "source"
 local Html2D = require "html2d"
-local cmap = require "cmap"
 local doctree = require "doctree"
 
 local insert = table.insert
 local E, TYPE = doctree.E, doctree.TYPE
 local urlEncode = smarkmisc.urlEncode
+
+
+local function iclone(tbl)
+   local o = {}
+   for ndx, v in ipairs(tbl) do
+      o[ndx] = v
+   end
+   return o
+end
 
 ----------------------------------------------------------------
 -- List tag syntax
@@ -152,7 +160,6 @@ local function parseLayout(source)
    return top
 end
 
-
 ----------------------------------------------------------------
 -- Inline markup
 --   *i*  **b**   `code`  [[Section]]  [text](url)
@@ -165,7 +172,7 @@ local function makeLocalLink(node, doc)
       doc:warn(node, 0, "Missing target for link '%s'", node.link)
    end
 
-   local elem = cmap.i"v"(node)  -- copy all elements
+   local elem = iclone(node)
    elem[TYPE] = "a"
    elem.href = "#"..u
    return elem

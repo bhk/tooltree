@@ -32,7 +32,7 @@
 --
 -- htmlgen.serialize(tree, [options])  -->  text
 --
---     Generate HTML from a document tree..
+--     Generate HTML from a document tree.
 --
 --     In the case of element names that are defined in the HTML 4.0
 --     specification, test content will be properly encoded (as per the

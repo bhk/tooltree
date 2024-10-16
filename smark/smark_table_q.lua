@@ -1,5 +1,4 @@
 local qt = require "qtest"
-local cmap = require "cmap"
 local doctree = require "doctree"
 local Source = require "source"
 

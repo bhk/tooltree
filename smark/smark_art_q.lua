@@ -1,7 +1,14 @@
 local qt = require "qtest"
-local cmap = require "cmap"
 
 require "smark_art"
+
+local function imap(tbl, func)
+   local o = {}
+   for ndx, v in ipairs(tbl) do
+      o[ndx] = func(v, ndx)
+   end
+   return o
+end
 
 local art, _art =
    qt.load("smark_art.lua", {
@@ -457,7 +464,7 @@ function qt.tests.scan()
       '  .     ......',
       '.   This is some',
       '.   text  '
-        }, cmap.i"(v:gsub('\t','.'))"(d.txt))
+      }, imap(d.txt, function (v) return v:gsub('\t','.') end))
 end
 
 --------------------------------

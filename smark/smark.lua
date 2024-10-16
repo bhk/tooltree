@@ -9,7 +9,7 @@ local defaultCSS = require "defaultcss"
 local doctree = require "doctree"
 local smarkmisc = require "smarkmisc"
 local Source = require "source"
-local cmap = require "cmap"
+
 -- @require smarkmacros  (for dependency scanning)
 
 local E = doctree.E

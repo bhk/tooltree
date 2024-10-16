@@ -40,7 +40,7 @@
 --
 -- treeConcat(a)  -->  string
 --
---     Concatenate all strings that desecned from array `a`.
+--     Concatenate all strings that descend from array `a`.
 --
 -- visitElems(tree, fn, [type])
 --

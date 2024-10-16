@@ -1,8 +1,16 @@
 local qt = require "qtest"
 local xc = require "xpio_c"
-local cmap = require "cmap"
 
 local eq = qt.eq
+
+
+local function map(tbl, f)
+   local o = {}
+   for k, v in pairs(tbl) do
+      o[k] = f(v)
+   end
+   return o
+end
 
 
 --------------------------------
@@ -24,7 +32,7 @@ local contents = {
    _XPProc = "table"
 }
 
-eq(contents, cmap.x("k,type(v)")(xc))
+eq(contents, map(xc, type))
 
 eq("function", type(xc._XPSocket.bind))
 eq("function", type(xc._XPQueue.wait))
