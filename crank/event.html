@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -185,72 +184,34 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>Event Objects</title>
 </head><body>
 <div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
-<li>
-<p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
-</p>
-</li><li>
-<p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
-</p>
-</li><li>
-<p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
-</p>
-</li>
-</ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
-</p></div>
+<a name="Event%20Objects"></a>Event Objects
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#Event:new()">Event:new()</a></div><div class="tocLevel"><a href="#event:wait()">event:wait()</a></div><div class="tocLevel"><a href="#event:signal()">event:signal()</a></div></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><div class="indent"><p>
+The <code>event</code> module returns an object that constructs Event objects.
+</p><pre>local Event = require "event"
+</pre><p>
+Event objects perform &#8220;edge-triggered&#8221; notifications. Any number of threads may wait on an event object. When the event object is signaled, all waiting threads will be awakened.
+</p></div><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="Event:new()"></a><code>Event:new()</code>
+</h4><div class="indent"><p>
+Create and return a new event object.
+</p><pre>local event = Event:new()
+</pre></div><h4>
+<a name="event:wait()"></a><code>event:wait()</code>
+</h4><div class="indent"><p>
+Suspend execution of the current thread. The thread will remain suspended until the next time <code>event:signal()</code> is called.
+</p></div><h4>
+<a name="event:signal()"></a><code>event:signal()</code>
+</h4><div class="indent"><p>
+Resume execution of all threads that are currently waiting on the event object.
+</p></div></div>
 </body>
 </html>

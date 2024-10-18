@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -185,72 +184,57 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>.crank/release/coding.html</title>
 </head><body>
-<div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
+<div class="smarkdoc"><h3>
+<a name="Lua%20coding%20conventions"></a>Lua coding conventions
+</h3><ul>
 <li>
 <p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
+Names are generally initial-lower camel case. This applies to local and member variables, regardless of type.
 </p>
 </li><li>
 <p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
+Classes are named with initial upper case letters.
 </p>
 </li><li>
 <p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
+Do not modify global variables. Especially: Modules shall not modify or create any variables in _G when they are loaded by require().
+</p><p>
+Lua modules each return a value, typically a table that includes all exported symbols. Consumers of the modules assign a local name (which may be a shorter abbreviation). For example:
+</p><pre>local xu = require "extrautils"
+</pre>
+</li>
+</ul><p>
+As always, exceptions apply. Notably, since standard Lua library naming uses all lower-case letters, modules that implement objects that are interchangeable with Lua objects (files, for example), may use that style for compatibility or consistency.
+</p><h3>
+<a name="Other%20Coding%20Principles"></a>Other Coding Principles
+</h3><ul>
+<li>
+<p>
+When implementing functions for others to consume, avoid mutation. When possible, return newly created tables instead of modifying tables that were passed as input. (Object methods and functions intended for construction of data structures are exceptions here.)
+</p><p>
+Since tables may be referenced by other tables, modifying one table may have unknown ramifications throughout the code that can be extremely difficult to anticipate or debug, unless one follows a coding discipline. One approach is to duplicate data structures whenever a new reference is created, and freely use functions that mutate (e.g. table.sort). Our preferred approach is to take special care when calling functions that mutate, and to copy references (relatively) freely.
 </p>
 </li><li>
 <p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
+Avoid Swiss-army-knife functions that serve multiple purposes based on the types and/or values of arguments. If there are two different roles &#8212; if the caller should &#8220;know&#8221; which operation it is requesting &#8212; then give them two different function names. Accidentally triggering the wrong role could lead to subtle bugs. Prefer functions that can be described simply.
 </p>
 </li><li>
 <p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
+Design APIs to minimize the need for calls to <code>type()</code>.
+</p><p>
+For &#8220;sum types&#8221; or unions, tables are generally preferable, keyed on the presence/absence of fields.
+</p><p>
+Returning values that require the caller to test types results in awkward usability, and can encourage to shortcuts that lead to bugs.
 </p>
 </li>
-</ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
+</ul><h3>
+<a name="Philosophy"></a>Philosophy
+</h3><p>
+Aim for the intersection of the following:
+</p><p>
+clear: easy to understand completely, and in turn achieve correctness. simple: avoid feature bloat fast: executes quickly small: lightweight
 </p></div>
 </body>
 </html>

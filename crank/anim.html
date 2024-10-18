@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -185,72 +184,61 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>anim.js</title>
 </head><body>
 <div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
-<li>
-<p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
-</p>
-</li><li>
-<p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
-</p>
-</li><li>
-<p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
-</p>
-</li>
-</ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
-</p></div>
+<a name="anim.js"></a>anim.js
+</h1><h2>
+<a name="Synopsis"></a>Synopsis
+</h2><pre>Anim.create(this.e, 'flash')
+    .css({backgroundColor: null, transition: 'background-color 0.3s'})
+    .delay(300)
+    .move(from, to, callback)
+    .start();
+</pre><h2>
+<a name="API"></a>API
+</h2><h4>
+<a name="Anim%20=%20require(%22anim.js%22).newClass(scheduler)"></a><code>Anim = require("anim.js").newClass(scheduler)</code>
+</h4><p>
+<code>scheduler.js</code> provides a browser-based implementation of the scheduler interface.
+</p><p>
+<code>scheduler_emu.js</code> provides a test harness implementation.
+</p><h4>
+<a name="a%20=%20Anim.create(elem,%20key)"></a><code>a = Anim.create(elem, key)</code>
+</h4><div class="indent"><p>
+Create a new animation object.
+</p><p>
+The <code>key</code> argument is a string used to group animations. For each value of <code>key</code>, only one animation can be running at a time. Starting a second animation with the same <code>key</code> will cancel the first.
+</p></div><h4>
+<a name="a.css(props)"></a><code>a.css(props)</code>
+</h4><div class="indent"><p>
+Append a task that will assign CSS properties to the element's style.
+</p><p>
+The <code>props</code> object is a <a href="e.html#Property%20Description">Property Description</a>.
+</p><p>
+Consecutive <code>css</code> tasks will be processed with an intervening delay that should allow style computation and rendering so that the second should be able to trigger CSS transition animations.
+</p></div><h4>
+<a name="a.cssTransition(props,%20delayMS)"></a><code>a.cssTransition(props, delayMS)</code>
+</h4><div class="indent"><p>
+Append a task that assigns CSS properties just as <code>a.css()</code> does, and also attaches a <code>transition</code> property that names the assigned properties, and delays until the transition completes.
+</p><p>
+Note: Later in the animation sequence you may want to explicitly reset the <code>transition</code> property to <code>"none"</code> or <code>""</code>.
+</p></div><h4>
+<a name="a.delay(ms)"></a><code>a.delay(ms)</code>
+</h4><div class="indent"><p>
+Append a task that delays the specified number of milliseconds.
+</p></div><h4>
+<a name="a.move(from,%20to,%20fn)"></a><code>a.move(from, to, fn)</code>
+</h4><div class="indent"><p>
+Append a task that animates a transition between two positions on the screen. The values <code>from</code> to <code>to</code> are numbers that are interpreted as pixel positions for the purpose of computing the overall duration of the animation. The function <code>fn</code> will be called one or more times with values between <code>from</code> and <code>to</code>. The last time <code>fn</code> is called it will be passed the <code>to</code> value (exactly).
+</p></div><h4>
+<a name="a.start()"></a><code>a.start()</code>
+</h4><div class="indent"><p>
+Begin animation. If an animation is in progress, it will be canceled.
+</p></div><h4>
+<a name="a.cancel()"></a><code>a.cancel()</code>
+</h4><div class="indent"><p>
+This advances to the final state of the animation. All remaining tasks will be performed synchronously without delay. For each remaining <code>move</code> task, the callback will be called exactly once with the final value.
+</p></div></div>
 </body>
 </html>

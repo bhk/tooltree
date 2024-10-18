@@ -185,72 +185,46 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>build-js</title>
 </head><body>
 <div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
+<a name="build-js"></a>build-js
+</h1><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+<code>build-js</code> is a package that contains the following:
+</p><ul type="circle">
 <li>
 <p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
+<code>jsdep</code>
+</p><p>
+This program bundles a JavaScript source file with all of its dependencies (invoked with <code>require</code>) into a single JavaScript file, or into an HTML file with a <code>&lt;script&gt;</code> element that contains all the JavaScript sources.
 </p>
 </li><li>
 <p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
-</p>
-</li><li>
-<p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
+<code>build-js.mk</code>
+</p><p>
+This implements a set of Minion builder classes for generating rules that run and test JavaScript sources and bundle them into native programs.
 </p>
 </li>
 </ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
+<a name="build-js.mk"></a>build-js.mk
+</h2><h3>
+<a name="JSTest(SOURCE)"></a>JSTest(SOURCE)
+</h3><p>
+The argument names a JavaScript script that should exit without error on success when executed with <code>node</code>. An empty <code>.ok</code> file (the <code>.out</code> property) is generated when the test succeeds.
+</p><p>
+<code>JSTest</code> requires Node.js. By default, <code>build-js.mk</code> expects to find an executable named <code>nodejs</code> or <code>node</code> in the path at build time, and will warn otherwise. Override <code>BuildJS.node</code> to provide a different executable for node.
+</p><p>
+<code>JSTest</code> ensures that a file is tested only after its dependencies are tested. Files that end in <code>_q.js</code> are assumed to be tests for the corresponding <code>.js</code> file. This assumption can be overridden using the <code>JSTest.getTest_fn</code> properties. file.
+</p><h3>
+<a name="JSBundle(SOURCE)"></a>JSBundle(SOURCE)
+</h3><p>
+The named source file will be bundled with its dependencies into a single <code>.js</code> file.
+</p><h3>
+<a name="JSToHTML(SOURCE)"></a>JSToHTML(SOURCE)
+</h3><p>
+The named source file will be bundled with its dependencies into a <code>&lt;script&gt;</code> element in an <code>.html</code> file.
 </p></div>
 </body>
 </html>

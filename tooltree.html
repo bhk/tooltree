@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+  font-size: 90%;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>Tooltree Build</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="Tooltree%20Build"></a>Tooltree Build
+</h1><p>
+Tooltree is a project structured as a set of <b>packages</b> that exist as siblings immediately under the tooltree directory. The goal is to structure a project &#8212; a versioned collection of assets, such a git repository &#8212; as a set of smaller components on which development can proceed independently.
+</p><p>
+Dependencies between packages are minimized and managed. Packages <b>import</b> selected packages and they <b>export</b> a directory that will be provided to other packages when they import it. This allows a package to change its internal organization substantially while still supporting the same contracts with other packages.
+</p><p>
+Each package has a Makefile that describes how it is built. Here are some build command examples that work across Tooltree packages. The following commands deal with assets within the current package:
+</p><pre>make           Build/update the `default` target.
+make clean     Delete build products.
+make graph     Show dependences between assets built by `make`.
+</pre><p>
+The following commands deal with assets outside of the current package:
+</p><pre>make imports           Build/update all imported packages
+make deep              Build/update imported packages *and* this package.
+make clean imports     Delete build products for imported packages.
+make 'Graph(imports)'  Show imported packages and their relationships.
+</pre><p>
+The top-level Makefile is itself an empty package that includes other packages for the convenience of validating the entire project.
+</p><h2>
+<a name="Package%20Makefiles"></a>Package Makefiles
+</h2><p>
+See any of <code>tooltree/*/Makefile</code> for examples. Here are the key elements of a tooltree Makefile:
+</p><ul>
+<li>
+<p>
+<b>Minion</b>: Each package in tooltree has a Makefile that defines <a href="https://github.com/bhk/minion">Minion</a> targets and then, at the bottom, includes <code>build/tooltree.mk</code>.
+</p><p>
+<code>tooltree.mk</code> includes <code>minion.mk</code> after defining a number of variables, functions, and Minion classes used across multiple packages. Some of these definitions support the modular, packaage-based structure of tooltree.
+</p>
+</li><li>
+<p>
+<b>Package name</b>: Each package has a name, defined by the <code>thisPackage</code> variable. This defaults to the name of the directory containing the package, so packages within the tooltree directory structure rely on this default definition.
+</p>
+</li><li>
+<p>
+<b>Properties</b>: Each package has properties that describe its imports and the directory it exports. See <a href="#Package%20Descriptions">Package Descriptions</a>, below, for what these definitions look like. For packages within tooltree, these are defined in <code>tooltree.mk</code>.
+</p>
+</li><li>
+<p>
+<b>Imports</b>: For each imported package P, our Makefile can use <code>$(package.P)</code> to refer to the directory exported by P.
+</p>
+</li><li>
+<p>
+<b>Imported Makefiles</b>: When a package Makefile includes makefiles that are exported by other packages, it sets the <code>includeImports</code> variable to a list of paths describing their locations. There are a few reasons for using this mechanism rather than directly including them:
+</p><ol type="1">
+<li>
+<p>
+Convenience and modularity. The first element in each path is the name of the exporting package, which will be replaced with that package's export directory. For example, 'p1/defs.mk' expands to <code>$(package.p1)/defs.mk</code>, which in turn will expand to something like <code>../p1/.out/exports/defs.mk</code>, depending on how p1's export directory is defined.
+</p>
+</li><li>
+<p>
+These makefiles have to be included <i>after</i> <code>minion.mk</code> has been loaded because <code>$(package.PKG)</code> variables generally include <code>$(VOUTDIR)</code> or <code>$V</code>, which are defined or defaulted by Minion.
+</p>
+</li><li>
+<p>
+These makefiles might not <i>exist</i> until imported packages are built. This mechanism allows some essential build commands like <code>make imports</code> and <code>make help</code> to proceed even when the imported makefiles do not exist, while still providing important error checking when more complex targets are selected.
+</p>
+</li>
+</ol>
+</li>
+</ul><h2>
+<a name="Package%20Descriptions"></a>Package Descriptions
+</h2><p>
+Packages are defined with the following variables:
+</p><ul>
+<li>
+<p>
+<code>$(package.NAME.dir)</code> = the package directory, where its Makefile resides.
+</p>
+</li><li>
+<p>
+<code>$(package.NAME.imports)</code> = other packages that must be built before this package is built.
+</p>
+</li><li>
+<p>
+<code>$(package.NAME.outdir)</code> = a path <i>relative to</i> <code>DIR</code> that names a directory that will contain exports (build results) after the package is built. If empty or undefined, there is no build step and the entire package is exported.
+</p>
+</li>
+</ul><p>
+Tooltree.mk will compute the following for each package imported by the package currently being built:
+</p><ul>
+<li>
+<p>
+<code>$(package.NAME)</code> = path to the export directory.
+</p>
+</li>
+</ul><h2>
+<a name="External%20Projects"></a>External Projects
+</h2><p>
+To leverage tooltree, an external project's Makefile at a minimum will declare its own package name (with <code>thisPackage = NAME</code>), declare the packages it imports (with <code>package.NAME.imports = ...</code>), define <code>includeImports</code> if it uses imported makfiles, and finally include <code>tooltree.mk</code> at the bottom.
+</p><p>
+For example:
+</p><pre>Alias(default).in = LuaExe(prog.lua)
+
+thisPackage = root
+package.root.imports = build-lua
+includeImports = build-lua/build-lua.mk
+include &lt;PATH-TO-TOOLTREE&gt;/build/tooltree.mk
+</pre><p>
+Note: While <code>thisPackage</code> will default to the name of the directory that contains it, this default should probably be avoided in the case of top-level makefiles because that directory name may vary.
+</p><p>
+If the project is itself structured as multiple packages, it can provide a make include file that can be used by all its packages, analogously to how <code>tooltree.mk</code> is used within Tooltree. It would describe all the packages in its project and then include <code>tooltree.mk</code>.
+</p><p>
+For example, the project-level include file might look like this:
+</p><pre># projectX.mk
+
+# this can be included from Makefiles in other directories...
+Xdir := $(dir $(lastword $(MAKEFILE_LIST)))
+
+package.foo.dir := $(Xdir)foo
+package.foo.outdir = $(VOUTDIR)/exports
+package.foo.imports = build-lua
+
+package.bar.dir := $(Xdir)bar/
+package.bar.outdir = .
+package.bar.imports = foo
+
+include $(Xdir)/&lt;PATH_TO_TOOLTREE&gt;/tooltree.mk
+</pre><p>
+Its own package makefiles would resemble those in tooltree:
+</p><pre># projectX/foo/Makefile
+
+Alias(default).in = Ship(exports)
+exports = LuaExe(foo)
+
+includeImports = build-lua/build-lua.mk
+include ../projectX.mk
+</pre><h2>
+<a name="Tooltree%20Changes"></a>Tooltree Changes
+</h2><p>
+This new <code>build</code> directory comes along with a rewrite of the build system that was motivated by the following goals:
+</p><ul type="circle">
+<li>
+<p>
+Make it easier for external projects to leverage Tooltree packages.
+</p>
+</li><li>
+<p>
+Simplify the build system &#8212; reduce the number of &#8220;moving parts&#8221;.
+</p>
+</li><li>
+<p>
+Use Minion instead of Crank for builds.
+</p>
+</li><li>
+<p>
+Remove unused packages.
+</p>
+</li>
+</ul><p>
+In more detail, the changes comprise the following:
+</p><ul type="circle">
+<li>
+<p>
+The following packages have been dropped: p4x, pakman, simp4, cdep, ctools, crank.
+</p>
+</li><li>
+<p>
+Two-phase, two-level builds have been abandoned.
+</p><p>
+Formerly, a &#8220;make configure&#8221; step at the top level of the project built a project configuration file that described the entirety of the build, determining what a subsequent &#8220;make all&#8221; would do, both at the project and package level. Instead of this, all potential targets are always available, and the default targets at project and package level are hardcoded.
+</p><p>
+<code>SUBDIR/Package</code> files are no longer supported. This information, along with the configuration data formerly in the top-level Makefile (where packages are located, what variants are built) is now in <code>build/tooltree.mk</code>, so it can be leveraged by external makefiles.
+</p><p>
+Package-level makefiles can build the entire project, and the top-level makefile is just a package that builds a selected set of packages.
+</p>
+</li><li>
+<p>
+Many build features have been dropped.
+</p><p>
+This includes support for Windows/Cygwin builds, support for multiple toolchains, cross-target builds, and valgrind builds.
+</p><p>
+These features introduced a fair amopunt of complexity in the build system and is no longer actively used. In cross-target builds, for example, the MDB package's &#8220;release&#8221; variant could make use of both the &#8220;host&#8221; (build machine) variant and the &#8220;release&#8221; (target) variant of the Lua package. This is not <i>currently</i> supported in the Minion-based builds.
+</p><p>
+The original Crank sources, in all their glory, are still there in the history, and on the &#8220;crank&#8221; branch.
+</p>
+</li><li>
+<p>
+<a href="https://github.com/bhk/minion">Minion</a> replaces Crank.
+</p><p>
+Minion retains the &#8220;functional OO&#8221; flavor of Crank, but is more refined. It addresses the most common pain points of Crank.
+</p><p>
+Minion supports more readable syntax for property definitions &#8212; <code>{prop}</code> vs. <code>$(call .,prop)</code>&#8212; and more powerful, function-like syntax for constructing instances from other instances &#8212; as in <code>Copy(CExe(foo.c),dir:exports)</code>.
+</p><p>
+Minion understands dependencies between instances, because inputs and dependencies can be specified as instance names, not just file names. These instance names are automatically translated to output file names for use in command-line contexts (e.g. {^} and {@}). In Crank, intermediate files would often have have to be explicitly named, and it leaned on classes not just as types, but as collections of files.
+</p><p>
+Minion makefile goals are explicit and easy to trace. In Crank, aliases were defined as side effects via the <code>prereqOf</code> property. Class names were available as phony targets, and were implicitly a preqreq of &#8220;all&#8221; (the default goal).
+</p><p>
+Minion makefiles are purely functional, relying on subclassing to customize build behavior. They do not override Minion's variable definitions; minion.mk is included only at the <i>end</i> of the user makefile. Crank makefiles would often need to override or modify property definitions, which introduced brittle dependencies on class implementations.
+</p><p>
+Cached (pre-compiled) rules are on by default in Crank, so makefiles have to use <code>&lt;wildcard&gt;</code> and <code>&lt;shell&gt;</code> to avoid consistency problems. In Minion, caching must be explicitly enabled, and small makefiles are plenty fast without it.
+</p><p>
+This Crank example:
+</p><pre>CC += $(call &lt;wildcard&gt;,*.c)        # include rules to compile these
+Exe += prog
+Exe[prog].prereqOf = prog           # `prog` goal defined here (&amp; elsewhere?)
+Exe[prog].in = $(call get,out,CC)   # accepts files, not items
+</pre><p>
+In Minion is:
+</p><pre>Alias(prog).in = CExe(@*.c)
+</pre>
+</li>
+</ul></div>
+</body>
+</html>

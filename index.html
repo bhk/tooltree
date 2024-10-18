@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 16px;
   margin: 2em;
 }
 
@@ -110,6 +110,7 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
+  font-size: 90%;
 }
 
 code {
@@ -190,142 +191,63 @@ td p:last-child, th p:last-child {
 <a name="tooltree"></a>tooltree
 </h1><p>
 ToolTree is a collection of utilities, including all their dependencies, in one Git repository.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
+</p><ul>
 <li>
 <p>
-<a href="monoglot.html"><code>monoglot</code></a> is a platform for developing network applications in Lua.
+<a href="mdb.html">MDB</a>, a graphical debugger for Lua.
 </p>
 </li><li>
 <p>
-<a href="jsu.html"><code>JSU</code></a> is a collection of JavaScript libraries that support building Web apps from modular, testable components. It complements monoglot by making it easy to deliver rich JavaScript UIs with a small payload.
+<a href="smark.html"><code>Smark</code></a>, a markdown-like text-to-HTML converter with features for documenting software projects.
 </p>
 </li><li>
 <p>
-<a href="smark.html"><code>Smark</code></a> is a markdown-like text-to-HTML converter with features for documenting software projects.
+A collection of Lua modules and native extensions for developing networked applications (<a href="monoglot.html">monoglot</a>), and tools for packaging Lua sources and native extensions into a self-contained executable (<a href="build-lua.html">build-lua</a>).
 </p>
 </li><li>
 <p>
-<a href="pakman.html"><code>Pakman</code></a> is a package management tool that constructs workspaces for Perforce users and supports reusable, self-describing components.
+A colllection of JavaScript modules, and a JavaScript framework for building Web apps from modular, tested components, and bunlding them into a single script or HTML file (<a href="build-js.html">build-js</a>).
 </p>
 </li><li>
 <p>
-<a href="crank.html"><code>Crank</code></a> is a Make-based build tool that is used to build each of the packages. Included in the <code>crank</code> directory is <a href="project.html"><code>project.mak</code></a>, which is used to build the entire ToolTree project.
-</p>
-</li><li>
-<p>
-<a href="crank-lua.html"><code>Crank-lua</code></a> is a package that supports building self-contained executables from Lua sources and C or C++ sources or libraries.
-</p>
-</li><li>
-<p>
-<a href="crank-js.html"><code>Crank-js</code></a> is a package that provides crank generator classes for testing and bulding JavaScript modules.
+<a href="tooltree.html">tooltree.mk</a>, a package-based build system.
 </p>
 </li>
 </ul><h2>
 <a name="Building%20ToolTree"></a>Building ToolTree
 </h2><p>
-ToolTree consists of a number of composable software packages, each stored in a subdirectory. To build all configured packages:
-</p><div class="indent"><pre>$ cd tooltree
-$ make
-</pre></div><p>
-You can also specify an individual package or a variant of a package as a target. For example:
-</p><div class="indent"><pre>$ make smark          # rebuild Smark and its dependencies
-$ make smark@gcc      # rebuild the gcc variant of Smark
-</pre></div><p>
-See <a href="project.html"><code>project.mak</code></a> for more details.
-</p><h3>
+ToolTree consists of a number of software packages, each stored in a subdirectory. To build all packages, type <code>make</code> in the top directory. Within any package subdirectory, you can type <code>make imports</code> to build the other packages on which it depends, or <code>make</code> to build just the current package, or <code>make deep</code> to build both.
+</p><p>
+For example, to build and run <code>MDB</code>:
+</p><div class="indent"><pre>$ cd tooltree/mdb
+$ make imports
+$ make mdb       # build and run demo
+</pre></div><h3>
 <a name="System%20Dependencies"></a>System Dependencies
-</h3><h4>
+</h3><ul>
+<li>
+<p>
+Make (GNU Make 3.81+), and clang or gcc, and associated C compiler tools are required to be present in <code>$PATH</code>.
+</p>
+</li><li>
+<p>
+<code>node</code> is used, but only for unit testing of JavaScript modules. If it is not present in the path, unit tests will be bypassed.
+</p>
+</li>
+</ul><h4>
 <a name="MacOS"></a>MacOS
 </h4><p>
-The XCode Command Line Tools are expected to be in <code>$PATH</code>.
-</p><p>
-Both clang (the default) and gcc (see <a href="#Configuration">Configuration</a>) toolchains are supported.
+The XCode Command Line Tools satisfy the compiler toolchain dependencies.
 </p><h4>
 <a name="Linux"></a>Linux
 </h4><p>
-Tools are expected to be in <code>$PATH</code>.
-</p><p>
-Both clang (the default) and gcc (see <a href="#Configuration">Configuration</a>) toolchains are supported.
-</p><p>
-On Unbuntu/Debian, you can install the clang and gcc toolchains with the following commands:
+On Unbuntu/Debian, you can install the clang or gcc toolchains with the following command:
 </p><div class="indent"><pre>$ sudo apt-get install clang
 $ sudo apt-get install gcc g++
 </pre></div><h4>
 <a name="Windows"></a>Windows
 </h4><p>
-Windows builds assume the following:
-</p><ul>
-<li>
-<p>
-Cygwin (or similar package of POSIX tools)
-</p>
-</li><li>
-<p>
-GNU Make
-</p>
-</li><li>
-<p>
-Make's SHELL must be POSIX compatible
-</p>
-</li><li>
-<p>
-MS Visual C 7
-</p>
-</li>
-</ul><p>
-The location of the Visual C 7 installation must be made known by setting the variable <code>VC7INSTALLDIR</code> to name the directory that contains the following sub-directories:
-</p><div class="indent"><pre>bin
-include
-lib
-system32
-</pre></div><p>
-<code>VC7INSTALLDIR</code> can be set in the environment, or as a Make variable in a <a href="project.html#User%20Configuration%20Files"><code>.userconfig</code></a> file. When specifying this directory:
-</p><ul>
-<li>
-<p>
-Use <code>/</code> instead of <code>\</code>.
-</p>
-</li><li>
-<p>
-Avoid drive letters (e.g. <code>C:</code>). If the compiler and the source tree are on different drives, you can <i>try</i> leaving it on, which may or may not work.
-</p>
-</li><li>
-<p>
-Avoid file names with spaces. To avoid this you can used 8.3 path (<code>cygpath -d ...</code>) or create a symbolic link.
-</p>
-</li>
-</ul><p>
-The Cygwin path for the project directory should be a valid Windows path. You can construct this situation with an appropriate Cygwin mount. For example: by default, <code>C:/git/tooltree</code> will have a Cygwin path of <code>/cygdrive/c/git/tooltree</code>, which is not a valid Windows path. The command <code>mount c:/git /git</code> will make the Cygwin path <code>/git/tooltree</code>, which is a valid Windows path.
-</p><p>
-Avoid <code>git</code> settings that transform line endings from LF to CRLF, because that will break some unit tests.
-</p><h3>
-<a name="Configuration"></a>Configuration
-</h3><p>
-Before any output files can be built, configuration must be performed. This will automatically triggered by <code>make</code>, or it can be manually done by typing <code>make configure</code>.
-</p><p>
-Variables defined in the top-level Makefile describe a set of packages to be built and how they should be built. In order to customize the build you can reconfigure while overriding variables on the command line, or you can modify the top-level makefile or create a <a href="project.html#User%20Configuration%20Files"><code>.userconfig</code></a> file.
-</p><p>
-For example:
-</p><div class="indent"><pre>$ make configure                      # configure the default set of packages
-
-$ make configure Project=smark        # configure only Smark
-
-$ make configure Variants=gcc         # configure gcc-based variants
-</pre></div><p>
-In order to see the results of your configuration changes you can issue the following command to see a graph of all builds and the dependencies between them:
-</p><div class="indent"><pre>$ make graph
-</pre></div><h3>
-<a name="Working%20with%20Packages"></a>Working with Packages
-</h3><p>
-After project-level configuration is performed, you can invoke the makefiles that reside in the individual package directories.
-</p><p>
-Package makefiles are concerned only with the package's own build step. They do not recurse into the builds of their dependencies. Since most packages depend upon build results from other packages, you will probably want to perform a project-level <code>make</code> first.
-</p><p>
-When inside a package directory, the following commands can be used:
-</p><div class="indent"><pre>$ make             # rebuild all configured variants of this package
-$ make V=gcc       # rebuild just the gcc variant of this package
-</pre></div></div>
+Tooltree previously supported building on Windows with Cygwin and Visual C 7, but does not now. If this is of interest, check out older versions or the <code>crank</code> branch of this project.
+</p></div>
 </body>
 </html>

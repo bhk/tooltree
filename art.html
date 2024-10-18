@@ -1,0 +1,1152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+  font-size: 90%;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><style type="text/css">
+.html2d { position: relative; }
+.html2d div { position: absolute; border-width: 0; border-style: solid; }
+.html2d div div { position: absolute; border-width: 0; border-style: solid; }
+
+</style><title>.out/art.html</title>
+</head><body>
+<div class="smarkdoc"><div class=diagram>
+<div class="html2d art" style="width:56px;height:16px">
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:23px;top:3px;right:23px;bottom:3px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:7px;right:32px;bottom:7px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:23px;top:3px;right:23px;bottom:3px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:32px;top:7px;right:-1px;bottom:7px;line-height:0"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:248px;height:144px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=line style="border-left-width:2px;left:107px;top:71px;right:139px;bottom:39px"></div>
+<div class=line style="border-left-width:2px;left:115px;top:31px;right:131px;bottom:95px"></div>
+<div class=line style="border-left-width:2px;left:155px;top:31px;right:91px;bottom:95px"></div>
+<div style="left:0px;top:0px;right:104px;bottom:128px">This is  one  run.</div>
+<div style="left:0px;top:16px;right:192px;bottom:112px">This is</div>
+<div style="text-align:center;left:80px;top:16px;right:96px;bottom:112px">two runs.</div>
+<div style="left:0px;top:32px;right:152px;bottom:96px">Box-centered</div>
+<div style="text-align:center;left:132px;top:32px;right:108px;bottom:96px">A</div>
+<div style="left:0px;top:48px;right:152px;bottom:80px">Run-centered</div>
+<div style="left:128px;top:48px;right:112px;bottom:80px">A</div>
+<div style="text-align:right;left:-104px;top:80px;right:144px;bottom:48px">Right-aligned</div>
+<div style="left:112px;top:80px;right:40px;bottom:48px">Left-aligned</div>
+<div style="left:0px;top:112px;right:152px;bottom:16px">This text is</div>
+<div style="text-align:right;left:56px;top:112px;right:0px;bottom:16px">This text is</div>
+<div style="left:0px;top:128px;right:144px;bottom:0px">left-aligned.</div>
+<div style="text-align:right;left:24px;top:128px;right:0px;bottom:0px">right-aligned.</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:176px;height:96px">
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:139px;top:23px;right:2px;bottom:54px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:99px;top:39px;right:2px;bottom:22px"></div>
+<div class=rect style="border-width:3px;left:67px;top:55px;right:66px;bottom:6px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;left:3px;top:7px;right:138px;bottom:70px"></div>
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:3px;top:23px;right:90px;bottom:22px"></div>
+<div class="nofx round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:139px;top:23px;right:2px;bottom:54px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:99px;top:39px;right:2px;bottom:22px"></div>
+<div class=nofx style="border-width:3px;border-color:transparent;left:67px;top:55px;right:66px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:7px;right:138px;bottom:70px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:3px;top:23px;right:90px;bottom:22px"></div>
+<div class=line style="border-top-width:3px;border-right-width:3px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:156.5px;top:23px;right:2px;bottom:22px"></div>
+<div class=line style="border-left-width:3px;border-top-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:139px;top:23px;right:19.5px;bottom:63.5px;line-height:0"></div>
+<div class=line style="border-bottom-width:3px;border-right-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:120.5px;top:32.5px;right:34px;bottom:54px;line-height:0"></div>
+<div class=line style="border-width:3px;border-right-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:99px;top:39px;right:55.5px;bottom:22px"></div>
+<div class=line style="border-top-width:3px;left:120.5px;top:71px;right:2px;bottom:22px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;left:67px;top:55px;right:66px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;left:67px;top:87px;right:66px;bottom:6px;line-height:0"></div>
+<div class=line style="border-top-width:3px;border-right-width:3px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:60.5px;top:23px;right:90px;bottom:22px"></div>
+<div class=line style="border-left-width:3px;border-bottom-width:3px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:35px;top:16.5px;right:115.5px;bottom:70px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:3px;top:7px;right:138px;bottom:79.5px;line-height:0"></div>
+<div class=line style="border-bottom-width:3px;border-left-width:3px;left:3px;top:16.5px;right:90px;bottom:22px"></div>
+</div>
+</div>
+<hr>
+<p>
+Selective rounding:
+</p><div class=diagram>
+<div class="html2d art" style="width:48px;height:48px">
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:3px;top:7px;right:2px;bottom:6px"></div>
+</div>
+</div>
+<hr>
+<p>
+Crossed rectangles inside a rectangle:
+</p><div class=diagram>
+<div class="html2d art" style="width:112px;height:96px">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:2px;bottom:6px"></div>
+<div class="rect round" style="border-width:3px;left:43px;top:39px;right:26px;bottom:22px"></div>
+<div class="rect round" style="border-width:3px;left:27px;top:23px;right:50px;bottom:38px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:43px;top:39px;right:26px;bottom:22px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:27px;top:23px;right:50px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:43px;top:39px;right:26px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:43px;top:55px;right:26px;bottom:22px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:27px;top:23px;right:50px;bottom:54px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:27px;top:39px;right:50px;bottom:38px"></div>
+</div>
+</div>
+<hr>
+<p>
+Rectangle inside crossed rectangles:
+</p><div class=diagram>
+<div class="html2d art" style="width:104px;height:112px">
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:67px;top:71px;right:2px;bottom:6px"></div>
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;left:3px;top:7px;right:18px;bottom:22px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:67px;top:71px;right:2px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;border-color:transparent;left:3px;top:7px;right:18px;bottom:22px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:67px;top:71px;right:2px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;left:67px;top:103px;right:2px;bottom:6px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;left:3px;top:7px;right:18px;bottom:62px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:3px;top:47px;right:18px;bottom:22px"></div>
+<div class=rect style="border-width:3px;left:27px;top:23px;right:42px;bottom:54px"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:128px;height:96px">
+<div class=line style="border-top-width:2px;border-right-width:2px;left:116px;top:23px;right:3px;bottom:55px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:107px;top:16px;right:12px;bottom:71px;line-height:0"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:83px;top:7px;right:19px;bottom:80px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:83px;top:16px;right:32px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:96px;top:39px;right:19px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:19px;top:48px;right:32px;bottom:23px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:19px;top:23px;right:96px;bottom:48px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:32px;top:23px;right:83px;bottom:64px;line-height:0"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:43px;top:32px;right:59px;bottom:55px;line-height:0"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:67px;top:23px;right:35px;bottom:64px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:72px;top:32px;right:35px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:51px;top:48px;right:56px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:40px;top:7px;right:75px;bottom:48px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:27px;top:7px;right:88px;bottom:72px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:16px;top:24px;right:99px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-right-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:3px;top:39px;right:112px;bottom:39px"></div>
+<div class=line style="border-right-width:2px;border-bottom-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:16px;top:39px;right:3px;bottom:39px"></div>
+</div>
+</div>
+<div class=diagram>
+<div class="html2d art" style="width:120px;height:96px">
+<div class=line style="border-top-width:2px;border-right-width:2px;left:108px;top:23px;right:3px;bottom:55px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:99px;top:7px;right:12px;bottom:71px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:75px;top:7px;right:19px;bottom:72px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:75px;top:24px;right:32px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:88px;top:39px;right:19px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:11px;top:48px;right:32px;bottom:23px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:11px;top:23px;right:96px;bottom:48px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:24px;top:23px;right:83px;bottom:64px;line-height:0"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:35px;top:32px;right:59px;bottom:55px;line-height:0"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:59px;top:23px;right:35px;bottom:64px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:64px;top:32px;right:35px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:43px;top:48px;right:56px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:32px;top:7px;right:75px;bottom:48px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:19px;top:7px;right:88px;bottom:55px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:3px;top:39px;right:99px;bottom:7px"></div>
+<div class=line style="border-right-width:2px;border-bottom-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:3px;top:72px;right:91px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:27px;top:55px;right:48px;bottom:24px"></div>
+<div class=line style="border-right-width:2px;border-bottom-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:72px;top:39px;right:3px;bottom:39px"></div>
+</div>
+</div>
+<div class=diagram>
+<div class="html2d art" style="width:152px;height:112px">
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;left:3px;top:7px;right:90px;bottom:70px"></div>
+<div class="rect round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;left:91px;top:7px;right:26px;bottom:70px"></div>
+<div class="rect round" style="border-width:3px;left:27px;top:39px;right:2px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;left:3px;top:71px;right:106px;bottom:6px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:83px;top:71px;right:26px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:7px;right:90px;bottom:70px"></div>
+<div class="nofx round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;border-color:transparent;left:91px;top:7px;right:26px;bottom:70px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:27px;top:39px;right:2px;bottom:38px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:71px;right:106px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:83px;top:71px;right:26px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;border-right-width:3px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:136.5px;top:39px;right:2px;bottom:54px"></div>
+<div class=line style="border-left-width:3px;border-bottom-width:3px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:123px;top:7px;right:15.5px;bottom:70px"></div>
+<div class=line style="border-left-width:3px;border-top-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:91px;top:7px;right:26px;bottom:87.5px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:59px;top:24.5px;right:58px;bottom:70px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:3px;top:7px;right:90px;bottom:87.5px"></div>
+<div class=line style="border-bottom-width:3px;border-left-width:3px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:3px;top:24.5px;right:135.5px;bottom:70px"></div>
+<div class=line style="border-width:3px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:16.5px;top:39px;right:122px;bottom:38px"></div>
+<div class=line style="border-width:3px;border-right-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:3px;top:71px;right:135.5px;bottom:6px"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:16.5px;top:88.5px;right:106px;bottom:6px"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:43px;top:71px;right:66px;bottom:23.5px"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:83px;top:88.5px;right:26px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;border-left-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:123px;top:71px;right:15.5px;bottom:23.5px"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:136.5px;top:55px;right:2px;bottom:38px"></div>
+</div>
+</div>
+<div class=diagram>
+<div class="html2d art" style="width:96px;height:64px">
+<div class="rect round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;left:3px;top:7px;right:58px;bottom:38px"></div>
+<div class="rect round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;left:59px;top:7px;right:18px;bottom:38px"></div>
+<div class="rect round" style="border-width:3px;left:11px;top:23px;right:2px;bottom:22px"></div>
+<div class="rect round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;left:3px;top:39px;right:66px;bottom:6px"></div>
+<div class="rect round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;left:51px;top:39px;right:18px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-top-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:7px;right:58px;bottom:38px"></div>
+<div class="nofx round" style="-webkit-border-top-right-radius:0px;-moz-border-radius-topright:0px;border-top-right-radius:0px;border-width:3px;border-color:transparent;left:59px;top:7px;right:18px;bottom:38px"></div>
+<div class="nofx round" style="border-width:3px;border-color:transparent;left:11px;top:23px;right:2px;bottom:22px"></div>
+<div class="nofx round" style="-webkit-border-bottom-left-radius:0px;-moz-border-radius-bottomleft:0px;border-bottom-left-radius:0px;border-width:3px;border-color:transparent;left:3px;top:39px;right:66px;bottom:6px"></div>
+<div class="nofx round" style="-webkit-border-bottom-right-radius:0px;-moz-border-radius-bottomright:0px;border-bottom-right-radius:0px;border-width:3px;border-color:transparent;left:51px;top:39px;right:18px;bottom:6px"></div>
+<div class=line style="border-top-width:3px;border-right-width:3px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:84.5px;top:23px;right:2px;bottom:30px;line-height:0"></div>
+<div class=line style="border-left-width:3px;border-bottom-width:3px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:75px;top:7px;right:11.5px;bottom:38px"></div>
+<div class=line style="border-left-width:3px;border-top-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:59px;top:7px;right:18px;bottom:47.5px;line-height:0"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:35px;top:16.5px;right:34px;bottom:38px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:3px;top:7px;right:58px;bottom:47.5px;line-height:0"></div>
+<div class=line style="border-bottom-width:3px;border-left-width:3px;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;left:3px;top:16.5px;right:87.5px;bottom:38px;line-height:0"></div>
+<div class=line style="border-width:3px;border-left-width:0;-webkit-border-top-right-radius:5px;-moz-border-radius-topright:5px;border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;-moz-border-radius-bottomright:5px;border-bottom-right-radius:5px;left:8.5px;top:23px;right:82px;bottom:22px"></div>
+<div class=line style="border-width:3px;border-right-width:0;-webkit-border-top-left-radius:5px;-moz-border-radius-topleft:5px;border-top-left-radius:5px;left:3px;top:39px;right:87.5px;bottom:6px"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:8.5px;top:48.5px;right:66px;bottom:6px;line-height:0"></div>
+<div class=line style="border-width:3px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:27px;top:39px;right:42px;bottom:15.5px;line-height:0"></div>
+<div class=line style="border-width:3px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:51px;top:48.5px;right:18px;bottom:6px;line-height:0"></div>
+<div class=line style="border-top-width:3px;border-left-width:3px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:75px;top:39px;right:11.5px;bottom:15.5px;line-height:0"></div>
+<div class=line style="border-right-width:3px;border-bottom-width:3px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:84.5px;top:31px;right:2px;bottom:22px;line-height:0"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:560px;height:176px">
+<div class=drect style="border-width:2px;left:195px;top:7px;right:307px;bottom:71px"></div>
+<div class=rect style="border-width:3px;left:299px;top:7px;right:194px;bottom:70px"></div>
+<div class="rect round" style="border-width:3px;left:427px;top:7px;right:50px;bottom:86px"></div>
+<div class="rect round" style="border-width:3px;left:427px;top:135px;right:50px;bottom:22px"></div>
+<div class="rect round" style="border-width:3px;left:539px;top:7px;right:2px;bottom:86px"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:23px;right:543px;bottom:151px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:24px;top:20px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:23px;right:463px;bottom:151px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:103px;top:23px;right:439px;bottom:151px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:529.5px;top:20px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:507px;top:23px;right:23px;bottom:151px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:39px;right:543px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:23px;top:39px;right:467px;bottom:135px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:103px;top:39px;right:439px;bottom:135px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:195px;top:39px;right:307px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:525.5px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:507px;top:39px;right:27px;bottom:135px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:55px;right:543px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:21.5px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:23px;top:55px;right:531px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:53.5px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:31px;top:55px;right:499px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:85.5px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:63px;top:55px;right:467px;bottom:119px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:103px;top:55px;right:439px;bottom:119px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:299px;top:55px;right:195px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:512px;top:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:515px;top:55px;right:19px;bottom:119px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:71px;right:543px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:24px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:27px;top:71px;right:503px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:56px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:59px;top:71px;right:471px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:88px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:91px;top:71px;right:463px;bottom:103px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:103px;top:71px;right:439px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:252px;top:68px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:255px;top:71px;right:263px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:508px;top:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:511px;top:71px;right:19px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:285.5px;top:84px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:251px;top:87px;right:267px;bottom:87px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:103px;right:539px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:20px;top:100px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:23px;top:103px;right:439px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:89.5px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:119px;right:463px;bottom:55px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:99px;top:119px;right:439px;bottom:55px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:21.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:135px;right:531px;bottom:39px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:53.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:31px;top:135px;right:499px;bottom:39px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:89.5px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:63px;top:135px;right:463px;bottom:39px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:99px;top:135px;right:439px;bottom:39px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:151px;right:539px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:20px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:23px;top:151px;right:503px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:56px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:59px;top:151px;right:471px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:88px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:91px;top:151px;right:439px;bottom:23px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:19px;top:-1px;right:539px;bottom:-1px"></div>
+<div class=line style="border-left-width:2px;left:99px;top:-1px;right:459px;bottom:-1px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:216px;top:112px;line-height:0"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;left:275px;top:23px;right:259px;bottom:23px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;left:219px;top:115px;right:283px;bottom:23px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:440px;top:125.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:443px;top:87px;right:115px;bottom:43px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:456px;top:117.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:459px;top:87px;right:99px;bottom:51px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:472px;top:96px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:475px;top:99px;right:83px;bottom:39px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:488px;top:88px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:491px;top:91px;right:67px;bottom:39px"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:624px;height:224px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:227px;top:103px;right:314px;bottom:54px"></div>
+<div class="rect round" style="border-width:3px;left:459px;top:103px;right:130px;bottom:86px"></div>
+<div class="rect round" style="border-width:3px;left:459px;top:167px;right:130px;bottom:22px"></div>
+<div class="rect round" style="border-width:3px;left:427px;top:7px;right:98px;bottom:150px"></div>
+<div class="rect round" style="border-width:3px;left:3px;top:87px;right:506px;bottom:38px"></div>
+<div class="rect round" style="border-width:3px;left:19px;top:135px;right:522px;bottom:54px"></div>
+<div class=line style="border-left-width:2px;left:347px;top:111px;right:275px;bottom:95px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:472px;top:93.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:475px;top:71px;right:147px;bottom:123px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:472px;top:157.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:475px;top:135px;right:147px;bottom:59px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:472px;top:213.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:475px;top:199px;right:147px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:339px;top:111px;right:283px;bottom:95px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:551px;top:19px;right:63px;bottom:195px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:523px;top:23px;right:72px;bottom:199px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:173.5px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:119px;right:443px;bottom:103px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:183px;top:115px;right:431px;bottom:99px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:192px;top:119px;right:395px;bottom:103px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:307px;top:119px;right:287px;bottom:103px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:367px;top:115px;right:247px;bottom:99px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:351px;top:119px;right:256px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:376px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:379px;top:119px;right:163px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:104px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:107px;top:151px;right:395px;bottom:71px;line-height:0"></div>
+<div style="text-align:center;left:544px;top:0px;right:0px;bottom:208px">ISignalBus</div>
+<div style="text-align:center;left:440px;top:32px;right:112px;bottom:176px">SignalBus</div>
+<div style="text-align:center;left:36px;top:96px;right:540px;bottom:112px">Client</div>
+<div style="text-align:center;left:132px;top:96px;right:412px;bottom:112px">ISignalCtl</div>
+<div style="text-align:center;left:356px;top:96px;right:212px;bottom:112px">ISignal</div>
+<div style="text-align:center;left:244px;top:112px;right:332px;bottom:96px">Signal</div>
+<div style="text-align:center;left:32px;top:144px;right:536px;bottom:64px">Handler</div>
+<div style="left:232px;top:144px;right:336px;bottom:64px">handler</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:504px;height:352px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:3px;top:183px;right:386px;bottom:70px"></div>
+<div class="rect round" style="border-width:3px;left:19px;top:231px;right:402px;bottom:86px"></div>
+<div class="rect round" style="border-width:3px;left:259px;top:7px;right:98px;bottom:246px"></div>
+<div class="rect round" style="border-width:3px;left:291px;top:39px;right:122px;bottom:278px"></div>
+<div class="rect round" style="border-width:3px;left:259px;top:135px;right:98px;bottom:70px"></div>
+<div class="rect round" style="border-width:3px;left:291px;top:167px;right:122px;bottom:150px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:431px;top:19px;right:63px;bottom:323px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:403px;top:23px;right:72px;bottom:327px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:199px;top:147px;right:295px;bottom:195px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:208px;top:151px;right:279px;bottom:199px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:239px;top:151px;right:243px;bottom:199px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:189.5px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:215px;right:307px;bottom:135px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:199px;top:211px;right:295px;bottom:131px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:208px;top:215px;right:243px;bottom:135px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:104px;top:244px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:107px;top:247px;right:243px;bottom:103px;line-height:0"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:200px;top:160px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:203px;top:163px;right:211px;bottom:167px"></div>
+<div class=line style="border-left-width:2px;left:227px;top:143px;right:275px;bottom:191px"></div>
+<div class=line style="border-left-width:2px;left:235px;top:143px;right:267px;bottom:191px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:328px;top:80px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:331px;top:83px;right:171px;bottom:183px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:328px;top:208px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:331px;top:211px;right:171px;bottom:31px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:344px;top:149.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:347px;top:71px;right:155px;bottom:195px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:344px;top:309.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:347px;top:199px;right:155px;bottom:35px"></div>
+<div style="text-align:center;left:424px;top:0px;right:0px;bottom:336px">ISignalBus</div>
+<div style="left:272px;top:16px;right:152px;bottom:320px">Signal Bus</div>
+<div style="text-align:center;left:300px;top:48px;right:132px;bottom:288px">Head node</div>
+<div style="text-align:center;left:168px;top:128px;right:280px;bottom:208px">ISignal</div>
+<div style="text-align:center;left:272px;top:144px;right:184px;bottom:192px">Signal</div>
+<div style="text-align:center;left:304px;top:176px;right:136px;bottom:160px">bus data</div>
+<div style="text-align:center;left:36px;top:192px;right:420px;bottom:144px">Client</div>
+<div style="text-align:right;left:88px;top:192px;right:256px;bottom:144px">ISignalCtl</div>
+<div style="text-align:center;left:32px;top:240px;right:416px;bottom:96px">Handler</div>
+<div style="text-align:center;left:268px;top:240px;right:180px;bottom:96px">handler</div>
+<div style="text-align:center;left:288px;top:336px;right:112px;bottom:0px">(next signal)</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:472px;height:272px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:27px;top:119px;right:346px;bottom:86px"></div>
+<div class="rect round" style="border-width:3px;left:403px;top:151px;right:34px;bottom:86px"></div>
+<div class="rect round" style="border-width:3px;left:403px;top:215px;right:34px;bottom:22px"></div>
+<div class="rect round" style="border-width:3px;left:371px;top:55px;right:2px;bottom:150px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:151px;top:131px;right:311px;bottom:131px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:123px;top:135px;right:320px;bottom:135px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:-1px;top:147px;right:463px;bottom:115px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:8px;top:151px;right:443px;bottom:119px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:123px;top:167px;right:319px;bottom:103px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:183px;top:163px;right:279px;bottom:99px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:167px;right:288px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:192px;top:164px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:195px;top:167px;right:191px;bottom:103px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:303px;top:167px;right:67px;bottom:103px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:155px;top:159px;right:315px;bottom:95px"></div>
+<div class=line style="border-left-width:2px;left:163px;top:159px;right:307px;bottom:95px"></div>
+<div class=dline style="border-left-width:2px;left:283px;top:47px;right:187px;bottom:-1px"></div>
+<div class=dline style="border-left-width:2px;left:299px;top:47px;right:171px;bottom:-1px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:416px;top:141.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:419px;top:119px;right:51px;bottom:123px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:416px;top:205.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:419px;top:183px;right:51px;bottom:59px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:416px;top:261.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:419px;top:247px;right:51px;bottom:3px"></div>
+<div style="text-align:center;left:264px;top:0px;right:160px;bottom:256px">Domain</div>
+<div style="text-align:center;left:256px;top:16px;right:152px;bottom:240px">Boundary</div>
+<div style="text-align:center;left:384px;top:80px;right:16px;bottom:176px">SignalBus</div>
+<div style="text-align:center;left:144px;top:112px;right:248px;bottom:144px">ISignalCtl</div>
+<div style="text-align:center;left:52px;top:144px;right:372px;bottom:112px">Signal</div>
+<div style="text-align:center;left:176px;top:144px;right:240px;bottom:112px">ISignal</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:640px;height:253px;font-size:9.41px;line-height:12.07px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:2px;top:137px;right:545px;bottom:40px"></div>
+<div class="rect round" style="border-width:3px;left:14px;top:174px;right:563px;bottom:52px"></div>
+<div class="rect round" style="border-width:3px;left:177px;top:125px;right:388px;bottom:40px"></div>
+<div class="rect round" style="border-width:3px;left:448px;top:5px;right:80px;bottom:173px"></div>
+<div class="rect round" style="border-width:3px;left:472px;top:29px;right:98px;bottom:197px"></div>
+<div class="rect round" style="border-width:3px;left:448px;top:101px;right:80px;bottom:52px"></div>
+<div class="rect round" style="border-width:3px;left:472px;top:125px;right:98px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:268px;top:180px;right:370px;bottom:59px"></div>
+<div class=line style="border-left-width:2px;left:274px;top:180px;right:364px;bottom:59px"></div>
+<div class=dline style="border-left-width:2px;left:334px;top:-1px;right:304px;bottom:-1px"></div>
+<div class=dline style="border-left-width:2px;left:346px;top:-1px;right:292px;bottom:-1px"></div>
+<div style="border-bottom-width: 8px;border-left: 3px solid transparent;border-right: 3px solid transparent;left:404.5px;top:120.5px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:6px;-moz-border-radius-bottomleft:6px;border-bottom-left-radius:6px;left:406px;top:123px;right:165px;bottom:113px"></div>
+<div class=line style="border-left-width:2px;left:424px;top:108px;right:214px;bottom:131px"></div>
+<div class=line style="border-left-width:2px;left:431px;top:108px;right:207px;bottom:131px"></div>
+<div style="border-bottom-width: 8px;border-left: 3px solid transparent;border-right: 3px solid transparent;left:501px;top:60.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:503px;top:62px;right:135px;bottom:125px"></div>
+<div style="border-left: 3px solid transparent;border-right: 3px solid transparent;border-top-width: 8px;left:513px;top:112.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:515px;top:53px;right:123px;bottom:134px"></div>
+<div style="border-bottom-width: 8px;border-left: 3px solid transparent;border-right: 3px solid transparent;left:501px;top:157px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:503px;top:159px;right:135px;bottom:23px"></div>
+<div style="border-left: 3px solid transparent;border-right: 3px solid transparent;border-top-width: 8px;left:513px;top:221.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:515px;top:150px;right:123px;bottom:26px"></div>
+<div style="border-bottom: 3px solid transparent;border-left-width: 8px;border-top: 3px solid transparent;left:137px;top:160px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:93px;top:162px;right:497px;bottom:89px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:144px;top:159px;right:488px;bottom:86px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:151px;top:162px;right:464px;bottom:89px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:249px;top:162px;right:307px;bottom:89px;line-height:0"></div>
+<div style="border-bottom: 3px solid transparent;border-left-width: 8px;border-top: 3px solid transparent;left:396.5px;top:160px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:349px;top:162px;right:238px;bottom:89px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:403.5px;top:159px;right:228.5px;bottom:86px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:410px;top:162px;right:189px;bottom:89px;line-height:0"></div>
+<div style="border-bottom: 3px solid transparent;border-right-width: 8px;border-top: 3px solid transparent;left:78.5px;top:184px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:80px;top:186px;right:461px;bottom:65px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:249px;top:186px;right:373px;bottom:65px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:288.5px;top:183px;right:343.5px;bottom:62px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:277px;top:186px;right:350px;bottom:65px;line-height:0"></div>
+<div style="border-bottom: 3px solid transparent;border-right-width: 8.5px;border-top: 3px solid transparent;left:295.5px;top:184px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:298px;top:186px;right:307px;bottom:65px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:349px;top:186px;right:189px;bottom:65px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:403.5px;top:110.5px;right:228.5px;bottom:134.5px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:410px;top:114px;right:217px;bottom:137px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:434px;top:114px;right:189px;bottom:137px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:578.5px;top:14px;right:53.5px;bottom:231px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:557px;top:17px;right:61px;bottom:234px;line-height:0"></div>
+<div style="text-align:center;left:573px;top:0px;right:6px;bottom:241px">ISignalBus</div>
+<div style="left:459px;top:12px;right:121px;bottom:229px">Signal Bus</div>
+<div style="text-align:center;left:480px;top:36px;right:106px;bottom:205px">Head node</div>
+<div style="left:193px;top:84px;right:411px;bottom:156px">remote</div>
+<div style="left:193px;top:97px;right:411px;bottom:144px">signal</div>
+<div style="text-align:center;left:377px;top:97px;right:221px;bottom:144px">ISignal</div>
+<div style="left:579px;top:97px;right:30px;bottom:144px">local</div>
+<div style="text-align:center;left:459px;top:109px;right:145px;bottom:132px">Signal</div>
+<div style="left:579px;top:109px;right:0px;bottom:132px">forwarding</div>
+<div style="left:579px;top:121px;right:24px;bottom:120px">signal</div>
+<div style="text-align:center;left:196px;top:133px;right:408px;bottom:108px">Signal</div>
+<div style="text-align:center;left:483px;top:133px;right:109px;bottom:108px">bus data</div>
+<div style="text-align:center;left:24px;top:145px;right:580px;bottom:96px">Client</div>
+<div style="text-align:center;left:106px;top:145px;right:474px;bottom:96px">ISignalCtl</div>
+<div style="text-align:center;left:359px;top:145px;right:202px;bottom:96px">ISignalSource</div>
+<div style="text-align:right;left:175px;top:157px;right:393px;bottom:84px">source</div>
+<div style="text-align:right;left:229px;top:169px;right:314px;bottom:72px">IRSignal</div>
+<div style="text-align:center;left:24px;top:181px;right:574px;bottom:60px">Handler</div>
+<div style="left:181px;top:181px;right:417px;bottom:60px">handler</div>
+<div style="left:453px;top:181px;right:151px;bottom:60px">target</div>
+<div style="text-align:center;left:471px;top:241px;right:91px;bottom:0px">(next signal)</div>
+</div>
+</div>
+<hr>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:640px;height:250px;font-size:12.17px;line-height:15.61px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:2px;top:6px;right:564px;bottom:178px"></div>
+<div class=rect style="border-width:3px;left:2px;top:147px;right:564px;bottom:22px"></div>
+<div class=rect style="border-width:3px;left:174px;top:147px;right:385px;bottom:22px"></div>
+<div class=rect style="border-width:3px;left:182px;top:6px;right:377px;bottom:178px"></div>
+<div class=rect style="border-width:3px;left:432px;top:6px;right:127px;bottom:163px"></div>
+<div class=rect style="border-width:3px;left:432px;top:178px;right:127px;bottom:7px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:99px;top:35px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:73px;top:38px;right:534px;bottom:210px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:117px;top:35px;right:515px;bottom:207px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:124px;top:38px;right:456px;bottom:210px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10px;border-top: 4px solid transparent;left:302px;top:35px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:260px;top:38px;right:331px;bottom:210px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:312px;top:35px;right:320px;bottom:207px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:319px;top:38px;right:206px;bottom:210px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:101.5px;top:175.5px;right:530.5px;bottom:66.5px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:73px;top:179px;right:538px;bottom:69px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10px;border-top: 4px solid transparent;left:109.5px;top:175.5px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:112px;top:179px;right:463px;bottom:69px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:312px;top:206.5px;right:320px;bottom:35.5px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:253px;top:210px;right:327px;bottom:38px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:320px;top:206.5px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:323px;top:210px;right:206px;bottom:38px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:31px;top:99px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:34px;top:69px;right:604px;bottom:144px"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:31px;top:113px;right:601px;bottom:129px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:34px;top:120px;right:604px;bottom:101px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:210.5px;top:99px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:214px;top:69px;right:424px;bottom:144px"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:210.5px;top:113px;right:421.5px;bottom:129px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:214px;top:120px;right:424px;bottom:101px"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:351px;top:113px;right:281px;bottom:129px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:7px;-moz-border-radius-topleft:7px;border-top-left-radius:7px;left:315px;top:116px;right:288px;bottom:101.5px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:7px;-moz-border-radius-bottomright:7px;border-bottom-right-radius:7px;left:253px;top:148.5px;right:323px;bottom:69px"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:359px;top:113px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:7px;-moz-border-radius-bottomright:7px;border-bottom-right-radius:7px;left:362px;top:85px;right:190px;bottom:132px"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10px;left:468px;top:115px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:471px;top:85px;right:167px;bottom:128px"></div>
+<div style="border-width:2px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;left:468px;top:128.5px;right:164px;bottom:113.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:471px;top:136px;right:167px;bottom:69px"></div>
+<div style="text-align:center;left:86px;top:16px;right:468px;bottom:219px">IController</div>
+<div style="text-align:center;left:269px;top:16px;right:215px;bottom:219px">IWidget(vi_ISession)</div>
+<div style="text-align:center;left:23px;top:31px;right:601px;bottom:203px">RC</div>
+<div style="text-align:center;left:203px;top:31px;right:414px;bottom:203px">VIM</div>
+<div style="left:445px;top:31px;right:156px;bottom:203px">Panel</div>
+<div style="text-align:right;left:-16px;top:94px;right:437px;bottom:141px">vi_ITextTarget</div>
+<div style="text-align:center;left:320px;top:94px;right:211px;bottom:141px">vi_ITextTarget</div>
+<div style="left:47px;top:109px;right:539px;bottom:125px">IWidget</div>
+<div style="left:484px;top:125px;right:0px;bottom:110px">IWidget(vi_ISession)</div>
+<div style="left:86px;top:156px;right:500px;bottom:78px">IWidget</div>
+<div style="left:16px;top:172px;right:593px;bottom:63px">Text</div>
+<div style="left:187px;top:172px;right:421px;bottom:63px">Text</div>
+<div style="text-align:center;left:16px;top:187px;right:578px;bottom:47px">Widget</div>
+<div style="text-align:center;left:191px;top:187px;right:402px;bottom:47px">Target</div>
+<div style="text-align:center;left:453px;top:203px;right:164px;bottom:31px">Pad</div>
+<div style="left:265px;top:219px;right:265px;bottom:16px">vi_ITextTarget</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:232px;height:304px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:27px;top:7px;right:26px;bottom:6px"></div>
+<div class=line style="border-left-width:2px;left:147px;top:183px;right:83px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:155px;top:215px;right:75px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:163px;top:183px;right:67px;bottom:87px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:43px;top:39px;right:59px;bottom:231px"></div>
+<div class=line style="border-top-width:2px;left:43px;top:71px;right:59px;bottom:231px;line-height:0"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:59px;top:215px;right:59px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:179px;top:183px;right:51px;bottom:87px"></div>
+<div class=dline style="border-left-width:2px;left:187px;top:135px;right:43px;bottom:135px"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:43px;top:215px;right:43px;bottom:55px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:35px;top:183px;right:35px;bottom:103px"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:35px;top:199px;right:35px;bottom:87px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:216px;top:0px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:216px;top:117.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:219px;top:3px;right:11px;bottom:179px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:216px;top:128px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:216px;top:293.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:219px;top:131px;right:11px;bottom:3px"></div>
+<div class=line style="border-top-width:2px;left:27px;top:135px;right:27px;bottom:167px;line-height:0"></div>
+<div class=dline style="border-top-width:2px;left:27px;top:167px;right:27px;bottom:135px;line-height:0"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:8px;top:176px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:8px;top:293.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:11px;top:179px;right:219px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:51px;top:183px;right:179px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:67px;top:183px;right:163px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:75px;top:215px;right:155px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:183px;right:147px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:91px;top:215px;right:139px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:99px;top:183px;right:131px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:107px;top:215px;right:123px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:115px;top:183px;right:115px;bottom:87px"></div>
+<div class=dline style="border-left-width:2px;left:123px;top:135px;right:107px;bottom:135px"></div>
+<div class=line style="border-left-width:2px;left:123px;top:215px;right:107px;bottom:23px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:183px;right:99px;bottom:87px"></div>
+<div class=line style="border-left-width:2px;left:139px;top:215px;right:91px;bottom:23px"></div>
+<div style="left:224px;top:16px;right:0px;bottom:272px">A</div>
+<div style="left:224px;top:32px;right:0px;bottom:256px">p</div>
+<div style="left:48px;top:48px;right:112px;bottom:240px">Hello woI</div>
+<div style="left:224px;top:48px;right:0px;bottom:240px">p</div>
+<div style="left:224px;top:64px;right:0px;bottom:224px">l</div>
+<div style="left:224px;top:80px;right:0px;bottom:208px">e</div>
+<div style="left:224px;top:96px;right:0px;bottom:192px">t</div>
+<div style="text-align:center;left:36px;top:144px;right:116px;bottom:144px">Select pad</div>
+<div style="text-align:center;left:192px;top:144px;right:32px;bottom:144px">X</div>
+<div style="left:224px;top:160px;right:0px;bottom:128px">P</div>
+<div style="left:224px;top:176px;right:0px;bottom:112px">a</div>
+<div style="text-align:center;left:40px;top:192px;right:184px;bottom:96px">q</div>
+<div style="text-align:center;left:56px;top:192px;right:168px;bottom:96px">w</div>
+<div style="text-align:center;left:72px;top:192px;right:152px;bottom:96px">e</div>
+<div style="text-align:center;left:88px;top:192px;right:136px;bottom:96px">r</div>
+<div style="text-align:center;left:104px;top:192px;right:120px;bottom:96px">t</div>
+<div style="text-align:center;left:120px;top:192px;right:104px;bottom:96px">y</div>
+<div style="text-align:center;left:136px;top:192px;right:88px;bottom:96px">u</div>
+<div style="text-align:center;left:152px;top:192px;right:72px;bottom:96px">i</div>
+<div style="text-align:center;left:168px;top:192px;right:56px;bottom:96px">o</div>
+<div style="text-align:center;left:184px;top:192px;right:40px;bottom:96px">p</div>
+<div style="left:224px;top:192px;right:0px;bottom:96px">n</div>
+<div style="text-align:right;left:-8px;top:208px;right:224px;bottom:80px">P</div>
+<div style="left:224px;top:208px;right:0px;bottom:80px">e</div>
+<div style="text-align:right;left:-8px;top:224px;right:224px;bottom:64px">a</div>
+<div style="text-align:center;left:48px;top:224px;right:176px;bottom:64px">a</div>
+<div style="text-align:center;left:64px;top:224px;right:160px;bottom:64px">s</div>
+<div style="text-align:center;left:80px;top:224px;right:144px;bottom:64px">d</div>
+<div style="text-align:center;left:96px;top:224px;right:128px;bottom:64px">f</div>
+<div style="text-align:center;left:112px;top:224px;right:112px;bottom:64px">g</div>
+<div style="text-align:center;left:128px;top:224px;right:96px;bottom:64px">h</div>
+<div style="text-align:center;left:144px;top:224px;right:80px;bottom:64px">j</div>
+<div style="text-align:center;left:160px;top:224px;right:64px;bottom:64px">k</div>
+<div style="text-align:center;left:176px;top:224px;right:48px;bottom:64px">l</div>
+<div style="left:224px;top:224px;right:0px;bottom:64px">l</div>
+<div style="text-align:right;left:-8px;top:240px;right:224px;bottom:48px">d</div>
+<div style="text-align:center;left:64px;top:256px;right:160px;bottom:32px">z</div>
+<div style="text-align:center;left:80px;top:256px;right:144px;bottom:32px">x</div>
+<div style="text-align:center;left:96px;top:256px;right:128px;bottom:32px">c</div>
+<div style="text-align:center;left:112px;top:256px;right:112px;bottom:32px">v</div>
+<div style="text-align:center;left:128px;top:256px;right:96px;bottom:32px">b</div>
+<div style="text-align:center;left:144px;top:256px;right:80px;bottom:32px">n</div>
+<div style="text-align:center;left:160px;top:256px;right:64px;bottom:32px">m</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:248px;height:112px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:170px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:163px;top:7px;right:2px;bottom:38px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:35px;right:135px;bottom:67px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:39px;right:144px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:120px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:123px;top:39px;right:83px;bottom:71px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:67px;right:135px;bottom:35px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:71px;right:144px;bottom:39px;line-height:0"></div>
+<div style="text-align:center;left:16px;top:16px;right:184px;bottom:80px">Object</div>
+<div style="text-align:center;left:96px;top:16px;right:120px;bottom:80px">IFoo</div>
+<div style="text-align:center;left:180px;top:16px;right:20px;bottom:80px">Client</div>
+<div style="text-align:center;left:96px;top:48px;right:120px;bottom:48px">IBar</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:576px;height:208px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class=rect style="border-width:3px;left:3px;top:7px;right:498px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:163px;top:167px;right:322px;bottom:6px"></div>
+<div class=rect style="border-width:3px;left:203px;top:23px;right:282px;bottom:150px"></div>
+<div class=rect style="border-width:3px;left:347px;top:7px;right:154px;bottom:102px"></div>
+<div class=line style="border-top-width:2px;left:75px;top:39px;right:479px;bottom:167px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:127px;top:35px;right:439px;bottom:163px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:111px;top:39px;right:448px;bottom:167px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:136px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:139px;top:39px;right:371px;bottom:167px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:471px;top:35px;right:95px;bottom:163px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:455px;top:39px;right:104px;bottom:167px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:419px;top:55px;right:131px;bottom:151px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:471px;top:67px;right:95px;bottom:131px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:455px;top:71px;right:104px;bottom:135px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:83px;right:463px;bottom:115px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:87px;right:472px;bottom:119px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:131px;right:463px;bottom:67px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:135px;right:472px;bottom:71px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:103px;top:179px;right:463px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:75px;top:183px;right:472px;bottom:23px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:112px;top:180px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:183px;right:411px;bottom:23px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:99px;top:31px;right:475px;bottom:159px"></div>
+<div class=line style="border-left-width:2px;left:107px;top:31px;right:467px;bottom:159px"></div>
+<div class=line style="border-left-width:2px;left:443px;top:31px;right:131px;bottom:127px"></div>
+<div class=line style="border-left-width:2px;left:451px;top:31px;right:123px;bottom:127px"></div>
+<div style="text-align:center;left:16px;top:16px;right:512px;bottom:176px">Object</div>
+<div style="text-align:center;left:108px;top:16px;right:404px;bottom:176px">IWeakRef</div>
+<div style="text-align:center;left:464px;top:16px;right:0px;bottom:176px">ISignalHandler</div>
+<div style="text-align:center;left:36px;top:32px;right:532px;bottom:160px">X</div>
+<div style="text-align:center;left:216px;top:32px;right:296px;bottom:160px">Client A</div>
+<div style="text-align:center;left:360px;top:32px;right:168px;bottom:160px">Object</div>
+<div style="text-align:center;left:380px;top:48px;right:188px;bottom:144px">Y</div>
+<div style="left:464px;top:48px;right:48px;bottom:144px">IWeakRef</div>
+<div style="left:88px;top:64px;right:376px;bottom:128px">ISignalHandler</div>
+<div style="left:88px;top:112px;right:360px;bottom:80px">ISupportsWeakRef</div>
+<div style="left:88px;top:160px;right:456px;bottom:32px">IFoo</div>
+<div style="text-align:center;left:176px;top:176px;right:336px;bottom:16px">Client B</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:328px;height:272px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="rect round" style="border-width:3px;left:3px;top:7px;right:250px;bottom:230px"></div>
+<div class="rect round" style="border-width:3px;left:123px;top:7px;right:122px;bottom:230px"></div>
+<div class="rect round" style="border-width:3px;left:251px;top:7px;right:2px;bottom:230px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:148px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:151px;right:47px;bottom:119px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:164px;top:164px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:167px;right:43px;bottom:103px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:180px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:183px;right:47px;bottom:87px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:153.5px;top:196px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:199px;right:167px;bottom:71px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:36px;top:212px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:39px;top:215px;right:163px;bottom:55px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:228px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:231px;right:47px;bottom:39px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:35px;top:39px;right:291px;bottom:-1px"></div>
+<div class=line style="border-left-width:2px;left:163px;top:39px;right:163px;bottom:-1px"></div>
+<div class=line style="border-left-width:2px;left:283px;top:39px;right:43px;bottom:-1px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:153.5px;top:84px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:87px;right:167px;bottom:183px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:273.5px;top:100px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:163px;top:103px;right:47px;bottom:167px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:164px;top:116px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:167px;top:119px;right:43px;bottom:151px;line-height:0"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:36px;top:132px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:39px;top:135px;right:163px;bottom:135px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:35px;top:151px;right:167px;bottom:119px;line-height:0"></div>
+<div style="text-align:center;left:16px;top:16px;right:264px;bottom:240px">Mobile</div>
+<div style="text-align:center;left:152px;top:16px;right:152px;bottom:240px">BSC</div>
+<div style="text-align:center;left:276px;top:16px;right:28px;bottom:240px">MSC</div>
+<div style="left:48px;top:64px;right:216px;bottom:192px">Msg 0123</div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:640px;height:220px">
+<div class=line style="border-top-width:2px;border-right-width:2px;left:83px;top:133px;right:539px;bottom:68px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:101px;right:555px;bottom:85px"></div>
+<div class=line style="border-left-width:2px;left:99px;top:166px;right:539px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:115px;top:85px;right:523px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:34px;top:117px;right:523px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:68px;right:604px;bottom:101px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:83px;top:166px;right:523px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:68px;right:507px;bottom:133px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:101px;right:507px;bottom:68px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:166px;right:507px;bottom:3px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:131px;top:19px;right:490px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:131px;top:36px;right:507px;bottom:166px"></div>
+<div class=line style="border-left-width:2px;left:148px;top:52px;right:490px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:148px;top:117px;right:490px;bottom:85px"></div>
+<div class=line style="border-left-width:2px;left:164px;top:36px;right:474px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:148px;top:101px;right:474px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:164px;top:85px;right:458px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:197px;top:52px;right:441px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:150px;right:555px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:199px;right:555px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:197px;top:101px;right:441px;bottom:68px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:180px;top:182px;right:441px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;left:197px;top:199px;right:360px;bottom:19px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:34px;top:19px;right:588px;bottom:182px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:50px;top:36px;right:555px;bottom:150px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:83px;top:52px;right:539px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:99px;top:68px;right:523px;bottom:150px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:99px;top:85px;right:539px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:506px;top:117px;right:99px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:523px;top:150px;right:99px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:555px;top:166px;right:66px;bottom:36px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:555px;top:36px;right:66px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;left:572px;top:52px;right:34px;bottom:166px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:572px;top:68px;right:34px;bottom:117px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:572px;top:117px;right:50px;bottom:85px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:555px;top:85px;right:50px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:588px;top:36px;right:34px;bottom:133px"></div>
+<div class=line style="border-top-width:2px;left:604px;top:85px;right:18px;bottom:133px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:604px;top:133px;right:18px;bottom:36px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:17px;top:19px;right:18px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:620px;top:101px;right:18px;bottom:101px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:588px;top:133px;right:18px;bottom:68px"></div>
+<div class=line style="border-width:2px;border-top-width:0;left:572px;top:150px;right:50px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;left:555px;top:150px;right:66px;bottom:68px;line-height:0"></div>
+<div style="border-bottom-width: 5.5px;border-left: 3px solid transparent;border-right: 3px solid transparent;left:626.5px;top:0px;line-height:0"></div>
+<div class=dline style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;left:621.5px;top:2px;right:9px;bottom:174px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:612px;top:37px;right:18.5px;bottom:174px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:547px;top:28px;right:26px;bottom:183px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:547px;top:37px;right:84px;bottom:174px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;left:556px;top:44px;right:75px;bottom:158px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:514px;top:53px;right:84px;bottom:158px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:482px;top:44px;right:124px;bottom:167px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:482px;top:53px;right:149px;bottom:158px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:491px;top:60px;right:140px;bottom:151px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:498px;top:69px;right:116.5px;bottom:142px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:523.5px;top:76px;right:91px;bottom:134.5px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:547px;top:85.5px;right:84px;bottom:125px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:556px;top:93px;right:75px;bottom:113px"></div>
+<div class=dline style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:547px;top:109px;right:75px;bottom:102px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:547px;top:118px;right:84px;bottom:93px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;left:556px;top:125px;right:75px;bottom:76px"></div>
+<div class=dline style="border-width:2px;border-right-width:0;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:547px;top:142px;right:84px;bottom:27px"></div>
+<div class=dline style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:556px;top:191px;right:9px;bottom:20px"></div>
+<div class=dline style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:482px;top:200px;right:9px;bottom:11px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:466px;top:191px;right:156px;bottom:20px"></div>
+<div class=dline style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:449px;top:200px;right:172px;bottom:11px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:385px;top:191px;right:189px;bottom:20px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:319px;top:183.5px;right:255px;bottom:27px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:312px;top:174px;right:319px;bottom:36.5px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:303px;top:167px;right:328px;bottom:44px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:286px;top:158px;right:335px;bottom:53px"></div>
+<div class=dline style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;left:246.5px;top:167px;right:352px;bottom:27px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:205px;top:183.5px;right:393.5px;bottom:27px"></div>
+<div class=dline style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;left:172px;top:174px;right:433px;bottom:36.5px"></div>
+<div class=dline style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:172px;top:183.5px;right:459px;bottom:27px"></div>
+<div class=dline style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;left:181px;top:191px;right:450px;bottom:11px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:140px;top:183.5px;right:459px;bottom:11px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:132.5px;top:158px;right:498px;bottom:36.5px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:123px;top:134.5px;right:507.5px;bottom:60px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:108px;top:109px;right:515px;bottom:85.5px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:91px;top:102px;right:532px;bottom:109px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:75.5px;top:93px;right:547px;bottom:118px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:58px;top:85.5px;right:564.5px;bottom:125px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:51px;top:76px;right:580px;bottom:134.5px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:42px;top:69px;right:589px;bottom:142px"></div>
+<div class=dline style="border-top-width:2px;border-right-width:2px;-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;left:26.5px;top:60px;right:596px;bottom:151px"></div>
+<div class=dline style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;left:9px;top:7px;right:613.5px;bottom:158px"></div>
+<div class=line style="border-width:2px;border-top-width:0;left:1px;top:19px;right:1px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:213px;top:101px;right:425px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:180px;top:133px;right:425px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;left:213px;top:150px;right:376px;bottom:68px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:131px;top:85px;right:409px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:229px;top:199px;right:409px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:246px;top:19px;right:392px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:213px;top:52px;right:392px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:229px;top:166px;right:392px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:262px;top:52px;right:360px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;left:278px;top:133px;right:344px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;left:213px;top:166px;right:360px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;left:148px;top:166px;right:425px;bottom:36px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:148px;top:182px;right:474px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:294px;top:19px;right:344px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:294px;top:52px;right:344px;bottom:150px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:246px;top:101px;right:344px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;left:294px;top:150px;right:311px;bottom:68px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:278px;top:19px;right:327px;bottom:133px"></div>
+<div class=line style="border-left-width:2px;left:441px;top:19px;right:197px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:425px;top:199px;right:197px;bottom:3px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:278px;top:101px;right:327px;bottom:101px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:294px;top:166px;right:327px;bottom:36px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:294px;top:182px;right:327px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:294px;top:199px;right:344px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:327px;top:117px;right:311px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:327px;top:36px;right:295px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:327px;top:85px;right:295px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:343px;top:117px;right:262px;bottom:68px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:327px;top:199px;right:295px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:360px;top:52px;right:278px;bottom:150px"></div>
+<div class=line style="border-left-width:2px;left:360px;top:133px;right:278px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:376px;top:19px;right:262px;bottom:182px"></div>
+<div class=line style="border-left-width:2px;left:376px;top:52px;right:262px;bottom:150px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;left:311px;top:133px;right:262px;bottom:68px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:311px;top:151px;right:295px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:343px;top:166px;right:295px;bottom:36px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:164px;top:36px;right:425px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:376px;top:52px;right:246px;bottom:133px"></div>
+<div class=line style="border-left-width:2px;left:392px;top:150px;right:246px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:409px;top:68px;right:229px;bottom:117px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:392px;top:117px;right:229px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:409px;top:150px;right:213px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:360px;top:199px;right:229px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:425px;top:36px;right:213px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:327px;top:182px;right:246px;bottom:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:506px;top:182px;right:115px;bottom:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:262px;top:166px;right:360px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:376px;top:166px;right:229px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:425px;top:166px;right:197px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:199px;right:507px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:148px;top:199px;right:458px;bottom:19px;line-height:0"></div>
+<div style="border-left: 3px solid transparent;border-right: 3px solid transparent;border-top-width: 5px;left:7px;top:3px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:9px;top:-1px;right:629px;bottom:214px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:101px;right:621px;bottom:101px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:1px;top:133px;right:621px;bottom:52px"></div>
+<div class=line style="border-width:2px;border-left-width:0;left:17px;top:182px;right:604px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;left:1px;top:199px;right:622px;bottom:19px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:66px;top:166px;right:572px;bottom:3px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:66px;top:133px;right:523px;bottom:68px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:66px;top:68px;right:490px;bottom:133px"></div>
+<div class=line style="border-left-width:2px;left:50px;top:133px;right:588px;bottom:36px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:50px;top:101px;right:572px;bottom:101px"></div>
+<div class=line style="border-left-width:2px;left:50px;top:199px;right:588px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:83px;top:19px;right:555px;bottom:182px"></div>
+<div class=line style="border-top-width:2px;left:523px;top:166px;right:99px;bottom:52px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:604px;top:166px;right:1px;bottom:52px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:34px;top:133px;right:588px;bottom:52px"></div>
+<div class=line style="border-top-width:2px;left:148px;top:150px;right:458px;bottom:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:229px;top:68px;right:392px;bottom:150px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:262px;top:68px;right:327px;bottom:150px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:17px;top:150px;right:604px;bottom:68px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:523px;top:133px;right:83px;bottom:85px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:1px;top:85px;right:621px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:34px;top:85px;right:588px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:197px;top:85px;right:376px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:409px;top:85px;right:213px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:555px;top:85px;right:66px;bottom:133px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:620px;top:52px;right:1px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:425px;top:101px;right:164px;bottom:117px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:246px;top:117px;right:376px;bottom:101px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:604px;top:117px;right:1px;bottom:101px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:229px;top:133px;right:376px;bottom:85px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:441px;top:52px;right:197px;bottom:117px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:409px;top:36px;right:181px;bottom:166px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:392px;top:68px;right:181px;bottom:133px"></div>
+<div class=line style="border-top-width:2px;left:457px;top:85px;right:164px;bottom:133px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:441px;top:117px;right:181px;bottom:85px"></div>
+<div class=line style="border-left-width:2px;left:457px;top:150px;right:181px;bottom:52px"></div>
+<div class=line style="border-left-width:2px;left:457px;top:182px;right:181px;bottom:19px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:523px;top:85px;right:99px;bottom:117px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:311px;top:52px;right:311px;bottom:133px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:327px;top:85px;right:278px;bottom:117px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:360px;top:101px;right:246px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:392px;top:117px;right:197px;bottom:68px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:441px;top:150px;right:164px;bottom:52px"></div>
+<div class=line style="border-top-width:2px;left:474px;top:166px;right:148px;bottom:52px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:474px;top:199px;right:164px;bottom:3px"></div>
+<div class=line style="border-left-width:2px;left:490px;top:19px;right:148px;bottom:182px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:474px;top:19px;right:148px;bottom:150px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;left:474px;top:68px;right:148px;bottom:101px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:425px;top:182px;right:148px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:425px;top:117px;right:213px;bottom:36px"></div>
+<div class=line style="border-left-width:2px;left:506px;top:19px;right:132px;bottom:182px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:490px;top:52px;right:132px;bottom:150px"></div>
+<div class=line style="border-top-width:2px;left:506px;top:68px;right:1px;bottom:150px;line-height:0"></div>
+<div class=line style="border-width:2px;border-left-width:0;left:490px;top:85px;right:132px;bottom:85px"></div>
+<div class=line style="border-top-width:2px;left:474px;top:133px;right:149px;bottom:85px;line-height:0"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:490px;top:133px;right:132px;bottom:68px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;left:506px;top:150px;right:18px;bottom:19px"></div>
+<div class=line style="border-left-width:2px;left:523px;top:19px;right:115px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;left:523px;top:101px;right:83px;bottom:101px"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;left:523px;top:36px;right:99px;bottom:166px"></div>
+<div class=line style="border-top-width:2px;left:539px;top:52px;right:83px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:66px;top:36px;right:523px;bottom:182px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:17px;top:52px;right:572px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:343px;top:52px;right:229px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:115px;top:52px;right:458px;bottom:166px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:180px;top:36px;right:360px;bottom:182px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:360px;top:36px;right:246px;bottom:182px;line-height:0"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:312px;height:48px">
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:3px;top:24px;right:287px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:3px;top:7px;right:275px;bottom:24px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:35px;top:24px;right:267px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:187px;top:23px;right:112px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:199px;top:23px;right:99px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:59px;top:23px;right:227px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;left:243px;top:23px;right:67px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:227px;top:23px;right:51px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;left:291px;top:23px;right:19px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-bottom-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:275px;top:23px;right:3px;bottom:7px"></div>
+<div class=line style="border-top-width:2px;border-right-width:2px;left:112px;top:23px;right:187px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-right-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:99px;top:23px;right:199px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;left:139px;top:7px;right:171px;bottom:7px"></div>
+<div class=line style="border-width:2px;border-right-width:0;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:155px;top:23px;right:135px;bottom:7px"></div>
+</div>
+</div>
+<hr>
+<div class=diagram>
+<div class="html2d art" style="width:200px;height:64px">
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:77.5px;top:4px;line-height:0"></div>
+<div class=line style="border-left-width:2px;border-top-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:59px;top:7px;right:115px;bottom:40px"></div>
+<div class=line style="border-bottom-width:2px;border-right-width:2px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:23px;top:24px;right:139px;bottom:23px"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:119px;top:35px;right:71px;bottom:19px;line-height:0"></div>
+<div class=line style="border-right-width:2px;border-top-width:2px;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;left:87px;top:7px;right:99px;bottom:40px"></div>
+<div class=line style="border-bottom-width:2px;border-left-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:99px;top:24px;right:80px;bottom:23px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:189.5px;top:4px;line-height:0"></div>
+<div style="border-width:2px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;left:119px;top:35px;right:71px;bottom:19px;line-height:0"></div>
+<div class=line style="border-top-width:2px;border-left-width:2px;-webkit-border-top-left-radius:8px;-moz-border-radius-topleft:8px;border-top-left-radius:8px;left:123px;top:7px;right:3px;bottom:28px"></div>
+<div style="border-bottom: 4px solid transparent;border-right-width: 10.5px;border-top: 4px solid transparent;left:128px;top:36px;line-height:0"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:131px;top:39px;right:51px;bottom:7px"></div>
+<div class=line style="border-left-width:2px;border-bottom-width:2px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:35px;top:39px;right:68px;bottom:7px"></div>
+<div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:13.5px;top:36px;line-height:0"></div>
+<div class=line style="border-top-width:2px;left:-1px;top:39px;right:179px;bottom:23px;line-height:0"></div>
+</div>
+</div>
+</div>
+</body>
+</html>

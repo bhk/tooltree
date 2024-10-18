@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -185,72 +184,51 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>UTF8 Utilities</title>
 </head><body>
 <div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
-<li>
-<p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
-</p>
-</li><li>
-<p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
-</p>
-</li><li>
-<p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
-</p>
-</li>
-</ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
-</p></div>
+<a name="UTF8%20Utilities"></a>UTF8 Utilities
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#utf8utils.decode(str,%20ferr)">utf8utils.decode(str, ferr)</a></div><div class="tocLevel"><a href="#utf8utils.encode(index)">utf8utils.encode(index)</a></div><div class="tocLevel"><a href="#utf8utils.mbpattern">utf8utils.mbpattern</a></div><div class="tocLevel"><a href="#utf8utils.binToChars(blob)">utf8utils.binToChars(blob)</a></div><div class="tocLevel"><a href="#utf8utils.charsToBin(text)">utf8utils.charsToBin(text)</a></div><div class="tocLevel"><a href="#utf8utils.validate(string)">utf8utils.validate(string)</a></div></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>utf8utils</code> module returns a table of functions for dealing with utf8-encoded strings.
+</p><div class="indent"><pre>local utf8utils = require "utf8utils"
+</pre></div><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="utf8utils.decode(str,%20ferr)"></a><code>utf8utils.decode(str, ferr)</code>
+</h4><div class="indent"><p>
+Convert a utf8-encoded character to a Unicode index.
+</p><p>
+Returns a number from 0 to 0x10FFFF.
+</p><p>
+If the character is incomplete or in a non-canonical encoding, <code>decode</code> will call <code>ferr</code> with the decoded value and the input string and then return whatever values <code>ferr</code> returned. <code>ferr</code> defaults to a function that throws the error <code>"utf8: invalid byte sequence"</code>.
+</p></div><h4>
+<a name="utf8utils.encode(index)"></a><code>utf8utils.encode(index)</code>
+</h4><div class="indent"><p>
+Encode a Unicode index as a UTF-8 character.
+</p><p>
+Returns a string on success, and throws an error if <code>index</code> is out-of-range (greater than 0x10FFFF).
+</p></div><h4>
+<a name="utf8utils.mbpattern"></a><code>utf8utils.mbpattern</code>
+</h4><div class="indent"><p>
+This Lua pattern matches a single utf-8 character (without validating).
+</p></div><h4>
+<a name="utf8utils.binToChars(blob)"></a><code>utf8utils.binToChars(blob)</code>
+</h4><div class="indent"><p>
+Convert binary data stored as a byte array in <code>blob</code> to a utf-8 encoded character string.
+</p><p>
+Each byte in the input string is converted to a character with the same numeric value. This directly-mapped translation may be convenient for exchange with languages like JavaScript in which strings are arrays of 16-bit values.
+</p></div><h4>
+<a name="utf8utils.charsToBin(text)"></a><code>utf8utils.charsToBin(text)</code>
+</h4><div class="indent"><p>
+Convert binary data stored as utf-8-encoded characters to a simple byte array. This reverses <code>binToChars</code>.
+</p></div><h4>
+<a name="utf8utils.validate(string)"></a><code>utf8utils.validate(string)</code>
+</h4><div class="indent"><p>
+Throw an error if <code>string</code> is not valid utf-8.
+</p></div></div>
 </body>
 </html>

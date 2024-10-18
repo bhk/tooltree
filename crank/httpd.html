@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -185,72 +184,45 @@ td p:last-child, th p:last-child {
   table { page-break-inside: avoid; }
 }
 
-</style><title>Monoglot</title>
+</style><title>HTTPD</title>
 </head><body>
 <div class="smarkdoc"><h1>
-<a name="Monoglot"></a>Monoglot
-</h1><p>
-See <a href="monoglot-intro.html">Introduction to Monoglot</a> for an in-depth look at Monoglot's features and benefits.
-</p><h2>
-<a name="Documentation"></a>Documentation
-</h2><ul>
+<a name="HTTPD"></a>HTTPD
+</h1><h3>
+<a name="Contents"></a>Contents
+</h3><div class="indent"><div class="toc"><div class="tocLevel"><a href="#Overview">Overview</a></div><div class="tocLevel"><a href="#Functions">Functions</a><div class="tocLevel"><a href="#HTTPD.new(addr)">HTTPD.new(addr)</a></div><div class="tocLevel"><a href="#HTTPD.start(handler)">HTTPD.start(handler)</a></div><div class="tocLevel"><a href="#HTTPD.stop()">HTTPD.stop()</a></div></div></div></div><h3>
+<a name="Overview"></a>Overview
+</h3><p>
+The <code>httpd</code> module provides a class that implements an HTTP server.
+</p><div class="indent"><pre>local HTTPD = require "httpd"
+</pre></div><h3>
+<a name="Functions"></a>Functions
+</h3><h4>
+<a name="HTTPD.new(addr)"></a><code>HTTPD.new(addr)</code>
+</h4><div class="indent"><p>
+Create a new instance of an HTTP server.
+</p><ul>
 <li>
 <p>
-<a href="httpd.html"><code>httpd</code></a> : an HTTP 1.1 server implementation.
-</p>
-</li><li>
-<p>
-<a href="dino.html"><code>dino</code></a> : a library that simplifies constructing HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="stack.html"><code>stack</code></a> : an interface for HTTP request handlers.
-</p>
-</li><li>
-<p>
-<a href="json.html"><code>json</code></a> : JSON encoding/decoding.
-</p>
-</li><li>
-<p>
-<a href="utf8utils.html"><code>utf8utils</code></a> : UTF-8 utilities.
-</p>
-</li><li>
-<p>
-<a href="xml.html"><code>xml</code></a> : XML parser.
-</p>
-</li><li>
-<p>
-<a href="xpio.html"><code>xpio</code></a> : OS bindings that support networking and creation and management of sub-processes.
-</p>
-</li><li>
-<p>
-<a href="xpfs.html"><code>xpfs</code></a> : file system access.
-</p>
-</li><li>
-<p>
-<a href="event.html"><code>event</code></a> : &#8220;event&#8221; objects for synchronization of threads.
-</p>
-</li><li>
-<p>
-<a href="futex.html"><code>futex</code></a> : lightweight synchronization primitive.
-</p>
-</li><li>
-<p>
-<a href="thread.html"><code>thread</code></a> : cooperative multitasking primitives.
-</p>
-</li><li>
-<p>
-<a href="object.html"><code>object</code></a> : simple object system.
-</p>
-</li><li>
-<p>
-<a href="mdb.html"><code>mdb</code></a> : Monoglot Debugger (MDB)
+<code>addr</code> : the IP address and port to which the listening socket should be bound. This is provided in the format specified in <a href="xpio.html#Address%20Format"><code>xpio</code></a>.
 </p>
 </li>
-</ul><h2>
-<a name="Example"></a>Example
-</h2><p>
-<a href="https://github.com/bhk/tooltree/blob/master/webdemo/demo.lua">Here</a> is a simple web server based on monoglot.
-</p></div>
+</ul></div><h4>
+<a name="HTTPD.start(handler)"></a><code>HTTPD.start(handler)</code>
+</h4><div class="indent"><p>
+Begin serving incoming connections. This function creates a thread for accepting connections and returns immediately to the caller.
+</p><ul>
+<li>
+<p>
+<code>handler</code> : a <a href="stack.html">Stack</a> handler. This is a function that will be called once with each HTTP request, and which returns values that describe the response to be sent to the client.
+</p>
+</li>
+</ul><p>
+The server will create a thread for each incoming connection. These connection threads handle one or more transaction sequentially. Handler functions are called on connection threads.
+</p></div><h4>
+<a name="HTTPD.stop()"></a><code>HTTPD.stop()</code>
+</h4><div class="indent"><p>
+Terminate the accepting thread and all connection threads.
+</p></div></div>
 </body>
 </html>

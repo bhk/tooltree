@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<style type="text/css">
+/* Smark-specific classes */
+
+.super {
+  vertical-align: super;
+  font-size: 0.7em;
+}
+
+.smarkdoc {
+  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  margin: 2em;
+}
+
+.indent {
+    margin: 0 3em;
+}
+
+.xh { display: none; }
+
+/*
+|| Floats affect text flow but not block boundaries, so graphics in a DIV
+|| would overlap floats if not for "clear: both"
+*/
+.diagram {
+  margin: 18px 0;
+  clear: both;
+}
+
+/* ========  .art  ======== */
+/* wheat-toned color scheme */
+
+.art {
+  margin-right: auto; margin-left: auto; /* center */
+  font-family: Arial, Verdana, "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+}
+.art * {
+  border-color: #56573A;
+}
+.art .dline, .art .drect {
+  border-style: dotted;
+}
+.art .rect {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  background-color:  #f6f4ea; /*#f9faf4; #fafff4; #f8f8ec;  */
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.art .nofx {
+   background-color:  #f9faf4;
+}
+.art .round {
+   border-radius:         0.7em;
+   -webkit-border-radius: 0.7em;
+   -moz-border-radius:    0.7em;
+}
+
+.msc {
+   font: 11px Verdana, Monaco, "Lucida Console";
+   margin-left: auto; margin-right: auto;
+   background-color: white;
+}
+
+.tocLevel { margin-left: 2em; font-weight: normal; }
+.tocLevel .tocLevel { font-size: 0.9em; }
+.toc>.tocLevel { font-weight: bold; margin: 0.5em 0 }
+.toc {
+    column-count: 2; column-gap: 2em;
+    -moz-column-count: 2; -moz-column-gap: 2em;
+    -webkit-column-count: 2; -webkit-column-gap: 2em;
+}
+
+/* General apperance settings */
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 { color: #339; }
+
+h1 {
+    text-align: center;
+    font-size: 200%;
+    clear: both;
+    margin: 2em 0;
+}
+h2 {
+    font-size: 160%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid #338;
+    clear: both;
+    margin: 2em 0 1.5em;
+}
+h3 {
+    font-size: 135%;
+    clear: both;
+    margin: 2em 0 1em;
+}
+h4 {
+    font-size: 120%;
+    margin: 2em 0 1em;
+}
+
+.pre, code {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f7f7f7;
+  font-size: 90%;
+}
+
+code {
+  padding: 1px 1px 0 1px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+pre {
+  font-family: "Lucida Console", "Monaco", "Courier New", monospace;
+  background-color: #f0f0f0;
+  color: #114;
+  padding: 2px 3px;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 0.5em 2em;
+}
+
+table {
+   border-collapse: collapse;
+   border-width: 1px;
+   border-spacing: 1px;
+   border-color: transparent;
+   margin: 16px 0;
+   width: 100%;
+}
+th {
+   background-color: #eee; color: black;
+}
+td, th {
+   border-style: solid;
+   border-color: #bbb;
+   border-width: 1px;
+   padding: 0 6px;
+}
+td p:first-child, th p:first-child {
+   margin-top: 3px;
+}
+td p:last-child, th p:last-child {
+   margin-bottom: 3px;
+}
+
+.indent {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+@media print {
+
+  @page {
+    margin: 0.75in 0.75in;
+    size: Letter;
+    @bottom {
+      content: counter(page);
+      vertical-align: top;
+      padding-top: 1em;
+    }
+  }
+  h1 { text-align: center;
+       margin: 0.75in 0 0.75in; }
+  h2 { string-set: section content() }
+  .toc { margin: 3em -2em }
+  .toc a::after {
+     font-size: 10px;
+     content: leader(' . ') "  " target-counter(attr(href), page);
+  }
+  table { page-break-inside: avoid; }
+}
+
+</style><title>build-lua</title>
+</head><body>
+<div class="smarkdoc"><h1>
+<a name="build-lua"></a>build-lua
+</h1><h2>
+<a name="Overview"></a>Overview
+</h2><p>
+<code>build-lua</code> is a package that contains the following:
+</p><ul type="circle">
+<li>
+<p>
+<a href="cfromlua.html"><code>cfromlua</code></a>
+</p><p>
+This program bundles one or more Lua source files, along with all of their dependencies, into a single Lua file, or into a single C file that can be compiled to a self-contained native executable, linking with <code>liblua</code>.
+</p><p>
+Dependencies that are native extensions will also be detected and incorporated into the bundled exectuable. This will require linking with objects or libraries for the native extensions.
+</p><p>
+Raw data files may also be bundled (see the <code>requirefile</code> feature in <code>cfromlua</code>).
+</p>
+</li><li>
+<p>
+<code>interpreter.lua</code>
+</p><p>
+By default, a <code>cfromlua</code>-generated executable will pass all command line arguments to the bundled script without any of the processing that the Lua interpreter would perform (e.g. <code>-l MOD</code> and <code>-e</code> options). This allows your program complete freedom to define its own command line interface. If, however, you want to include that functionality, <code>interpreter.lua</code> implements it. See <a href="cfromlua.html"><code>cfromlua</code></a> for more.
+</p>
+</li><li>
+<p>
+<code>build-lua.mk</code>
+</p><p>
+This implements a set of Minion builder classes for generating rules that run and test Lua scripts and bundle them into native programs.
+</p>
+</li>
+</ul><h2>
+<a name="build-lua.mk"></a>build-lua.mk
+</h2><p>
+Here is an overview of the classes are provided. Refer to the source file for more details.
+</p><h3>
+<a name="LuaRun(SOURCE),%20LuaExec(SOURCE),%20LuaTest(SOURCE)"></a>LuaRun(SOURCE), LuaExec(SOURCE), LuaTest(SOURCE)
+</h3><p>
+These classes are analogous to the <code>Run</code>, <code>Exec</code>, and <code>Test</code> builder classes, except they accept Lua scripts as inputs and invoke the Lua interpreter to run them. See <code>LuaEnv</code>, below, for customization options.
+</p><h3>
+<a name="LuaExe(SOURCES)"></a>LuaExe(SOURCES)
+</h3><p>
+Like the <code>CExe</code> class, <code>LuaExe</code> generates an executable file, but unlike <code>CExe</code> it construct the executable from one or more Lua scripts and their dependencies using <code>cfromlua</code> and a C compiler and linker.
+</p><p>
+<code>LuaToC</code> is used to generate the C file, and <code>LuaCC</code> is used to compile the resulting file. You can tell it to use other classes by overriding the <code>l2cClass</code> and/or <code>ccClass</code> properties.
+</p><p>
+See <code>LuaEnv</code>, below, for customization options.
+</p><h3>
+<a name="LuaEnv"></a>LuaEnv
+</h3><p>
+<code>LuaEnv</code> is a mixin class that contains a number of properties that affect the Lua execution environment. By customizing this class, you can define an environment that will apply consistently to <code>LuaTest</code>, <code>LuaRun</code>, <code>LuaExec</code>, <code>LuaExe</code>, and others. Alternatively, you can override these properties on any of those classes independently.
+</p><p>
+Properties:
+</p><ul>
+<li>
+<p>
+<code>exports</code>: a set of properties to be exported as environment variables when running the Lua interpreter or <code>cfromlua</code>. It defaults to <code>LUA_PATH LUA_CPATH</code>.
+</p>
+</li><li>
+<p>
+<code>LUA_PATH</code>: this property is exported as an environment variable to be used by the Lua interpreter as it executes. By default, it will be computed from <code>.luaPathDirs</code>.
+</p>
+</li><li>
+<p>
+<code>LUA_CPATH</code>: this property is exported as an environment variable to be used by the Lua interpreter as it executes. By default, it will be computed from <code>.luaPathDirs</code>.
+</p>
+</li><li>
+<p>
+<code>luaPathDirs</code>: a list of directories used to compute the <code>LUA_PATH</code> property. The default is <code>.</code>.
+</p>
+</li><li>
+<p>
+<code>luaCPathDirs</code>: a list of directories used to compute the <code>LUA_CPATH</code> property. It defaults to the value of the <code>luaPathDirs</code> property.
+</p>
+</li><li>
+<p>
+<code>preloads</code>: a set of modules that are to be <code>require</code>d before the script is executed. These are passed using the <code>-l MOD</code> argument to the Lua interpreter or <code>cfromlua</code>.
+</p>
+</li><li>
+<p>
+<code>luaExe</code>: the Lua interpreter.
+</p>
+</li>
+</ul></div>
+</body>
+</html>

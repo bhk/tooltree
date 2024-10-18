@@ -11,8 +11,8 @@
 }
 
 .smarkdoc {
-  font-family: "Avenir Next", "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Segoe UI", Geneva, Helvetica, Arial, sans-serif;
+  font-size: 14px;
   margin: 2em;
 }
 
@@ -110,7 +110,6 @@ h4 {
 .pre, code {
   font-family: "Lucida Console", "Monaco", "Courier New", monospace;
   background-color: #f7f7f7;
-  font-size: 90%;
 }
 
 code {
@@ -202,37 +201,37 @@ Stack is not a module; it is an interface for HTTP transactions used by the <a h
 Stack defines how HTTP requests and responses are described in Lua data structures. It is intended to be simple and generic so that it might be consumed by components other than the web server, similarly to how Python's WSGI and Ruby's Rack enable &#8220;filter&#8221; and &#8220;middleware&#8221; components.
 </p><div class=diagram>
 <div class="html2d art" style="width:408px;height:448px;font-size:12.48px;line-height:16px;white-space:nowrap">
+<div class="drect round" style="border-width:2px;left:43px;top:7px;right:235px;bottom:407px"></div>
 <div class="rect round" style="border-width:3px;left:43px;top:103px;right:234px;bottom:278px"></div>
 <div class="rect round" style="border-width:3px;left:43px;top:231px;right:234px;bottom:134px"></div>
 <div class="rect round" style="border-width:3px;left:43px;top:375px;right:234px;bottom:6px"></div>
-<div class="drect round" style="border-width:2px;left:43px;top:7px;right:235px;bottom:407px"></div>
-<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:39px;right:131px;bottom:343px"></div>
-<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:167px;right:131px;bottom:215px"></div>
-<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:311px;right:131px;bottom:71px"></div>
 <div class=line style="border-top-width:2px;left:275px;top:71px;right:111px;bottom:375px;line-height:0"></div>
 <div class=line style="border-top-width:2px;left:275px;top:199px;right:111px;bottom:247px;line-height:0"></div>
 <div style="border-bottom: 4px solid transparent;border-left-width: 10.5px;border-top: 4px solid transparent;left:137.5px;top:276px;line-height:0"></div>
 <div class=dline style="border-top-width:2px;left:67px;top:279px;right:263px;bottom:167px;line-height:0"></div>
 <div class=line style="border-top-width:2px;left:275px;top:343px;right:111px;bottom:103px;line-height:0"></div>
+<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:365.5px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:67px;top:311px;right:339px;bottom:75px"></div>
 <div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:93.5px;line-height:0"></div>
 <div class=line style="border-left-width:2px;left:67px;top:39px;right:339px;bottom:347px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:40px;line-height:0"></div>
+<div class=line style="border-left-width:2px;left:147px;top:43px;right:259px;bottom:343px"></div>
 <div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:221.5px;line-height:0"></div>
 <div class=line style="border-left-width:2px;left:67px;top:167px;right:339px;bottom:219px"></div>
 <div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:301.5px;line-height:0"></div>
 <div class=dline style="border-left-width:2px;left:67px;top:231px;right:339px;bottom:139px"></div>
-<div style="border-left: 4px solid transparent;border-right: 4px solid transparent;border-top-width: 10.5px;left:64px;top:365.5px;line-height:0"></div>
-<div class=line style="border-left-width:2px;left:67px;top:311px;right:339px;bottom:75px"></div>
-<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:40px;line-height:0"></div>
-<div class=line style="border-left-width:2px;left:147px;top:43px;right:259px;bottom:343px"></div>
+<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:376px;line-height:0"></div>
+<div class=dline style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:67px;top:379px;right:259px;bottom:23px"></div>
+<div class=dline style="border-left-width:2px;left:67px;top:375px;right:339px;bottom:68px;line-height:0"></div>
 <div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:168px;line-height:0"></div>
 <div class=line style="border-left-width:2px;left:147px;top:171px;right:259px;bottom:215px"></div>
 <div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:232px;line-height:0"></div>
 <div class=dline style="border-left-width:2px;left:147px;top:235px;right:259px;bottom:135px"></div>
 <div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:312px;line-height:0"></div>
 <div class=line style="border-left-width:2px;left:147px;top:315px;right:259px;bottom:71px"></div>
-<div style="border-bottom-width: 10.5px;border-left: 4px solid transparent;border-right: 4px solid transparent;left:144px;top:376px;line-height:0"></div>
-<div class=dline style="border-width:2px;border-top-width:0;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;border-bottom-left-radius:8px;left:67px;top:379px;right:259px;bottom:23px"></div>
-<div class=dline style="border-left-width:2px;left:67px;top:375px;right:339px;bottom:68px;line-height:0"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:39px;right:131px;bottom:343px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:167px;right:131px;bottom:215px"></div>
+<div class=line style="border-width:2px;border-left-width:0;-webkit-border-top-right-radius:8px;-moz-border-radius-topright:8px;border-top-right-radius:8px;-webkit-border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;border-bottom-right-radius:8px;left:263px;top:311px;right:131px;bottom:71px"></div>
 <div style="text-align:center;left:84px;top:16px;right:276px;bottom:416px">Client</div>
 <div style="text-align:right;left:-56px;top:64px;right:352px;bottom:368px">request</div>
 <div style="left:160px;top:64px;right:184px;bottom:368px">response</div>
