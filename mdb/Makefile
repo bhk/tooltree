@@ -1,7 +1,7 @@
 # make [default] : build & ship mdb executable & mdbagent.lua
 # make 'Demo(X)' : create HTML from X_demo.js & open it in a browser
 # make mdb / mdblua : run MDB executable / sources with sample debug target
-#   make ... serve=mdb_demo : use primtive state inspector for UI
+#   make ... serve=mdb_raw : use primtive state inspector for UI
 #   make ... example=... : select debug target (a, b, c, or specific file)
 # make owebtest : run owebtest
 # make size : compute size of JS bundled in MDB

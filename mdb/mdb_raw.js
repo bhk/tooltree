@@ -1,3 +1,4 @@
+// Simple UI for MDB
 'use strict';
 
 var demo = require('demo.js');
@@ -55,8 +56,8 @@ demo.addButton('--id', function () { tableID.setValue( tableID.getValue() - 1 );
 demo.note(
     [
         View.create({$tag: 'tt', fontWeight: 'bold'},
-                    'make run_mdb serve=mdb_demo'),
-        ' (this file must be loaded via the server)'
+                    'make mdb serve=mdb_raw'),
+        ' (this file must be loaded from the MDB server)'
     ]
 );
 
