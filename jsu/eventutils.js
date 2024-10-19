@@ -113,7 +113,7 @@ function handleKeys(elem, evtType, useCapture, handlers) {
                      (evt.ctrlKey ? "C_" : "") +
                      (evt.metaKey ? "M_" : "") +
                      (evt.shiftKey ? "S_" : "") +
-                     (evt.keyIdentifier || "---") );
+                     (evt.key || "---") );
         }
 
         var f = handlers[name] || handlers.other;

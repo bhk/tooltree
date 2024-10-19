@@ -164,8 +164,8 @@ ConsoleView.initialize = function (mdb) {
 
     handleKeys(this.prompt.e, 'keydown', false, {
         Enter: this.enterPressed.bind(this),
-        Up: this.arrowPressed.bind(this),
-        Down: this.arrowPressed.bind(this)
+        ArrowUp: this.arrowPressed.bind(this),
+        ArrowDown: this.arrowPressed.bind(this)
     });
 
     this.e.onmousedown = function (e) {
@@ -253,7 +253,7 @@ ConsoleView.enterPressed = function () {
 
 ConsoleView.arrowPressed = function (evt) {
     var e = this.prompt.e;
-    var text = (evt.keyIdentifier == 'Up' ?
+    var text = (evt.key == 'ArrowUp' ?
                 this.history.getPrev(e.textContent) :
                 this.history.getNext(e.textContent) );
     if (text != null) {
