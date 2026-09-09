@@ -21,7 +21,7 @@ Options:
    -MP          : Add an empty dependency line for each included file.
    -MT TARGET   : Specify the target for the dependencies in MKFILE.
    -MTF         : Declare MKFILE as a target for (non-oo) dependencies.
-   -Moo PATTERN : Add order-only dependencues (when -MF is given),
+   -Moo PATTERN : Add order-only dependencies (when -MF is given),
                   computed by expanding PATTERN for each dependency.
    -MX          : Include binary extensions in the dependency file.
    -m NAME      : Specify the main function name.

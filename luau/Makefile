@@ -16,11 +16,12 @@ LuaTest(testexe_q.lua).exports = {inherit} LUA
 # Some tests depend on xpfs.so; might as well make all of them dependent.
 LuaTest.luaCPathLibs = $(libs)
 
-# requirefile_q reads results json_q.lua's OK file
+# requirefile_q reads results from {dataFile}
+LuaTest(requirefile_q.lua).in = {inherit} {dataFile}
+LuaTest(requirefile_q.lua).dataFile = Write(data:DATA)
+LuaTest(requirefile_q.lua).execArgs = $(notdir $(call get,out,{dataFile}))
+LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;$(dir $(call get,out,{dataFile}))
 LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
-LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;{outDir}
-LuaTest(requirefile_q.lua).deps = {inherit} LuaTest(json_q.lua)
 
 includeImports = build-lua/build-lua.mk
 include ../build/tooltree.mk
-

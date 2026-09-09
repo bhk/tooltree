@@ -15,16 +15,19 @@ Test.inferClasses =
 # ASSERT: LuaTest() executes a Lua file and passes LUA_PATH correctly
 tests += LuaTest(A)
 LuaTest(A).in = test/cfl.lua
-LuaTest(A).arg = "quiet"
 
 
-# ASSERT: LuaTest() generates include file that captures direct
-#    dependencies on sources & OO dependencies on tests
-tests += Exec(Ax)
-Exec(Ax).in = LuaTest(A)
-define Exec(Ax).command
-  grep -q .out/.*LuaTest/test/dep_q.ok $(call get,out,LuaScan(test/cfl.lua))
-endef
+# ASSERT: LuaTest(A), via LuaScan(), generates a deps file for LuaTest(A)
+# ASSERT: The deps file contains its own dependencies.
+# ASSERT: The deps file includes order-only deps for inferred unit tests.
+#
+tests += Test(A2)
+Test(A2).in = LuaTest(A)
+Test(A2).scanID = LuaScan(LuaTest(A))
+Test(A2).scanOut = $(call get,out,{scanID})
+Test(A2).exec = \
+  grep -q '$(call get,out,{in}): .*/cfl.lua .* | .*/cfl_q.lua.ok' {scanOut}$(n)\
+  grep -q '$(call get,out,{scanID}): .*cfl.lua' {scanOut}
 
 
 # ASSERT: LuaExec() captures output
