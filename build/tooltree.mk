@@ -240,12 +240,9 @@ _thisImports = $(call get,imports,Package($(tooltreeName)))
 #    values; each is treated as relative to the export directory.
 _getPackageExports = $(foreach p,$2,$(call _joinDirs,$(call get,export,Package($p)),$(call get,result-$1,Package($p))))
 
-_ttLog = $(if $(filter $(minionDebug),$1),$(info $1: $(call _qvn,$2)))
-_ttEval = $(call _ttLog,$2,EVAL:$1)$(eval $2)
-
 # Assign `package.PKG` for use by the Makefile
 _assignPackageVars = \
-  $(call _ttEval,imports,\
+  $(call _eval,\
     $(foreach P,$(_thisImports),\
       package.$P := $(call get,export,Package($P))$(\n)))
 
@@ -271,7 +268,7 @@ _mkRequested = $(patsubst *,$(call _getPackageExports,makefiles,$(_thisImports))
 _mkCheck = $(or $(wildcard $1),$(call _mkMissing,$2,$(_mkMessage)))
 _mkMissing = $(_mkDisableCache)$(if $(filter $(_mkSimple),$1),,$(if $(filter help $$%,$1),$(info $2),$(error $2)))
 _mkMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try 'make imports'.
-_mkDisableCache = $(call _ttEval,imports,minionCache =)
+_mkDisableCache = $(call _eval,minionCache =)
 
 # Load minion
 
@@ -279,6 +276,6 @@ minionStart = 1
 include $(_tt)build/minion.mk
 
 $(_assignPackageVars)
-$(call _ttEval,imports,include $(_validMakefiles))
+$(call _eval,include $(_validMakefiles))
 
 $(minionEnd)

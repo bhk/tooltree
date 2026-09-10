@@ -7,7 +7,7 @@
 # BuildLua: mixin that describes external dependencies of this makefile.
 #
 BuildLua.inherit = _BuildLua
-_BuildLua.lua = $(call get,export,Package(lua))
+_BuildLua.lua = {Package(lua).export}
 _BuildLua.luaExe = {lua}/bin/lua
 _BuildLua.luaLib = {lua}/lib/liblua.lib
 _BuildLua.luaIncludes = {lua}/src
@@ -26,7 +26,7 @@ _LuaEnv.LUA_PATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaPathDirs},$(d:
 _LuaEnv.LUA_CPATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
 _LuaEnv.packages = $(filter-out build-lua,$(_thisImports))
 _LuaEnv.luaPathDirs = . $(call _getPackageExports,luaPathDirs,{packages})
-_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir $(call get,out,{luaCPathLibs})))
+_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir {{luaCPathLibs}.out}))
 _LuaEnv.luaCPathLibs =
 _LuaEnv.deps = {luaCPathLibs} {inherit}
 _LuaEnv.preloads =
@@ -113,13 +113,12 @@ _LuaExe.l2cClass = LuaToC
 # Pass all arguments through to LuaToC to generate a single C file.
 _LuaExe.mainC = {l2cClass}($(subst $(\s),$;,$(filter %.lua,{inX})))
 _LuaExe.inIDs = {ccClass}({mainC}) {luaLib} $(patsubst %.c,{ccClass}(%.c),$(filter-out %.lua,{inX}))
-_LuaExe.inPairs = $(foreach i,{inIDs},$i$(if $(filter %$],$i),$$$(call get,out,$i)))
 
 # We need to include *discovered* libraries on the link command line, but we
 # don't know them at rule generation time, so we use the `$(...)` shell
 # construct to extract them from the generated C file when this command is
 # execited.  A depsMF is written as a side effect.
-_LuaExe.command = {inherit} $$( {luaExe} {cfromlua} --readlibs -MF {depsMF} -MT {@} -MP $(call get,out,{mainC}) )
+_LuaExe.command = {inherit} $$( {luaExe} {cfromlua} --readlibs -MF {depsMF} -MT {@} -MP {{mainC}.out} )
 _LuaExe.up = {luaExe} {cfromlua}
 _LuaExe.depsMF = {outBasis}.d {inherit}
 
@@ -150,12 +149,12 @@ _LuaTest.deps = LuaScan($(_self)) {inherit}
 LuaScan.inherit = _LuaScan
 _LuaScan.inherit = LuaEnv Builder
 _LuaScan.outExt = .d
-_LuaScan.luaSource = $(call get,<,$(_arg1))
+_LuaScan.luaSource = {$(_arg1).<}
 # To work around tooltree/build/makebug.mk, we omit {luaSource} from this
 # rule's prereqs and rely on the generated file to name that dependency.
 _LuaScan.in = 
 _LuaScan.command = {exportPrefix} {luaExe} {cfromlua} {luaSource} -MF {@} -Moo {Moo} -MT {MT} -MTF -MP
 _LuaScan.up = {luaExe} {cfromlua}
-_LuaScan.MT = $(call get,out,$(_arg1))
-_LuaScan.Moo = $(call get,out,LuaTest(^B_q.lua))
+_LuaScan.MT = {$(_arg1).out}
+_LuaScan.Moo = {LuaTest(^B_q.lua).out}
 _LuaScan.rule = {inherit}-include {@}$(\n)

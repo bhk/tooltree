@@ -13,7 +13,7 @@ CC.warnFlags = -Werror
 CC.srcFlags = -DLUA_COMPAT_APIINTCASTS {inherit}
 
 LuaTest.luaPathDirs = $(package.lpegsources)
-LuaTest.luaCPathDirs = $(dir $(call get,out,SharedLib(@lpeg)))
+LuaTest.luaCPathDirs = $(dir {SharedLib(@lpeg).out})
 LuaTest.up = {inherit} SharedLib(@lpeg)
 
 include ../build/tooltree.mk

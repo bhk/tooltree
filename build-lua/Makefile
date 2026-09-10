@@ -24,11 +24,11 @@ LuaTest(A).in = test/cfl.lua
 tests += Test(A2)
 Test(A2).in = LuaTest(A)
 Test(A2).scanID = LuaScan(LuaTest(A))
-Test(A2).scanOut = $(call get,out,{scanID})
-Test(A2).inferredTest = $(call get,outName,LuaTest(cfl_q.lua))
+Test(A2).scanOut = {{scanID}.out}
+Test(A2).inferredTest = {LuaTest(cfl_q.lua).outName}
 Test(A2).exec = \
-  grep -q '$(call get,out,{in}): .*/cfl.lua .* | .*/{inferredTest}' {scanOut}$(\n)\
-  grep -q '$(call get,out,{scanID}): .*cfl.lua' {scanOut}
+  grep -q '{{in}.out}: .*/cfl.lua .* | .*/{inferredTest}' {scanOut}$(\n)\
+  grep -q '{{scanID}.out}: .*cfl.lua' {scanOut}
 
 
 # ASSERT: LuaExec() captures output
@@ -57,7 +57,7 @@ Test(D).in = LuaToC(test/cfl.lua)
 Test(D).exec = \
    grep [-][-].dep.lua {<} | wc -l | grep -q 1 $(\n)\
    grep This.is.data.txt {<} | wc -l | grep -q 1 $(\n)\
-   grep -q 'test/cfl.c: test/cfl.lua test/dep.lua test/pre.lua test/dep.lua test/data.txt$$' $(call get,depsMF,{in})
+   grep -q 'test/cfl.c: test/cfl.lua test/dep.lua test/pre.lua test/dep.lua test/data.txt$$' {{in}.depsMF}
 
 
 # ASSERT:  Exec(LuaExe(CFL)) == LuaExec(LuaBundle(CFL))

@@ -74,9 +74,9 @@ _JSScan.outExt = .d
 # We omit the source file from {in} in order to avoid tooltree/build/makebug.mk;
 # -MTF will emit it as a dependency along with others
 _JSScan.in =
-_JSScan.hidden< = $(call get,out,$(_arg1))
+_JSScan.hidden< = {$(_arg1).out}
 _JSScan.command = {exportPrefix} {jsdepExe} {hidden<} -MF {@} -Moo {Moo} -MT {MT} -MTF
 _JSBundle.up = {jsdepExe}
-_JSScan.MT = $(call get,out,JSTest($(_argText)))
-_JSScan.Moo = $(call get,out,JSTest(^B_q.js))
+_JSScan.MT = {JSTest($(_argText)).out}
+_JSScan.Moo = {JSTest(^B_q.js).out}
 _JSScan.rule = {inherit}-include {@}$(\n)

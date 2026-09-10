@@ -11,7 +11,7 @@ mdb = RunMDB(LuaExe(mdb.lua))
 mdblua = LuaRunMDB(mdb.lua)
 owebtest = LuaRun(owebtest.lua)
 size = JSBundle(mdbapp.js)
-Alias(size).command = uglifyjs $(call get,out,{in}) -c -m | wc
+Alias(size).command = uglifyjs {{in}.out} -c -m | wc
 
 exports = LuaExe(mdb.lua) LuaBundle(mdbagent.lua) mdb.txt
 
@@ -40,13 +40,13 @@ LuaEnv.deps = {inherit} $(LuaEnv_$(_argText)_deps)
 mdbJS = GZip(JSToHTML(mdbapp.js))
 LuaEnv_mdb.lua_exports = REQUIREFILE_PATH
 LuaEnv_mdb.lua_deps = $(mdbJS)
-LuaEnv.REQUIREFILE_PATH = $(dir $(call get,out,$(mdbJS)))
+LuaEnv.REQUIREFILE_PATH = $(dir {$(mdbJS).out})
 
 # MDB mixin defines properties for executing MDB via either LuaRun or Run
 MDB.execArgs = --ui {uriArg} -- {luaExe} mdbagent.lua {exampleArg}
 MDB.exampleArg = $(word 2,$(subst =, ,\
   $(filter $(example)%,a=example.lua b=../webdemo/demo.lua c=mdb.lua $(example)=$(example))))
-MDB.uriArg = $(if $(serve),--uri='serve/$(call get,out,JSToHTML($(serve).js))')
+MDB.uriArg = $(if $(serve),--uri='serve/{JSToHTML($(serve).js).out}')
 MDB.deps = {inherit} $(if $(serve),JSToHTML($(serve).js))
 
 # target_q.lua needs LUA environment variable
