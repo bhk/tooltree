@@ -25,8 +25,9 @@ tests += Test(A2)
 Test(A2).in = LuaTest(A)
 Test(A2).scanID = LuaScan(LuaTest(A))
 Test(A2).scanOut = $(call get,out,{scanID})
+Test(A2).inferredTest = $(call get,outName,LuaTest(cfl_q.lua))
 Test(A2).exec = \
-  grep -q '$(call get,out,{in}): .*/cfl.lua .* | .*/cfl_q.lua.ok' {scanOut}$(n)\
+  grep -q '$(call get,out,{in}): .*/cfl.lua .* | .*/{inferredTest}' {scanOut}$(\n)\
   grep -q '$(call get,out,{scanID}): .*cfl.lua' {scanOut}
 
 

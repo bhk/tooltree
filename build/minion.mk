@@ -194,7 +194,7 @@ _Exec.inherit = Builder
 _Exec.command = ( {exportPrefix} {exec} ) > {@} || ( rm -f {@}; false )
 _Exec.exec = {<} {execArgs} $(wordlist 2,9999,{^})
 _Exec.execArgs =
-_Exec.outExt = %.out
+_Exec.outExt = .out
 # Infer only makes sense for the first item, the one whose type we know.
 _Exec.inIDs = $(call _inferIDs,$(word 1,{inX}),{inferClasses}) $(wordlist 2,999999,{inX})
 _Exec.inferClasses = CExe.c CExe++.cpp CExe++.cc
@@ -204,7 +204,7 @@ _Exec.inferClasses = CExe.c CExe++.cpp CExe++.cc
 #
 _Test.inherit = Exec
 _Test.command = {exportPrefix} {exec}$(\n)touch {@}
-_Test.outExt = %.ok
+_Test.outExt = .ok
 
 
 # Run(COMMAND) : run command (as per Exec).

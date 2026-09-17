@@ -1,10 +1,8 @@
 # Build (and test) tooltree packages
 
-default = imports
-clean = Clean(imports)
+default = Package@top
+clean = Clean(default)
 
-thisPackage = tooltree
-package.tooltree.imports = smark webdemo mdb pages
+top = smark webdemo mdb pages
 
 include build/tooltree.mk
-

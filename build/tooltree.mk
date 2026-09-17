@@ -2,14 +2,11 @@
 #
 # User makefiles typically include this file after defining all their build
 # targets using Minion variables or Make rules.  User makefiles may also
-# define the following:
+# define properties of Package() Minion instances, and the following:
 #
-#    $(thisPackage)
-#    $(includeImports)
-#    Package descriptions:
-#      $(package.NAME.dir)
-#      $(package.NAME.imports)
-#      $(package.NAME.outdir)
+#    $(tooltreeName)
+#    $(tooltreeImports)
+#    $(tooltreeMakefiles)
 #
 # See tooltree.txt for descriptions of these.
 #
@@ -28,6 +25,22 @@ endif
 
 # By default, cache all rules involved in `make default`.
 minionCache ?= default
+
+ifdef tooltreeImports
+  tooltreeName ?= root
+  Package($(tooltreeName)).imports = $(tooltreeImports)
+endif
+
+tooltreeName ?= $(notdir $(abspath .))
+
+# `*` refers to all makefiles exported by imported packages.
+tooltreeMakefiles ?= *
+
+# aliases
+all ?= Variants(deep)
+deep ?= Package($(tooltreeName))
+imports ?= Package@_thisImports
+
 
 #----------------------------------------------------------------
 # Variants and variant properties
@@ -60,73 +73,69 @@ _vgetError = $(error Undefined property: V($V).$1$(\n)$(call _whereAmI,call _v$;
 #----------------------------------------------------------------
 # Package configuration
 #----------------------------------------------------------------
-#
-# Below are descriptions of the packages known to Tooltree.
-#
 
-package.bench.dir = $(_tt)bench/
-package.bench.imports = luau build-lua monoglot lpeg
+Package(bench).imports = luau build-lua monoglot lpeg
+Package(bench).root = $(_tt)bench/
 
-package.build.dir = $(_tt)build/
+Package(build).root = $(_tt)build/
 
-package.build-js.dir = $(_tt)build-js/
-package.build-js.outdir = $(VOUTDIR)exports
-package.build-js.imports = build-lua luau lpeg
+Package(build-js).imports = build-lua luau lpeg
+Package(build-js).root = $(_tt)build-js/
+Package(build-js).result = $(VOUTDIR)exports
+Package(build-js).result-makefiles = build-js.mk
 
-package.build-lua.dir = $(_tt)build-lua/
-package.build-lua.outdir = .
-package.build-lua.imports = lua
+Package(build-lua).imports = lua
+Package(build-lua).root = $(_tt)build-lua/
+Package(build-lua).result = .
+Package(build-lua).result-makefiles = build-lua.mk
 
-package.jsu.dir = $(_tt)jsu/
-package.jsu.outdir = .
-package.jsu.imports = build-js
+Package(jsu).root = $(_tt)jsu/
+Package(jsu).result = .
+Package(jsu).imports = build-js
 
-package.lpeg.dir = $(_tt)lpeg/
-package.lpeg.outdir = $(VOUTDIR)exports
-package.lpeg.imports = build-lua lua lpegsources
+Package(lpeg).imports = build-lua lua lpegsources
+Package(lpeg).root = $(_tt)lpeg/
+Package(lpeg).result = $(VOUTDIR)exports
+Package(lpeg).result-luaPathDirs = .
 
-package.lpegsources.dir = $(_tt)opensource/lpeg-0.12
+Package(lpegsources).root = $(_tt)opensource/lpeg-0.12
 
-package.lua.dir = $(_tt)lua/
-package.lua.outdir = $(VOUTDIR)exports
-package.lua.imports = luasources
+Package(lua).imports = luasources
+Package(lua).root = $(_tt)lua/
+Package(lua).result = $(VOUTDIR)exports
 
-package.luasources.dir = $(_tt)opensource/lua-5.2.3
+Package(luasources).root = $(_tt)opensource/lua-5.2.3
 
-package.luau.dir = $(_tt)luau/
-package.luau.outdir = $(VOUTDIR)exports
-package.luau.imports = build-lua lua
+Package(luau).imports = build-lua lua
+Package(luau).root = $(_tt)luau/
+Package(luau).result = $(VOUTDIR)exports
+Package(luau).result-luaPathDirs = .
 
-package.mdb.dir = $(_tt)mdb/
-package.mdb.outdir = $(VOUTDIR)exports
-package.mdb.imports = luau build-lua monoglot lpeg build-js jsu
+Package(mdb).imports = luau build-lua monoglot build-js jsu lpeg
+Package(mdb).root = $(_tt)mdb/
+Package(mdb).result = $(VOUTDIR)exports
 
-package.monoglot.dir = $(_tt)monoglot/
-package.monoglot.outdir = $(VOUTDIR)exports
-package.monoglot.imports = luau build-lua lpeg lua
+Package(monoglot).imports = luau build-lua lpeg lua
+Package(monoglot).root = $(_tt)monoglot/
+Package(monoglot).result = $(VOUTDIR)exports
+Package(monoglot).result-luaPathDirs = .
 
-package.pages.dir = $(_tt)pages/
-package.pages.outdir = $(VOUTDIR)
-package.pages.imports = smark
+Package(pages).imports = smark
+Package(pages).root = $(_tt)pages/
+Package(pages).result = $(VOUTDIR)
 
-package.smark.dir = $(_tt)smark/
-package.smark.outdir = $(VOUTDIR)exports
-package.smark.imports = luau build-lua lpeg
+Package(smark).imports = luau build-lua lpeg
+Package(smark).root = $(_tt)smark/
+Package(smark).result = $(VOUTDIR)exports
+Package(smark).result-makefiles = smark.mk
 
-package.webdemo.dir = $(_tt)webdemo/
-package.webdemo.outdir = .
-package.webdemo.imports = luau build-lua lua monoglot lpeg
+Package(webdemo).imports = luau build-lua lua monoglot lpeg
+Package(webdemo).root = $(_tt)webdemo/
+Package(webdemo).result = .
 
 #----------------------------------------------------------------
-# Tooltree function, class, and alias definitions
+# Tooltree classes
 #----------------------------------------------------------------
-
-all = Variants(deep)
-deep = Package($(thisPackage))
-imports = Package@package.$(thisPackage).imports
-
-# return $1 if variable $1 is defined
-_defined = $(if $(filter undefined,$(origin $1)),,$1)
 
 # Use a simpler {outBasis} than default (no .EXT in .out/Class/... directories)
 Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),%,$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
@@ -188,77 +197,88 @@ Ship.inherit = Phony
 Ship.in = $(foreach a,$(_args),$(patsubst %,Copy(%,dir:$(VOUTDIR)$a/),$(call _expand,@$a)))
 
 
-# Package(PACKAGE) : Package PACKAGE
+# Package(PACKAGE) : Builder for PACKAGE
 #
 Package.inherit = _Package
 _Package.inherit = _IsPhony Builder
+#
+# Builder-focused properties
+#
 _Package.outExt = .out
-_Package.inIDs = # no dependencies (for now)
-_Package.deps = $(foreach P,{p-imports},$(_class)($P))
+_Package.inIDs = $(foreach P,{imports},$(_class)($P))
 # This is a phony rule (always stale) yet we do output a file when there is a build command
-_Package.mkdirs = $(if {p-outdir},$(dir {@}))
-_Package.command = $(if {p-outdir},{makeCommand})
-_Package.message = $(if {p-outdir},{inherit})
-_Package.makeCommand = @( cd {p-dir} && $(MAKE) V=$V) > {@} 2>&1 || printf '**FAILED: see {@} for log\nOr: cd {p-dir} && make\n'
-_Package.cleanCommand = @$(if {p-outdir},cd {p-dir} && $(MAKE) V=$V clean)
-
-# Package properties
-_Package.p-dir = $(package.$(_arg1).dir)
-_Package.p-imports = $(package.$(_arg1).imports)
-_Package.p-outdir = $(package.$(_arg1).outdir)
+_Package.mkdirs = $(if {result},$(dir {@}))
+_Package.command = $(if {result},{makeCommand})
+_Package.message = $(if {result},{inherit})
+_Package.makeCommand = @( cd {root} && {doBuild} ) > {@} 2>&1 || printf '**FAILED: see {@} for log\nOr: cd {root} && make\n'
+_Package.cleanCommand = @$(if {result},cd {root} && {doClean} )
+_Package.export = $(call _joinDirs,{root},$(or {result},.))
+#
+# Package-description properties
+#
+_Package.imports =
+_Package.result =
+_Package.result-luaPathDirs =
+_Package.result-makefiles =
+_Package.doBuild = $(MAKE) V=$V
+_Package.doClean = $(MAKE) V=$V clean
 
 
 #----------------------------------------------------------------
-# Import Packages
+# Tooltree functions
 #----------------------------------------------------------------
 
-thisPackage ?= $(notdir $(abspath .))
-includeImports ?=
+# $(call _joinDirs,BASE,DIRS) : Combineoe path with zero or more relative paths
+_joinDirs = $(patsubst %/.,%,$(subst //,/,$(addprefix $1/,$2)))
 
-# Access $(package.NAME) and validate NAME
-_pkg = $(or $(package.$1),$(error Unknown package '$1'.$(\n)Named in $(or $2,in $$(call _pkg,$1))))
+# return $1 if variable $1 is defined
+_defined = $(if $(filter undefined,$(origin $1)),,$1)
 
-_allPackages = $(patsubst package.%.dir,%,$(filter package.%.dir,$(.VARIABLES)))
+_thisImports = $(call get,imports,Package($(tooltreeName)))
 
-_importedPackages = $(call _traverse,_pkgDeps,,$(thisPackage))
-_pkgDeps = $(package.$2.imports)
+# $(call _getPackageExports,TYPE,PACKAGE-NAMES) : Collect all `result-TYPE`
+#    values; each is treated as relative to the export directory.
+_getPackageExports = $(foreach p,$2,$(call _joinDirs,$(call get,export,Package($p)),$(call get,result-$1,Package($p))))
 
-_pkgError = $(error Undeclared import:$(\n)$$(package.$1) was used but $1 is not in $$(package.$(thisPackage).imports))$(\n)))
+_ttLog = $(if $(filter $(minionDebug),$1),$(info $1: $(call _qvn,$2)))
+_ttEval = $(call _ttLog,$2,EVAL:$1)$(eval $2)
 
-# $(includeImports) will fail if imported packages have not been built.  We
-# still want `clean`, `imports`, and other simple targets to succeed, and
-# they should, so we avoid warnings and errors for them, and disable caching
-# (which would probably fail).  For other targets, we warn or error out:
+# Assign `package.PKG` for use by the Makefile
+_assignPackageVars = \
+  $(call _ttEval,imports,\
+    $(foreach P,$(_thisImports),\
+      package.$P := $(call get,export,Package($P))$(\n)))
+
+_pkgDeps = $(call get,imports,Package($2))
+
+# $(_validMakefiles) : return a list of makefiles to be included.  Before
+#    imported packages have been built, the requested makefiles might not
+#    exist, yet we want `clean`, `imports`, and other simple targets that
+#    should not need the makefiles to proceed.  For other other targets, we
+#    warn or error out:
 #
-#    Ignore: clean, imports, deep, all
-#    Warn:   help, $...
-#    Error:  (others)
+#    clean, imports, ...  => silently exclude absent makefiles
+#    help, $...           => warn about missing makefiles
+#    (others)             => error
 #
-_iiDisableCache = $(call _eval,minionCache =,missingImport)
-_iiCheck = $(or $(wildcard $1),$(call _iiMissing,$(MAKECMDGOALS),$(_iiMessage)))
-_iiMissing = $(_iiDisableCache)$(if $(filter clean imports deep all,$1),,$(if $(filter help $$%,$1),$(info $2),$(error $2)))
-_iiMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try 'make imports'.
-
-# Convert PACKAGE/path to $(package.PACKAGE)/path
-_expandImportPath = $(foreach P,$(word 1,$(subst /, / ,$1)),$(call _pkg,$P,$$(includeImports) entry '$1')$(patsubst $P%,%,$1))
-
-# Assign `package.PKG` for packages, and then include imported makefiles
-#   $1 = imports & their descendants.  This means that dependencies
-#        can "piggyback"; the important thing is to validate build order.
-#   $2 = all packages
-_importDefs = \
-  $(foreach P,$1,\
-    package.$P := $(patsubst %/,%,$(patsubst %/.,%,$(package.$P.dir)$(value package.$P.outdir)))$(\n))\
-  $(foreach P,$(filter-out $1,$2),\
-    package.$P = $$(call _pkgError,$P)$(\n))
-
-_importPackages = \
-  $(call _eval,$(call _importDefs,$(_importedPackages),$(_allPackages)),imports)\
-  $(call _eval,include $(foreach P,$(includeImports),$(call _iiCheck,$(call _expandImportPath,$P))),imports)
+# `default` is expanded to $(default), so `default=all` or `default=deep`
+# will work.
+#
+_validMakefiles = $(foreach P,$(_mkRequested),$(call _mkCheck,$P,$(_mkGoals)))
+_mkSimple = clean imports deep all Package(%
+_mkGoals = $(patsubst default,$(default),$(or $(MAKECMDGOALS),default))
+_mkRequested = $(patsubst *,$(call _getPackageExports,makefiles,$(_thisImports)),$(tooltreeMakefiles))
+_mkCheck = $(or $(wildcard $1),$(call _mkMissing,$2,$(_mkMessage)))
+_mkMissing = $(_mkDisableCache)$(if $(filter $(_mkSimple),$1),,$(if $(filter help $$%,$1),$(info $2),$(error $2)))
+_mkMessage = NOT FOUND: $1$(\n)   This is an imported make include file.  Try 'make imports'.
+_mkDisableCache = $(call _ttEval,imports,minionCache =)
 
 # Load minion
 
 minionStart = 1
 include $(_tt)build/minion.mk
-$(_importPackages)
+
+$(_assignPackageVars)
+$(call _ttEval,imports,include $(_validMakefiles))
+
 $(minionEnd)

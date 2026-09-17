@@ -9,5 +9,4 @@ Demo.inherit = Run
 Demo.in = JSToHTML({inherit}_demo.js)
 Demo.exec = open {<}
 
-includeImports = build-js/build-js.mk
 include ../build/tooltree.mk

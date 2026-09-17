@@ -23,5 +23,4 @@ LuaTest(requirefile_q.lua).execArgs = $(notdir $(call get,out,{dataFile}))
 LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;$(dir $(call get,out,{dataFile}))
 LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
 
-includeImports = build-lua/build-lua.mk
 include ../build/tooltree.mk

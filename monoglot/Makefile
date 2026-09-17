@@ -7,7 +7,6 @@ exports = @libs @luaSources
 libs = LuaSharedLib(xpio_c.c) LuaLib(xpio_c.c)
 luaSources = $(filter-out %_q.lua,$(call _wildcard,*.lua))
 
-LuaEnv.luaPathDirs = . $(package.luau) $(package.lpeg)
 LuaEnv.luaCPathLibs = $(libs)
 
 # test C extensions before testing Lua files
@@ -18,5 +17,4 @@ CExe(xpio_c_q.c).inferClasses = LuaCC.c
 CExe(xpio_c_q.c).in = {inherit} $(package.lua)/lib/liblua.lib
 CExe(xpio_c_q.c).libFlags = {inherit} -lm
 
-includeImports = build-lua/build-lua.mk
 include ../build/tooltree.mk

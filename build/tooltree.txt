@@ -2,15 +2,14 @@ Tooltree Build
 #####
 
 Tooltree is a project structured as a set of **packages** that exist as
-siblings immediately under the tooltree directory.  The goal is to structure
-a project -- a versioned collection of assets, such a git repository -- as a
-set of smaller components on which development can proceed independently.
+siblings immediately under the tooltree directory.  The intent is to manage
+dependencies between packages so that work on one package can proceed
+independently of others with quick, minimal rebuilds.
 
-Dependencies between packages are minimized and managed.  Packages
-**import** selected packages and they **export** a directory that will be
-provided to other packages when they import it.  This allows a package to
-change its internal organization substantially while still supporting the
-same contracts with other packages.
+Packages **import** selected packages and they **export** a directory that
+will be provided to other packages when they import it.  This allows a
+package to change its internal organization substantially while still
+meeting the same contract with other packages.
 
 Each package has a Makefile that describes how it is built.  Here are some
 build command examples that work across Tooltree packages.  The following
@@ -27,108 +26,99 @@ The following commands deal with assets outside of the current package:
 .  make clean imports     Delete build products for imported packages.
 .  make 'Graph(imports)'  Show imported packages and their relationships.
 
-The top-level Makefile is itself an empty package that includes other
-packages for the convenience of validating the entire project.
+The top-level Makefile is itself just an empty package that includes all the
+other packages, making it easy to validate the entire project with one
+build.
 
 
 Package Makefiles
 ====
 
-See any of `tooltree/*/Makefile` for examples.  Here are the key elements of
-a tooltree Makefile:
+See any of `tooltree/*/Makefile` for examples.  Here are some things to know
+when dealing with a tooltree Makefile:
 
 * **Minion**: Each package in tooltree has a Makefile that defines
-  [Minion](https://github.com/bhk/minion) targets and then, at the bottom,
-  includes `build/tooltree.mk`.
+  [Minion](https://github.com/bhk/minion) targets and other variables and
+  then, at the bottom, includes `build/tooltree.mk`, which in turn includes
+  `minion.mk`.
 
-  `tooltree.mk` includes `minion.mk` after defining a number of variables,
-  functions, and Minion classes used across multiple packages.  Some of these
-  definitions support the modular, packaage-based structure of tooltree.
+* **Package descriptions**: `tooltree.mk` defines a set of properties that
+  describe the tooltree packages..  See [[Package Descriptions]], below, for
+  what these definitions look like.
 
-* **Package name**: Each package has a name, defined by the `thisPackage`
-  variable.  This defaults to the name of the directory containing the
-  package, so packages within the tooltree directory structure rely on this
-  default definition.
+* **Package name**: Each makefile can define `tooltreeName` to identify its
+  package name. Packages within the tooltree directory structure rely on the
+  default value, whih is the name of the directory containing the makefile.
 
-* **Properties**: Each package has properties that describe its imports and
-  the directory it exports.  See [[Package Descriptions]], below, for what
-  these definitions look like.  For packages within tooltree, these are
-  defined in `tooltree.mk`.
+* **Imports**: Each makefile can use `$(package.P)` to refer to the
+  directory exported by P, one of its imported packages.
 
-* **Imports**: For each imported package P, our Makefile can use
-  `$(package.P)` to refer to the directory exported by P.
+* **Imported Makefiles**: When a package imports packages that export
+  makefiles, `tooltree.mk` will include those makefiles after defining the
+  locations of those packages and their exports.  It also handles situations
+  in which the imported packages have not yet been built, allowing `make
+  imports` and `make help` to proceed.  See `tooltreeMakefiles` in
+  `tooltree.mk` for more.
 
-* **Imported Makefiles**: When a package Makefile includes makefiles that
-  are exported by other packages, it sets the `includeImports` variable to a
-  list of paths describing their locations.  There are a few reasons for
-  using this mechanism rather than directly including them:
-
-  #. Convenience and modularity.  The first element in each path is the name
-     of the exporting package, which will be replaced with that package's
-     export directory.  For example, 'p1/defs.mk' expands to
-     `$(package.p1)/defs.mk`, which in turn will expand to something like
-     `../p1/.out/exports/defs.mk`, depending on how p1's export directory is
-     defined.
-
-  #. These makefiles have to be included *after* `minion.mk` has been loaded
-     because `$(package.PKG)` variables generally include `$(VOUTDIR)` or
-     `$V`, which are defined or defaulted by Minion.
-
-  #. These makefiles might not *exist* until imported packages are built.
-     This mechanism allows some essential build commands like `make imports`
-     and `make help` to proceed even when the imported makefiles do not
-     exist, while still providing important error checking when more complex
-     targets are selected.
+* By default, `tooltree.mk` enables parallel builds and Minion rule caching.
 
 
 Package Descriptions
 ====
 
-Packages are defined with the following variables:
+Packages are defined with the following variables, wherein `NAME` is the
+name of the package:
 
- * `$(package.NAME.dir)` = the package directory, where its Makefile
+ * `Package(NAME).root` = the package directory, where its Makefile
    resides.
 
- * `$(package.NAME.imports)` = other packages that must be built before this
+ * `Package(NAME).imports` = other packages that must be built before this
    package is built.
 
- * `$(package.NAME.outdir)` = a path *relative to* `DIR` that names a
-   directory that will contain exports (build results) after the package is
-   built.  If empty or undefined, there is no build step and the entire
-   package is exported.
+ * `Package(NAME).result` = a path *relative to* `DIR` that names a directory
+   that will contain exports (build results) after the package is built.  If
+   empty or undefined, there is no build step and the entire package is
+   exported.
 
-Tooltree.mk will compute the following for each package imported by the package
-currently being built:
+Packages may describe specific types results within their export directory.
+These variables contain a list of zero or more paths to files or directores,
+relative to the `result` directory.  Currently used within tooltree are:
 
- * `$(package.NAME)` = path to the export directory.
+ * `Package(NAME).result-luaPathDirs` = directories with Lua libraries.
+   This is used by the `LuaEnv.luaPathDirs` definition in `build-lua.mk` to
+   a default value that lists all the Lua library directories from modules
+   that are imported by the current module.
+
+ * `Package(NAME).result-makefiles` = make include files that are intended
+   for use by importing makefiles.  This is used by `tooltree.mk`, which
+   automatically includes these files before Minion rule processing.
 
 
 External Projects
 ====
 
-To leverage tooltree, an external project's Makefile at a minimum will
-declare its own package name (with `thisPackage = NAME`), declare the
-packages it imports (with `package.NAME.imports = ...`), define
-`includeImports` if it uses imported makfiles, and finally include
-`tooltree.mk` at the bottom.
+An external project -- one outside of the tooltree project -- will not have
+a package description known to `tooltree.mk`, so it will have
+to describe its own package properties... at a minimum its imports.
 
 For example:
 
-.  Alias(default).in = LuaExe(prog.lua)
+.  default = LuaExe(prog.lua)
 .
-.  thisPackage = root
-.  package.root.imports = build-lua
-.  includeImports = build-lua/build-lua.mk
+.  tooltreeImports = build-lua
 .  include <PATH-TO-TOOLTREE>/build/tooltree.mk
 
-Note: While `thisPackage` will default to the name of the directory that
-contains it, this default should probably be avoided in the case of
-top-level makefiles because that directory name may vary.
+When `tooltreeImports` is assigned by the makefile, tooltree.mk will default
+the current package name to `root` and `Package(root).imports` to
+`$(tooltreeImports)`.
 
-If the project is itself structured as multiple packages, it can provide a
-make include file that can be used by all its packages, analogously to how
-`tooltree.mk` is used within Tooltree.  It would describe all the packages
-in its project and then include `tooltree.mk`.
+Tooltree's own top-level Makefile is an example of this kind of "external"
+makefile.
+
+If the project is itself structured as multiple packages, it should have a
+make include file used by all its packages, analogously to how `tooltree.mk`
+is used within Tooltree.  It would describe all the packages in its project
+and then include `tooltree.mk`.
 
 For example, the project-level include file might look like this:
 
@@ -137,13 +127,13 @@ For example, the project-level include file might look like this:
 .  # this can be included from Makefiles in other directories...
 .  Xdir := $(dir $(lastword $(MAKEFILE_LIST)))
 .
-.  package.foo.dir := $(Xdir)foo
-.  package.foo.outdir = $(VOUTDIR)/exports
-.  package.foo.imports = build-lua
+.  Package(foo).imports = build-lua
+.  Package(foo).dir := $(Xdir)foo
+.  Package(foo).outdir = $(VOUTDIR)/exports
 .
-.  package.bar.dir := $(Xdir)bar/
-.  package.bar.outdir = .
-.  package.bar.imports = foo
+.  Package(bar).imports = foo
+.  Package(bar).dir := $(Xdir)bar/
+.  Package(bar).outdir = .
 .
 .  include $(Xdir)/<PATH_TO_TOOLTREE>/tooltree.mk
 
@@ -151,17 +141,16 @@ Its own package makefiles would resemble those in tooltree:
 
 .  # projectX/foo/Makefile
 .
-.  Alias(default).in = Ship(exports)
+.  default = Ship(exports)
 .  exports = LuaExe(foo)
 .
-.  includeImports = build-lua/build-lua.mk
 .  include ../projectX.mk
 
 
-Tooltree Changes
+Tooltree Changes since 2023
 ====
 
-This new `build` directory comes along with a rewrite of the build system
+The current `build` directory comes along with a rewrite of the build system
 that was motivated by the following goals:
 
  - Make it easier for external projects to leverage Tooltree packages.
@@ -247,9 +236,9 @@ In more detail, the changes comprise the following:
 
    .  CC += $(call <wildcard>,*.c)        # include rules to compile these
    .  Exe += prog
-   .  Exe[prog].prereqOf = prog           # `prog` goal defined here (& elsewhere?)
+   .  Exe[prog].prereqOf = prog           # `prog` goal is defined here (& elsewhere?)
    .  Exe[prog].in = $(call get,out,CC)   # accepts files, not items
 
    In Minion is:
 
-   .  Alias(prog).in = CExe(@*.c)
+   .  prog = CExe(@*.c)

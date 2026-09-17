@@ -4,12 +4,13 @@
 #    LuaExe, LuaToC, LuaBundle : bundle Lua scripts with dependencies
 #
 
-# BuildLua: mixin that describes external dependencies fo this makefile.
+# BuildLua: mixin that describes external dependencies of this makefile.
 #
 BuildLua.inherit = _BuildLua
-_BuildLua.luaExe = $(package.lua)/bin/lua
-_BuildLua.luaLib = $(package.lua)/lib/liblua.lib
-_BuildLua.luaIncludes = $(package.lua)/src
+_BuildLua.lua = $(call get,export,Package(lua))
+_BuildLua.luaExe = {lua}/bin/lua
+_BuildLua.luaLib = {lua}/lib/liblua.lib
+_BuildLua.luaIncludes = {lua}/src
 _BuildLua.cfromlua := $(dir $(lastword $(MAKEFILE_LIST)))cfromlua.lua
 
 
@@ -17,11 +18,14 @@ _BuildLua.cfromlua := $(dir $(lastword $(MAKEFILE_LIST)))cfromlua.lua
 #   run-time environment.  These are also used by cfromlua (LuaToExe,...).
 #   If you are building C Lua extensions, add them to `luaCPathLibs`.
 #
+#   By default, this reflects imported packages that export luaPathDirs.
+#
 LuaEnv.inherit = _LuaEnv BuildLua
 _LuaEnv.exports = LUA_PATH LUA_CPATH {inherit}
 _LuaEnv.LUA_PATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
 _LuaEnv.LUA_CPATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
-_LuaEnv.luaPathDirs = .
+_LuaEnv.packages = $(filter-out build-lua,$(_thisImports))
+_LuaEnv.luaPathDirs = . $(call _getPackageExports,luaPathDirs,{packages})
 _LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir $(call get,out,{luaCPathLibs})))
 _LuaEnv.luaCPathLibs =
 _LuaEnv.deps = {luaCPathLibs} {inherit}

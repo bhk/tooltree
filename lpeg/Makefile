@@ -16,5 +16,4 @@ LuaTest.luaPathDirs = $(package.lpegsources)
 LuaTest.luaCPathDirs = $(dir $(call get,out,SharedLib(@lpeg)))
 LuaTest.up = {inherit} SharedLib(@lpeg)
 
-includeImports = build-lua/build-lua.mk
 include ../build/tooltree.mk
