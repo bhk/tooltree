@@ -7,7 +7,7 @@
 #   tests), and provides no benefit for sessions in an Emacs shell.
 # lua-useReadline = 1
 
-Alias(default).in = Ship(exports/bin,exports/lib,exports/src)
+default = Ship(exports/bin,exports/lib,exports/src)
 
 exports/bin = CExe(lua) CExe(luac)
 exports/lib = Lib(liblua)
@@ -15,7 +15,7 @@ exports/src = $(patsubst %,$(package.luasources)/src/%.h, lua luaconf lualib lau
 
 CExe(lua).in = $(package.luasources)/src/lua.c Lib(liblua)
 CExe(luac).in = $(package.luasources)/src/luac.c Lib(liblua)
-Lib(liblua).in = $(filter-out %/lua.c %/luac.c,$(wildcard $(package.luasources)/src/*.c))
+Lib(liblua).in = $(filter-out %/lua.c %/luac.c,$(call _wildcard,$(package.luasources)/src/*.c))
 
 # Avoid project-wide warnings so we can use the original sources unmodified
 CC.warnFlags = -Werror
@@ -26,5 +26,4 @@ ifdef lua-useReadline
   CExe(lua).libFlags = -lreadline # needed for MacOS
 endif
 
-minionCache = default
 include ../build/tooltree.mk

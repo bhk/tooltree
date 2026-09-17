@@ -1,12 +1,12 @@
-Alias(default).in = Perf(web.lua) Perf(web.js)
+default = LuaPerf(web.lua) JSPerf(web.js)
 
-LuaEnv.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
+LuaPerf.inherit = LuaRun
+LuaPerf.exec = port=8002 ./time.sh {luaExe} {<}
+LuaPerf.luaPathDirs = . $(package.luau) $(package.monoglot) $(package.lpeg)
 
-Perf.inherit = LuaRun
-Perf.exec = {exportPrefix} ./time.sh {webserver}
-Perf.webserver = {luaExe} {<}
-Perf(web.js).webserver = node {<}
+JSPerf.inherit = Run
+JSPerf.exec = port=8001 ./time.sh node {<}
 
 includeImports = build-lua/build-lua.mk
+MAKEFLAGS = -R -j1 # don't run in parallel; see tooltree.mk
 include ../build/tooltree.mk
-

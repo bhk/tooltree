@@ -1,6 +1,6 @@
 # Test cfromlua and Lua-related builder classes.
 
-Alias(default).in = @tests
+default = @tests
 
 # These settings are intended for cfl.lua
 #   Inherited by LuaBundle, LuaToC, LuaExec, LuaTest, ...

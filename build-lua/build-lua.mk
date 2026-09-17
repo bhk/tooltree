@@ -22,7 +22,7 @@ _LuaEnv.exports = LUA_PATH LUA_CPATH {inherit}
 _LuaEnv.LUA_PATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaPathDirs},$(d:%/=%)/?.lua)))
 _LuaEnv.LUA_CPATH = $(subst $(\s),;,$(call _unique,$(foreach d,{luaCPathDirs},$(d:%/=%)/?.so)))
 _LuaEnv.luaPathDirs = .
-_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir $(call get,out,{luaCPathLibs))))
+_LuaEnv.luaCPathDirs = {luaPathDirs} $(call _unique,$(dir $(call get,out,{luaCPathLibs})))
 _LuaEnv.luaCPathLibs =
 _LuaEnv.deps = {luaCPathLibs} {inherit}
 _LuaEnv.preloads =
@@ -107,7 +107,6 @@ _LuaExe.ccClass = LuaCC
 _LuaExe.l2cClass = LuaToC
 
 # Pass all arguments through to LuaToC to generate a single C file.
-_LuaExe.inX = $(call _expand,{in},in)
 _LuaExe.mainC = {l2cClass}($(subst $(\s),$;,$(filter %.lua,{inX})))
 _LuaExe.inIDs = {ccClass}({mainC}) {luaLib} $(patsubst %.c,{ccClass}(%.c),$(filter-out %.lua,{inX}))
 _LuaExe.inPairs = $(foreach i,{inIDs},$i$(if $(filter %$],$i),$$$(call get,out,$i)))

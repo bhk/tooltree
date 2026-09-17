@@ -1,9 +1,9 @@
 # Test Lua sources and build the XPFS Lua extension (static & dynamic).
 # Libraries and sources are deployed to .out/$V/exports/{lib,src}
 
-Alias(default).in = Ship(exports) LuaTest@*_q.lua
+default = Ship(exports) LuaTest@*_q.lua
 
-exports = @libs $(filter-out %_q.lua,$(wildcard *.lua))
+exports = @libs $(filter-out %_q.lua,$(call _wildcard,*.lua))
 libs = LuaSharedLib(xpfs.c) LuaLib(xpfs.c)
 
 # Export these environment variables used by tests
@@ -23,3 +23,4 @@ LuaTest(requirefile_q.lua).deps = {inherit} LuaTest(json_q.lua)
 
 includeImports = build-lua/build-lua.mk
 include ../build/tooltree.mk
+

@@ -1,11 +1,11 @@
 # Build the XPIO native extension and test Lua modules.
 # Deploys libraries and sources to .out/$V/exports/...
 
-Alias(default).in = CTest@*_q.c LuaTest@*_q.lua Ship(exports)
+default = CTest@*_q.c LuaTest@*_q.lua Ship(exports)
 
 exports = @libs @luaSources
 libs = LuaSharedLib(xpio_c.c) LuaLib(xpio_c.c)
-luaSources = $(filter-out %_q.lua,$(wildcard *.lua))
+luaSources = $(filter-out %_q.lua,$(call _wildcard,*.lua))
 
 LuaEnv.luaPathDirs = . $(package.luau) $(package.lpeg)
 LuaEnv.luaCPathLibs = $(libs)

@@ -21,7 +21,7 @@ trap 'onerror $LINENO $?' ERR
 # command to start web server
 webserver="$@"
 
-port=8001
+port=${port:-8001}
 outfile=${outfile:-/dev/tty}
 filter=${filter:-Request.rate}
 calls=${calls:-400}

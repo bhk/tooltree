@@ -1,5 +1,7 @@
 # minion.mk
 
+_minionStartVars := $(.VARIABLES)
+
 # User Classes
 #
 # The following classes may be overridden by user makefiles.  Minion
@@ -7,18 +9,18 @@
 # inheritance.  User makefiles may not override other make variables defined
 # in this file, except for a few cases where "?=" is used (see below).
 
-Builder.inherit ?= _Builder
 Alias.inherit ?= _Alias
+Builder.inherit ?= _Builder
 CC++.inherit ?= _CC++
 CC.inherit ?= _CC
+CCBase.inherit ?= _CCBase
 CExe++.inherit ?= _CExe++
 CExe.inherit ?= _CExe
-CCBase.inherit ?= _CCBase
 Clean.inherit ?= _Clean
 Copy.inherit ?= _Copy
 Exec.inherit ?= _Exec
-Graph.inherit ?= _Graph
 GZip.inherit ?= _GZip
+Graph.inherit ?= _Graph
 Link.inherit ?= _Link
 Phony.inherit ?= _Phony
 Print.inherit ?= _Print
@@ -56,6 +58,7 @@ minionStart ?=
 [ := (
 ] := )
 ; := ,
+\q = "#"
 define \n
 
 
@@ -68,11 +71,22 @@ endef
 # Built-in Classes
 #--------------------------------
 
-# Alias(TARGETNAME) : Generate a phony rule whose {out} matches TARGETNAME.
-#     {command} and/or {in} are supplied by the user makefile.
+# Alias(GOAL) : Generate a phony rule whose {out} matches GOAL,
+#     a goal named on the Make command line.  If GOAL is also
+#     a Make variable, its value gives the default for {in}.
+#     {command} and/or {in} may be overridden by the user makefile.
 #
-_Alias.inherit = Phony
-_Alias.out = $(subst :,\:,$(_argText))
+_Alias.inherit = _Goal
+_Alias.in = $($(_argText))
+
+
+# _Clean(INSTANCE) : Clean INSTANCE and its direct & indirect depedencies.
+#
+_Clean.inherit = _IsPhony Builder
+	_Clean.ids = $(filter %$],$(call _expand,$(_args)))
+_Clean.in = $(patsubst %,Clean(%),$(call get,needs,{ids}))
+_Clean.command = $(foreach i,{ids},\
+  $(if $(call _hasProperty,cleanCommand,$i),$(call get,cleanCommand,$i),rm -f $(call get,out,$i)))
 
 
 # Variants(TARGETS) : Build {all} variants of TARGETS.  Each variant
@@ -122,9 +136,10 @@ _CCBase.inherit = Builder
 _CCBase.outExt = .o
 _CCBase.command = {compiler} -c -o {@} {<} {flags} -MMD -MP -MF {depsMF}
 _CCBase.depsMF = {outBasis}.d
-_CCBase.flags = {objFlags} {srcFlags} {libFlags} $(addprefix -I,{includes})
-_CCBase.srcFlags = -std=c99 -Wall -Werror
+_CCBase.flags = {stdFlags} {objFlags} {srcFlags} {libFlags} $(addprefix -I,{includes})
+_CCBase.stdFlags =
 _CCBase.objFlags = -O2
+_CCBase.srcFlags = -Wall -Werror
 _CCBase.libFlags =
 _CCBase.includes =
 
@@ -133,12 +148,13 @@ _CCBase.includes =
 #
 _CC.inherit = CCBase
 _CC.compiler = gcc
-
+_CC.stdFlags = -std=c99
 
 # CC++(SOURCE) : Compile a C++ file to an object file.
 #
 _CC++.inherit = CCBase
 _CC++.compiler = g++
+_CC++.stdFlags = -std=c++20
 
 
 # Link(INPUTS) : Link an executable or shared library.
@@ -178,8 +194,7 @@ _Exec.inherit = Builder
 _Exec.command = ( {exportPrefix} {exec} ) > {@} || ( rm -f {@}; false )
 _Exec.exec = {<} {execArgs} $(wordlist 2,9999,{^})
 _Exec.execArgs =
-_Exec.outExt = .out
-_Exec.inX = $(call _expand,{in},in)
+_Exec.outExt = %.out
 # Infer only makes sense for the first item, the one whose type we know.
 _Exec.inIDs = $(call _inferIDs,$(word 1,{inX}),{inferClasses}) $(wordlist 2,999999,{inX})
 _Exec.inferClasses = CExe.c CExe++.cpp CExe++.cc
@@ -189,7 +204,7 @@ _Exec.inferClasses = CExe.c CExe++.cpp CExe++.cc
 #
 _Test.inherit = Exec
 _Test.command = {exportPrefix} {exec}$(\n)touch {@}
-_Test.outExt = .ok
+_Test.outExt = %.ok
 
 
 # Run(COMMAND) : run command (as per Exec).
@@ -241,11 +256,12 @@ _Write.in =
 
 # Graph(GOALS) : Draw a graph of dependencies of instances
 #
-_Graph.inherit = Phony
-_Graph.roots = $(call _Graph_filter,{prune},$(call _getGoalIDs,$(_args),roots))
+_Graph.inherit = Builder
+_Graph.needs =
 _Graph.rule = {@}: ; @true $$(info $$(call get,text,$(call _escape,$(_self))))
 _Graph.text = $(call _graphDeps,_Graph_getNeeds,{nodeNameFn},{prune},{roots})
-_Graph.prune = $(_Graph_IGNORE)
+_Graph.roots = $(call _Graph_filter,{prune},{inX})
+_Graph.prune =
 _Graph.nodeNameFn = _Graph_getName
 
 _Graph_filter = $(filter-out $1,$(filter %$],$2))
@@ -289,24 +305,21 @@ _Builder.@ = {out}
 _Builder.< = $(firstword {^})
 _Builder.^ = $(call get,out,{inIDs})
 
-# Diagnose someone accidentally using "$@" instead of "{@}".  Cache file
-# generation requires {rule} evaluation during rule processing, which will
-# break if property definitions use "$@", "$<", etc.
+# Diagnose someone accidentally using "$@" instead of "{@}".
 @ = $(call _badAuto,@,$0)
 < = $(call _badAuto,<,$0)
 ^ = $(call _badAuto,^,$0)
 
-_badAuto = $(call _error,"$$$1" was evaluated prior to rule processing$(\n)$(call _whereAmI,$2))
-
 _Builder.in = $(_args)
-_Builder.inIDs = $(call _inferIDs,$(call _expand,{in},in),{inferClasses})
+_Builder.inX = $(call _expand,{in},in)
+_Builder.inIDs = $(call _inferIDs,{inX},{inferClasses})
 
 # up: dependencies specified by the class
 _Builder.up =
 _Builder.upIDs = $(call _expand,{up},up)
 _Builder.up^ = $(call get,out,{upIDs})
 
-# oo: order-only dependencies.
+# oo: order-only dependencies; these may be phony targets, so we allow aliases
 _Builder.oo =
 _Builder.ooIDs = $(call _expand,{oo},oo)
 
@@ -321,7 +334,7 @@ _Builder.inferClasses =
 _Builder.outExt = %
 _Builder.outDir = $(dir {outBasis})
 _Builder.outName = $(foreach e,$(notdir {outBasis}),$(basename $e)$(subst %,$(suffix $e),{outExt}))
-_Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),{outExt},$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
+_Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),{outExt},$(call get,out,$(filter $(_arg1),$(word 1,{inX}))),$(_arg1))
 
 # message to be displayed when the command executes (if non-empty)
 _Builder.message ?= \#-> $(_self)
@@ -355,34 +368,31 @@ _File.rule =
 _File.needs =
 
 
-# _Goal(GOAL) : Generate a goal rule (one that matches command line goal)
-#    that builds the corresponding Minion instance or indirection..
+# _Goal(GOAL) : Do nothing.
 #
-_Goal.inherit = Alias
-_Goal.in = $(_argText)
+#     Instances of _Goal are phony targets whose {out} matches GOAL,
+#     presumably a goal named on the Make command line.
+#
+_Goal.inherit = Phony
+_Goal.out = $(subst :,\:,$(_argText))
 
 
-# _HelpGoal(GOAL) : Generate a goal rule that invokes `_help!` on NAME.
+# _BuildGoal(GOAL) : Build GOAL.
 #
-_HelpGoal.inherit = Alias
+_BuildGoal.inherit = _Goal
+_BuildGoal.in = $(_argText)
+
+
+# _HelpGoal(GOAL) : Invoke `_help!` on GOAL.
+#
+_HelpGoal.inherit = _Goal
 _HelpGoal.command = @true$(call _lazy,$$(call _help!,$(call _escape,$(_argText))))
 
 
-# _CleanGoal(GOAL) : Generate a goal rule that cleans the corresponding
-#    Minion instance, indirection, or alias.
+# _CleanGoal(GOAL) : Clean GOAL.
 #
-_CleanGoal.inherit = Alias
-_CleanGoal.goal = $(call _isGoal,$(_argText))
-_CleanGoal.inIDs = $(patsubst %,Clean(%),$(filter %$],$(call _expand,{goal})))
-_CleanGoal.command = @true $(if {goal},,$(call _lazy,$$(info Minion does not know how to clean '$(_argText)'.)))
-
-
-# _CleanGoal(INSTANCE) : Generate a rule that clean INSTANCE and its
-#    direct & indirect depedencies.
-#
-_Clean.inherit = _IsPhony Builder
-_Clean.in = $(patsubst %,Clean(%),$(filter %$],$(call get,needs,$(_argText))))
-_Clean.command = $(if $(filter-out %$],$(_argText)),@echo 'Cannot clean {@}' && false,$(if $(call _hasProperty,cleanCommand,$(_argText)),$(call get,cleanCommand,$(_argText)),rm -f $(call get,out,$(_argText))))
+_CleanGoal.inherit = _Goal
+_CleanGoal.inIDs = Clean($(_argText))
 
 
 #--------------------------------
@@ -398,9 +408,18 @@ _printf = printf "%b" $(call _shellQuote,$(_printfEsc))
 _qvn = $(if $(findstring $(\n),$1),$(subst $(\n),$(\n)  | ,$(\n)$1),$2$1$2)
 _qv = $(call _qvn,$1,')#'
 
-# $(call _?,FN,ARGS..): same as $(call FN,ARGS..), but logs args & result.
+# $(call _?,FN,ARGS..) : same as $(call FN,ARGS..), but logs args & result.
 _? = $(call __?,$$(call $1,$2,$3,$4,$5),$(call $1,$2,$3,$4,$5))
-__? = $(info $1 -> $2)$2
+# $(call __?,VALUE) print & return VALUE
+__? = $(info $1 -> $(call _qvn,$2))$2
+# $(call _0?)  -->  "(fn 'arg1' 'arg2' ...)"
+_0? = ($0 $(call _argListDesc,$1,$2,$3,$4,$5,$6,$7,$8,$9))
+_argListDesc = $(if $1$2$3$4$5$6$7$8$9, '$1'$(call _argListDesc,$2,$3,$4,$5,$6,$7,$8,$9))
+_trace = $(foreach f,$1,$(eval $f = $$(call __?,$$(_0?),$(value $f))))
+
+# $(call __?,VALUE)      : instrument a value
+# $(call _0?)            : (fn args...)
+# $(call _?,FN,ARGS..): same as $(call FN,ARGS..), but logs args & result.
 
 # $(call _log,VALUE,NAME): Output "NAME: VALUE" when NAME matches the
 #   pattern in `$(minionDebug)`.
@@ -436,39 +455,8 @@ _lazy = $(subst $$,$(\e),$1)
 #    _lazy encoding to enable late (rule phase) evaulation.
 _recipe = $(subst $(\e),$$,$(subst $$,$$$$,$(subst $(\t)$(\n),,$(subst $(\n),$(\n)$(\t),$(\t)$1)$(\n))))
 
-# _cache_rule : Include a generated makefile that defines rules for IDs in
-#    $(minionCache) and their transitive dependencies, excluding IDs in
-#    $(minionNoCache).  Defer recipe expansion to the rule processing phase,
-#    because the recipe involves computing every rule.
-#
-define _cacheRule
-$(VOUTDIR)cache.mk : $(MAKEFILE_LIST) ; $(info Updating Minion cache...)$(call _cacheRecipe,$(_cacheIds),$(_cacheExcludes))
--include $(VOUTDIR)cache.mk
-endef
-
-_cacheExcludes = $(filter %$],$(call _getGoalIDs,$(minionNoCache)))
-_cacheIds = $(filter-out $(_cacheExcludes),$(call _rollup,$(call _getGoalIDs,$(minionCache))))
-
-# $1 = goals, $2 = context for _expand
-_getGoalIDs = $(call _expand,$(foreach g,$1,$(or $(call _isGoal,$g),$g)),$2)
-
-#  If $1 is a goal return non-nil.  If an alias, return corresponding instance.
-_isGoal = $(or $(_isInstance),$(_isIndirect),$(_isAlias))
-
 # write out this many rules per printf command line
 _cacheGroupSize ?= 40
-
-# $1=CACHED-IDS  $2=EXCLUDED-IDS
-define _cacheRecipe
-@mkdir -p $(@D)
-@echo '_cachedIDs = $1' > $@_tmp_
-$(foreach g,$(call _group,$1,$(_cacheGroupSize)),
-@$(call _printf,$(foreach i,$(call _ungroup,$g),
-$(call get,rule,$i)
-$(if $2,_$i_needs = $(filter $2,$(call _depsOf,$i))
-))) >> $@_tmp_)
-@mv $@_tmp_ $@
-endef
 
 
 #--------------------------------
@@ -476,7 +464,7 @@ endef
 #--------------------------------
 
 define _helpMessage
-Minion v1.0 usage:
+Minion v1.1b4 usage:
 
    make                     Build the target named "default"
    make GOALS...            Build the named goals
@@ -561,70 +549,80 @@ Target "$1" is not generated by Minion.  It may be a source
 file or a target defined by a rule in the Makefile.
 endef
 
-_help! = \
-  $(if $(filter help,$1),\
-    $(if $(filter-out help,$(MAKECMDGOALS)),,$(info $(_helpMessage))),\
-    $(info $(call _help$(call _goalType,$1),$1)))
-
 _help! = $(info $(call _help$(call _goalType,$1),$1)$(\n))
-
-# If 'help' appears only once, don't show help on help
-_help! = \
-  $(if $(filter help-1,$1-$(words $(filter help,$(MAKECMDGOALS)))),,\
-    $(info $(call _help$(call _goalType,$1),$1)$(\n)))
 
 
 #--------------------------------
 # Rules
 #--------------------------------
 
-_forceTarget = $(OUTDIR)FORCE
-
+clean ?=
 Alias(clean).command ?= $(if $(call _safeToClean,$(VOUTDIR)),rm -rf $(VOUTDIR),@echo '** make clean is disabled; VOUTDIR is unsafe: "$(VOUTDIR)"' ; false)
 
+graph ?= 
 Alias(graph).in ?= Graph(default)
 
+help ?=
 Alias(help).command ?= @true$(call _lazy,$$(info $$(_helpMessage)))
 
-# This will be the default target when `$(minionEnd)` is omitted (and
-# no goal is named on the command line)
+# Alas, this won't work if a goal is defined by the makefile or named on the command line.
 _error_default: ; $(error Makefile used minionStart but did not call `$$(minionEnd)`)
 
 .SUFFIXES:
+_forceTarget := $(OUTDIR)FORCE
 $(_forceTarget):
 
 define _epilogue
-  # Check OUTDIR
+  # instrument functions before calling any of them
+  $(call _trace,$(minionTrace))
+
+  # Flag some potential OUTDIR misconfigurations that could be costly
   ifneq "/" "$(patsubst %/,/,$(OUTDIR))"
     $(error OUTDIR must end in "/")
   endif
 
   ifndef MAKECMDGOALS
-    # .DEFAULT_GOAL only matters when there are no command line goals
     .DEFAULT_GOAL = default
-    _goalIDs := $(call _goalToID,default)
-  else ifneq "" "$(filter $$%,$(MAKECMDGOALS))"
-    # "$*" captures the entirety of the goal, including embedded spaces.
-    $$%: ; @#$(info $$$* = $(call _qv,$(call or,$$$*)))
-    %: ; @echo 'Cannot build "$*" alongside $$(...)' && false
-  else ifneq "" "$(and $(filter help,$(MAKECMDGOALS)),$(word 2,$(MAKECMDGOALS)))"
-    _goalIDs := $(MAKECMDGOALS:%=_HelpGoal$[%$])
-    _error = $(info $(subst $(\n),$(\n)   ,ERROR: $1)$(\n))
-  else ifneq "" "$(and $(filter clean,$(MAKECMDGOALS)),$(filter-out clean,$(MAKECMDGOALS)))"
-    _goalIDs := $(MAKECMDGOALS:%=_CleanGoal$[%$])
-  else
-    _goalIDs := $(foreach g,$(MAKECMDGOALS),$(call _goalToID,$g))
   endif
 
-  ifeq "" "$(strip $(call get,needs,$(filter-out _CleanGoal$[%,$(_goalIDs))))"
-    # Trivial goals do not benefit from a cache.  Importantly, avoid the
-    # cache when handling `help` (targets may conflict with cache file) or
-    # `clean` (so we can recover from a corrupted cache file).
-  else ifdef minionCache
-    $(call _eval,$(value _cacheRule),cache)
-    # If the cache makefile does NOT exist yet then _cachedIDs is unset and
-    # will be set to "%" here to disable _evalRules, because Make will
-    # immediately restart and rule computation would be a waste of time.
+  __modeKey := $(word 1,$(MAKECMDGOALS))
+  __modeArgs := $(wordlist 2,999999,$(MAKECMDGOALS))
+
+  ifneq "" "$(filter $$%,$(MAKECMDGOALS))"
+    # Expression mode expects a Make expression that may have embedded
+    # spaces.  MAKECMDGOALS may not reflect the actual arguments.
+    $$%: ; @#$(info $$$* = $(call _qv,$(call or,$$$*)))
+    %: ; @echo 'Cannot build "$*" alongside $$(...)' && false
+  else ifneq "" "$(and $(filter clean help,$(__modeKey)),$(__modeArgs))"
+    # help or clean mode
+    ifeq "help" "$(__modeKey)"
+       _error = $(info $(subst $(\n),$(\n)   ,ERROR: $1)$(\n))
+       _goalIDs := _Goal(help) $(patsubst %,_HelpGoal(%),$(__modeArgs))
+    else
+       _goalIDs := _Goal(clean) $(patsubst %,_CleanGoal(%),$(__modeArgs))
+    endif
+  else
+    # build mode
+    _goalIDs := $(foreach g,$(or $(MAKECMDGOALS),default),$(call _buildGoalID,$g))
+  endif
+
+  ifndef minionCache
+    # No caching selected by Makefile
+  else ifeq "" "$(strip $(call get,needs,$(filter-out _CleanGoal$[%,$(_goalIDs))))"
+    # Avoid cache: Trivial goals do not benefit, and importantly, we avoid
+    # the cache when handling `help` (goals may conflict with cached rules,
+    # because they take on a new meaning) or `clean` (so we can recover from
+    # a corrupted cache file).
+  else ifneq "" "$(filter c%,$(foreach v,$(filter-out V,$(_minionStartVars)),$(origin $v)))"
+    # Avoid cache: a command-line override was used
+  else
+    # Use a rule cache file. Recipe expansion is costly, so defer it to rule
+    # processing time, only when-and-if the cache needs to be built.
+    $(VOUTDIR)cache.mk : $(MAKEFILE_LIST) ; $(call _rulecacheRecipe,$@)
+    -include $(VOUTDIR)cache.mk
+    # The following line only has an effect when the rule cache does not
+    # exist yet.  In that case, it avoids rule generation, because we know
+    # Make will immediately restart, and that would be wasted work.
     _cachedIDs ?= %
   endif
 
@@ -640,13 +638,16 @@ endef
 _error = $(error $1)
 _isInstance = $(filter %$],$1)
 _isIndirect = $(if $(findstring @,$1),$(filter-out %$],$1))
-_isAlias = $(if $(filter s% r%,$(flavor Alias($1).in) $(flavor Alias($1).command)),Alias($1))
-_goalToID = $(if $(or $(_isInstance),$(_isIndirect)),_Goal($1),$(_isAlias))
-_ivar = $(filter-out %@,$(subst @,@ ,$1))
-_EI = $(call _error,$(if $(filter %@,$1),Invalid target (ends in '@'): $1,Indirection '$1' references undefined variable '$(_ivar)')$(if $2,$(\n)Found while expanding $(if $(filter _Goal$[%,$2),command line goal,$2)))
-_expandX = $(foreach w,$1,$(if $(call _isIndirect,$w),$(foreach x,$(or $(call _ivar,$w),=@),$(patsubst %,$(if $(filter @%,$w),%,$(subst $(\s),,$(filter %( %% ),$(subst @,$[ ,$w) % $(subst @, $] ,$w)))),$(if $(findstring *,$x),$(wildcard $x),$(if $(filter u%,$(flavor $x)),$(call _EI,$w,$2),$(call _expandX,$($x),$x))))),$w))
-_expand = $(if $(findstring @,$1),$(call _expandX,$1,$(_self).$2),$1)
+_isAlias = $(if $(filter f% o%,$(origin $1)),Alias($1))
+_buildGoalID = $(if $(or $(_isInstance),$(_isIndirect)),_BuildGoal($1),$(_isAlias))
 _set = $(eval $$1 := $$2)$2
+_wildcard = $(if $(call _set,'globLog,$(sort $('globLog) $1)),)$(wildcard $1)
+_shell = $(if $(call _set,'shellLog,$(sort $('shellLog) $(subst $(\s),!0,$(subst $(\t),!+,$(subst !,!1,$1))))),)$(shell $1)
+_var = $(if $(call _set,'varLog,$(sort $('varLog) $1)),)$($1)
+_ivar = $(filter-out %@,$(subst @,@ ,$1))
+_EI = $(call _error,$(if $(filter %@,$1),Invalid target (ends in '@'): $1,Indirection '$1' references undefined variable '$(_ivar)')$(if $2,$(\n)Found while expanding $(if $(filter _BuildGoal$[%,$2),command line goal,$2)))
+_expandX = $(foreach w,$1,$(or $(filter %$],$w),$(if $(findstring @,$w),$(foreach x,$(or $(call _ivar,$w),=@),$(patsubst %,$(if $(filter @%,$w),%,$(subst $(\s),,$(filter %( %% ),$(subst @,$[ ,$w) % $(subst @, $] ,$w)))),$(if $(findstring *,$x),$(call _wildcard,$x),$(if $(filter u%,$(flavor $x)),$(call _EI,$w,$2),$(call _expandX,$($x),$x))))),$(or $(if $(filter f% o%,$(origin $w)),Alias($w)),$w))))
+_expand = $(call _expandX,$1,$(_self).$2)
 _fset = $(eval $$1 = $(if $(filter 1,$(word 1,1$20)),$$(or ))$(subst \#,$$(\H),$(subst $(\n),$$(\n),$2)))$1
 _once = $(if $(filter u%,$(flavor _o~$1)),$(call _set,_o~$1,$($1)),$(value _o~$1))
 _argError = $(call _error,Argument '$(subst `,,$1)' is mal-formed:$(\n)   $(subst `,,$(subst `$], *$]* ,$(subst `$[, *$[*,$1)))$(\n)$(if $(C),during evaluation of $(C)($(A))))
@@ -658,25 +659,27 @@ _describeVar = $2$(if $(filter r%,$(flavor $1)),$(if $(findstring $(\n),$(value 
 
 # objects.scm
 
+_E0 = $(call _error,Mal-formed target '$(_self)'; $(if $(filter $[%,$(_self)),no CLASS before '$[',$(if $(findstring $[,$(_self)),no '$]' at end,unbalanced '$]')))
 _idC = $(if $(findstring $[,$1),$(word 1,$(subst $[, ,$1)))
 _isClassInvalid = $(filter u%,$(flavor $(_idC).inherit))
-_pup = $(filter-out &%,$($(word 1,$1).inherit) &$1)
-_walk = $(if $1,$(if $(findstring s,$(flavor $(word 1,$1).$2)),$1,$(call _walk,$(_pup),$2)))
-_hasProperty = $(if $(or $(findstring s,$(flavor $2.$1)),$(call _walk,$(filter-out $(\s)|%,$(subst $[, |,$2)),$1)),1)
-_E1 = $(call _error,Undefined property '$2' for $(_self) was referenced$(if $(filter u%,$(flavor $(_class).inherit)),;$(\n)$(_class) is not a valid class name ($(_class).inherit is not defined),$(if $3,$(if $(filter ^%,$3), from {inherit} in,$(if $(filter &&%,$3), from {$2} in, during evaluation of)):$(\n)$(call _describeVar,$(if $(filter &%,$3),$(foreach w,$(lastword $(subst ., ,$3)),$(word 1,$(call _walk,$(word 1,$(subst &, ,$(subst ., ,$3))),$w)).$w),$(if $(filter ^%,$3),$(subst ^,,$(word 1,$3)).$2,$3)))))$(\n))
-_cx = $(if $1,$(if $(value &$1.$2),&$1.$2,$(call _fset,$(if $4,$(subst $],],~$(_self).$2),&$1.$2),$(foreach w,$(word 1,$1).$2,$(if $(filter s%,$(flavor $w)),$(subst $$,$$$$,$(value $w)),$(subst },$(if ,,,&$$0$]),$(subst {,$(if ,,$$$[call .,),$(subst {inherit},$(if $(findstring {inherit},$(value $w)),$$(call $(call _cx,$(call _walk,$(if $4,$(_class),$(_pup)),$2),$2,^$1))),$(value $w)))))))),$(_E1))
-.& = $(if $(findstring s,$(flavor $(_self).$1)),$(call _cx,$(_self),$1,$2,1),$(if $(findstring s,$(flavor &$(_class).$1)),&$(_class).$1,$(call _fset,&$(_class).$1,$(value $(call _cx,$(call _walk,$(_class),$1),$1,$2)))))
-. = $(if $(filter s%,$(flavor ~$(_self).$1)),$(value ~$(_self).$1),$(call _set,~$(_self).$1,$(call $(.&))))
-_E0 = $(call _error,Mal-formed target '$(_self)'; $(if $(filter $[%,$(_self)),no CLASS before '$[',$(if $(findstring $[,$(_self)),no '$]' at end,unbalanced '$]')))
+_chp+ = $(if $(filter %$],$1),$(_idC),$(filter-out &%,$($(word 1,$1).inherit) &$1))
+_walk = $(if $2,$(if $(findstring s,$(flavor $(word 1,$2).$1)),$2,$(call _walk,$1,$(call _chp+,$2))))
+_hasProperty = $(if $(or $(findstring s,$(flavor $2.$1)),$(call _walk,$1,$(filter-out $(\s)|%,$(subst $[, |,$2)))),1)
+_E1 = $(call _error,Undefined property {$1} for $(_self) was referenced$(if $3, by {inherit$(if $(findstring .$1=,$3=),, $1)} in,$(if $2, from))$(if $(or $3,$2),:$(\n)$(call _describeVar,$(if $3,$3,$(if $(filter &%,$2),$(word 1,$(call _walk,$(lastword $(subst .,. ,$2)),$(patsubst &%,%,$(word 1,$(subst ., .,$2))))).$(lastword $(subst .,. ,$2)),$2)),   ))$(if $(filter u%,$(flavor $(_class).inherit)),$(\n) NOTE: $(_class).inherit is not defined!$(\n)))
+_cxInherit = $(call _cxMemo,$1,$(or $(call _walk,$1,$(call _chp+,$2)),$(call _E1,$1,,$3)))
+_cxTok = $(patsubst {%},$$(call!0.,%,$$0),$(if $(findstring {inherit,$1),$(foreach w,$1,$(if $(filter {inherit} {inherit!0%},$w),$$(call!0$(subst $(\s),!0,$(call _cxInherit,$(if $(filter {inherit},$w),$2,$(patsubst {inherit!0%},%,$w)),$3,$4))),$w)),$1))
+_cx = $(foreach w,$(word 1,$2).$1,$(if $(filter s%,$(flavor $w)),$(subst $$,$$$$,$(value $w)),$(if $(findstring {,$(value $w)),$(subst !1,!,$(subst !+,	,$(subst !0, ,$(subst $(\s),,$(call _cxTok,$(subst {inherit!0 ,{inherit!0,$(subst !0,!0 ,$(subst $;,$(if ,, , ),$(subst $], $] ,$(subst $[, $[ ,$(subst },} ,$(subst {, {,$(subst $(\s),!0,$(subst $(\t),!+,$(subst !,!1,$(value $w))))))))))),$1,$2,$w))))),$(value $w))))
+_cxMemo = $(if $(filter r%,$(flavor &$2.$1)),&$2.$1,$(call _fset,&$2.$1,$(call _cx,$1,$2)))
+. = $(if $(filter s%,$(flavor ~$(_self).$1)),$(value ~$(_self).$1),$(call _set,~$(_self).$1,$(if $(findstring s,$(flavor $(_self).$1)),$(foreach 0,&$(_self).$1,$(call or,$(call _cx,$1,$(_self)))),$(call $(if $(filter r%,$(flavor &$(_class).$1)),&$(_class).$1,$(call _fset,&$(_class).$1,$(call _cx,$1,$(or $(call _walk,$1,$(_class)),$(call _E1,$1,$2,)))))))))
 get = $(foreach _self,$2,$(foreach _class,$(if $(findstring $[,$(_self)),$(or $(filter-out |%,$(subst $[, |,$(filter %$],$(_self)))),$(_E0)),$(if $(findstring $],$(_self)),$(_E0),_File)),$(call .,$1)))
 _argText = $(patsubst $(_class)(%),%,$(_self))
 _args = $(call _hashGet,$(call _argHash,$(patsubst $(_class)(%),%,$(_self))))
 _arg1 = $(word 1,$(_args))
 _namedArgs = $(call _hashGet,$(call _argHash,$(patsubst $(_class)(%),%,$(_self))),$1)
 _namedArg1 = $(word 1,$(_namedArgs))
-_describeProp = $(if $1,$(if $(filter u%,$(flavor $(word 1,$1).$2)),$(call _describeProp,$(or $(_idC),$(_pup)),$2),$(call _describeVar,$(word 1,$1).$2,   )$(if $(and $(filter r%,$(flavor $(word 1,$1).$2)),$(findstring {inherit},$(value $(word 1,$1).$2))),$(\n)$(\n)...wherein {inherit} references:$(\n)$(\n)$(call _describeProp,$(or $(_idC),$(_pup)),$2))))
-_chain = $(if $1,$(call _chain,$(_pup),$2 $(word 1,$1)),$(filter %,$2))
-_whereAmI = during evaluation of $(if $(filter ~%,$1),'$(patsubst ~%,%,$(subst ],$],$1))',$(if $(filter &%,$1),'$(patsubst &%,%,$1)',$$($1))$(patsubst %, in context of %,$(_self)))
+_describeProp = $(if $1,$(if $(filter u%,$(flavor $(word 1,$1).$2)),$(call _describeProp,$(or $(_idC),$(_chp+)),$2),$(call _describeVar,$(word 1,$1).$2,   )$(if $(and $(filter r%,$(flavor $(word 1,$1).$2)),$(findstring {inherit},$(value $(word 1,$1).$2))),$(\n)$(\n)...wherein {inherit} references:$(\n)$(\n)$(call _describeProp,$(or $(_idC),$(_chp+)),$2))))
+_chain = $(if $1,$(call _chain,$(_chp+),$2 $(word 1,$1)),$(filter %,$2))
+_badAuto = $(call _error,$$$$$1 was evaluated prior to rule processing$(\n)during evaluation of $(if $(filter &%,$2),$(word 1,$(patsubst &%,%,$2)),$$(call $2,...))$(if $(_self), in context of $(_self)))
 
 # tools.scm
 
@@ -692,6 +695,11 @@ _traverse = $(if $(word 1,$3),$(call _traverse,$1,$2,$(call $1,$2,$(word 1,$3)) 
 _graphDeps = $(call _graph,$1,$2,$3,$(call _traverse,$1,$3,$4))
 _uniqQ = $(if $1,$(word 1,$1)   $(call _uniqQ,$(filter-out $(word 1,$1),$1)))
 _unique = $(filter %,$(subst ^c,^,$(subst ^p,%,$(call _uniqQ,$(subst %,^p,$(subst ^,^c,$1))))))
+_rulecacheRecipe = $(info Updating Minion cache...)$(call _rcr2,$1,$(call _rollup,$(call _varToIDs,minionCache)),$(filter %$],$(call _varToIDs,minionNoCache)),$(_cacheGroupSize))
+_rcr2 = @mkdir -p $(dir $1)$(\n)@> $1_tmp_$(\n)$(foreach w,$(call _group,$(filter-out $3,$2),$4),@$(call _printf,$(foreach x,$(call _ungroup,$w),$(\n)$(call get,rule,$x)$(if $3,$(\n)_$x_needs = $(filter $3,$(call _depsOf,$x)))$(\n))) >> $1_tmp_$(\n))@$(call _printf,_cachedIDs = $(filter-out $3,$2)$(\n)$(foreach w,minionCache minionNoCache $('varLog),$(call _checkValue,$1,$($w),$$($w)))$(if $('globLog),$(call _checkValue,$1,$(wildcard $('globLog)),$$(wildcard $('globLog))))$(foreach w,$('shellLog),$(call _checkValue,$1,$(shell $(subst !1,!,$(subst !+,	,$(subst !0, ,$w)))),$$(shell $(subst !1,!,$(subst !+,	,$(subst !0, ,$w))))))) >> $1_tmp_$(\n)@mv $1_tmp_ $1$(\n)
+_varToIDs = $(foreach w,$(call _expand,$($1)),$(if $(filter %$],$w),$w,$(error $1 references unknown target '$w')))
+_checkValue = $(\n)ifneq "$(call _qesc,$2)" "$3"$(\n)  $1: $$(_forceTarget)$(\n)endif$(\n)
+_qesc = $(subst $(\n),$$($(\n)),$(subst \#,$$(\H),$(subst ",$$(\q),$(subst $$,$$$$,$1))))
 
 # outputs.scm
 

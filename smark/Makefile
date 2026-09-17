@@ -1,7 +1,7 @@
 # This builds an executable for Smark and deploys it along with
 # documentation, and related make include files to .out/$V/exports/...
 
-Alias(default).in = Ship(exports) LuaTest@*_q.lua
+default = Ship(exports) LuaTest@*_q.lua
 
 exports = LuaExe(smark.lua) smark.txt hello.txt smark.mk SmarkDoc(smark.txt)
 

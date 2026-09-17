@@ -6,11 +6,11 @@
 # make owebtest : run owebtest
 # make size : compute size of JS bundled in MDB
 
-Alias(default).in = Ship(exports) LuaTest@*_q.lua JSTest@*_q.js
-Alias(mdb).in = RunMDB(LuaExe(mdb.lua))
-Alias(mdblua).in = LuaRunMDB(mdb.lua)
-Alias(owebtest).in = LuaRun(owebtest.lua)
-Alias(size).in = JSBundle(mdbapp.js)
+default = Ship(exports) LuaTest@*_q.lua JSTest@*_q.js
+mdb = RunMDB(LuaExe(mdb.lua))
+mdblua = LuaRunMDB(mdb.lua)
+owebtest = LuaRun(owebtest.lua)
+size = JSBundle(mdbapp.js)
 Alias(size).command = uglifyjs $(call get,out,{in}) -c -m | wc
 
 exports = LuaExe(mdb.lua) LuaBundle(mdbagent.lua) mdb.txt
@@ -55,8 +55,6 @@ LuaEnv_target_q.lua_exports = LUA
 LuaEnv.LUA = {luaExe}
 
 LuaRun(owebtest.lua).in = owebtest.lua JSToHTML(oweb_demo.js)
-
-minionCache = default
 
 includeImports = build-lua/build-lua.mk build-js/build-js.mk
 include ../build/tooltree.mk

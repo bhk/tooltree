@@ -1,10 +1,10 @@
 # Build shared and static libraries for LPEG.
 # Exports libraries and re.lua to .out/$V/exports/...
 
-Alias(default).in = Ship(exports) LuaTest($(package.lpegsources)/test.lua)
+default = Ship(exports) LuaTest($(package.lpegsources)/test.lua)
 
 exports = SharedLib(@lpeg) Lib(@lpeg) $(package.lpegsources)/re.lua
-lpeg = $(wildcard $(package.lpegsources)/*.c)
+lpeg = @$(package.lpegsources)/*.c
 
 CC.includes = $(package.lua)/src
 # Avoid project-wide warnings so we can use the original sources unmodified

@@ -26,6 +26,9 @@ ifeq "$(MAKEFLAGS)" ""
 MAKEFLAGS += -j -Rr
 endif
 
+# By default, cache all rules involved in `make default`.
+minionCache ?= default
+
 #----------------------------------------------------------------
 # Variants and variant properties
 #----------------------------------------------------------------
@@ -118,9 +121,9 @@ package.webdemo.imports = luau build-lua lua monoglot lpeg
 # Tooltree function, class, and alias definitions
 #----------------------------------------------------------------
 
-Alias(all).in = Variants(deep)
-Alias(deep).in = Package($(thisPackage))
-Alias(imports).in = Package@package.$(thisPackage).imports
+all = Variants(deep)
+deep = Package($(thisPackage))
+imports = Package@package.$(thisPackage).imports
 
 # return $1 if variable $1 is defined
 _defined = $(if $(filter undefined,$(origin $1)),,$1)
@@ -136,7 +139,8 @@ ttCC.objFlags = $(if {isDebug},{dbgFlags},{optFlags})
 ttCC.isDebug = $(call _v,debug)
 ttCC.dbgFlags = -D_DEBUG -ggdb
 ttCC.optFlags = -O2
-ttCC.srcFlags = {warnFlags} -std=c99 -fno-strict-aliasing -fPIC -fstack-protector
+ttCC.srcFlags = {warnFlags} -fno-strict-aliasing -fPIC -fstack-protector
+ttCC.stdFlags = -std=c99
 ttCC.warnFlags = -Werror -Wall -Wextra -pedantic -Wshadow -Wcast-qual\
   -Wcast-align -Wno-unused-parameter -Wstrict-prototypes -Wmissing-prototypes\
   -Wold-style-definition -Wnested-externs -Wbad-function-cast -Winit-self
