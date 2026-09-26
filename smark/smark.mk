@@ -7,7 +7,7 @@ _SmarkDoc.inherit    = Exec
 _SmarkDoc.outExt     = .html
 _SmarkDoc.command    = {exportPrefix} {smarkExe} -o {@} {flags} -- {^}
 _SmarkDoc.css        =
-_SmarkDoc.depsMF     = {outBasis}.d
+_SmarkDoc.depsMF     = {@}.d
 _SmarkDoc.flags      = $(patsubst %,--no-default-css --css='%',{css}) {warnFlags} --deps={depsMF}
 _SmarkDoc.warnFlags  = --error
 _SmarkDoc.smarkExe  := $(dir $(lastword $(MAKEFILE_LIST)))smark

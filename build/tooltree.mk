@@ -137,10 +137,6 @@ Package(webdemo).result = .
 # Tooltree classes
 #----------------------------------------------------------------
 
-# Use a simpler {outBasis} than default (no .EXT in .out/Class/... directories)
-Builder.outBasis = $(VOUTDIR)$(call _outBasis,$(_class),$(_argText),%,$(call get,out,$(filter $(_arg1),$(word 1,$(call _expand,{in},in)))),$(_arg1))
-
-
 # Tooltree C compilation defaults
 #
 CC.inherit = ttCC CCBase
@@ -204,8 +200,8 @@ _Package.inherit = _IsPhony Builder
 #
 # Builder-focused properties
 #
-_Package.outExt = .out
-_Package.inIDs = $(foreach P,{imports},$(_class)($P))
+_Package.outExt = %.out
+_Package.in = $(foreach P,{imports},$(_class)($P))
 # This is a phony rule (always stale) yet we do output a file when there is a build command
 _Package.mkdirs = $(if {result},$(dir {@}))
 _Package.command = $(if {result},{makeCommand})

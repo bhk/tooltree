@@ -18,9 +18,9 @@ LuaTest.luaCPathLibs = $(libs)
 
 # requirefile_q reads results from {dataFile}
 LuaTest(requirefile_q.lua).in = {inherit} {dataFile}
-LuaTest(requirefile_q.lua).dataFile = Write(data:DATA)
-LuaTest(requirefile_q.lua).execArgs = $(notdir {{dataFile}.out})
+LuaTest(requirefile_q.lua).dataFile = Write(DATAVAR)
 LuaTest(requirefile_q.lua).REQUIREFILE_PATH = .;$(dir {{dataFile}.out})
 LuaTest(requirefile_q.lua).exports = {inherit} REQUIREFILE_PATH
+DATAVAR = DATA
 
 include ../build/tooltree.mk
