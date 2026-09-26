@@ -7,8 +7,8 @@ deploy = Deploy(@htmlFiles)
 htmlFiles = SmarkDoc@docs
 docs = index.txt \
   $(filter-out %/todo.txt,\
-    $(call _wildcard,$(foreach P,$(docPackages),$(package.$P.dir)*.txt)))
-docPackages = build build-js build-lua jsu luau mdb monoglot smark
+    $(call _wildcard,$(foreach P,$(docdirs),../$P/*.txt)))
+docdirs = build build-js build-lua jsu luau mdb monoglot smark
 
 # put them all in the same directory for ease of viewing
 SmarkDoc.outDir = $(VOUTDIR)
