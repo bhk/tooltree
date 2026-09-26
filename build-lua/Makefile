@@ -25,7 +25,7 @@ tests += Test(A2)
 Test(A2).in = LuaTest(A)
 Test(A2).scanID = LuaScan(LuaTest(A))
 Test(A2).scanOut = {{scanID}.out}
-Test(A2).inferredTest = {LuaTest(cfl_q.lua).outName}
+Test(A2).inferredTest = $(notdir {LuaTest(cfl_q.lua).out})
 Test(A2).exec = \
   grep -q '{{in}.out}: .*/cfl.lua .* | .*/{inferredTest}' {scanOut}$(\n)\
   grep -q '{{scanID}.out}: .*cfl.lua' {scanOut}
@@ -43,7 +43,7 @@ Test(B).exec = grep -q 'P1,D1,ARG,1,BOGUS,BOGUS' {<} $(\n)\
 # ASSERT:  LuaExec(LuaBundle(CFL)) == LuaExec(CFL)
 # ASSERT:  LuaBundle provides `requirefile` implementation
 tests += Test(C)
-Test(C).in = LuaExec(LuaBundle(test/cfl.lua))
+Test(C).in = LuaExec(LuaBundle(test/cfl.lua),name:bundled-cfl)
 Test(C).exec = grep -q 'P1,D1,ARG,1,.. dep.lua,This' {<} $(\n)\
                grep -q '<./?.lua;test/?.lua;nosuchdir/?.lua>' {<}
 
@@ -57,15 +57,16 @@ Test(D).in = LuaToC(test/cfl.lua)
 Test(D).exec = \
    grep [-][-].dep.lua {<} | wc -l | grep -q 1 $(\n)\
    grep This.is.data.txt {<} | wc -l | grep -q 1 $(\n)\
-   grep -q 'test/cfl.c: test/cfl.lua test/dep.lua test/pre.lua test/dep.lua test/data.txt$$' {{in}.depsMF}
+   grep -q '/cfl.c: test/cfl.lua test/dep.lua test/pre.lua test/dep.lua test/data.txt$$' {{in}.depsMF}
 
 
 # ASSERT:  Exec(LuaExe(CFL)) == LuaExec(LuaBundle(CFL))
 # ASSERT: `luaTest.preloads` are executed on startup
 tests += Test(E)
-Test(E).in = Exec(LuaExe(test/cfl.lua))
-Test(E).exec = grep -q 'P1,D1,ARG,1,.. dep.lua,This' {<}
-Exec(LuaExe(test/cfl.lua)).execArgs = ARG
+Test(E).in = Exec(LuaExe(test/cfl.lua),arg:FOO)
+Test(E).exec = grep -q 'P1,D1,FOO,1,.. dep.lua,This' {<}
+
+Exec.execArgs = $(call _namedArgs,arg)
 
 include build-lua.mk
 include ../build/tooltree.mk

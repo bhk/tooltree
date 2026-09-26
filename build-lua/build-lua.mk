@@ -53,7 +53,7 @@ _LuaToC.inherit = LuaEnv Builder
 _LuaToC.outExt = .c
 _LuaToC.command = {exportPrefix} {luaExe} {cfromlua} -o {@} {flags} $(addprefix -l ,{preloads}) -MF {depsMF} -MP -Werror $(foreach l,{openLibs},--open=$l) -- {^}
 _LuaToC.up = {cfromlua} {inherit}
-_LuaToC.depsMF = {outBasis}.d {inherit}
+_LuaToC.depsMF = {@}.d {inherit}
 _LuaToC.flags = --minify
 # openLibs = C extensions to be opened prior to the Lua modules being run
 _LuaToC.openLibs =
@@ -120,14 +120,14 @@ _LuaExe.inIDs = {ccClass}({mainC}) {luaLib} $(patsubst %.c,{ccClass}(%.c),$(filt
 # execited.  A depsMF is written as a side effect.
 _LuaExe.command = {inherit} $$( {luaExe} {cfromlua} --readlibs -MF {depsMF} -MT {@} -MP {{mainC}.out} )
 _LuaExe.up = {luaExe} {cfromlua}
-_LuaExe.depsMF = {outBasis}.d {inherit}
+_LuaExe.depsMF = {@}.d {inherit}
 
 
 # LuaTest(SOURCE) : Execute Lua SOURCE, creating OK file on success.
 #
 LuaTest.inherit = _LuaTest
 _LuaTest.inherit = LuaCmd Test
-_LuaTest.deps = LuaScan($(_self)) {inherit}
+_LuaTest.oo = LuaScan($(_self)) {inherit}
 
 
 # LuaScan(TESTID): scan Lua source implicit dependencies and generate an
@@ -148,7 +148,7 @@ _LuaTest.deps = LuaScan($(_self)) {inherit}
 #
 LuaScan.inherit = _LuaScan
 _LuaScan.inherit = LuaEnv Builder
-_LuaScan.outExt = .d
+_LuaScan.outExt = %.d
 _LuaScan.luaSource = {$(_arg1).<}
 # To work around tooltree/build/makebug.mk, we omit {luaSource} from this
 # rule's prereqs and rely on the generated file to name that dependency.
@@ -158,3 +158,6 @@ _LuaScan.up = {luaExe} {cfromlua}
 _LuaScan.MT = {$(_arg1).out}
 _LuaScan.Moo = {LuaTest(^B_q.lua).out}
 _LuaScan.rule = {inherit}-include {@}$(\n)
+# It's hard to imagine workflows that would change .command,
+# so having .vv files for these .d files seems a bit excessive.
+_LuaScan.vvFile =

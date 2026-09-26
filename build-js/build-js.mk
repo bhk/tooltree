@@ -29,7 +29,7 @@ _JSBundle.outExt = .js
 _JSBundle.command = {exportPrefix} {jsdepExe} {flags} -o {@} -MF {depsMF} {<}
 _JSBundle.up = {jsdepExe}
 _JSBundle.flags = --bundle
-_JSBundle.depsMF = {outBasis}.d
+_JSBundle.depsMF = {@}.d
 
 
 # JSToHTML(JSSOURCE): bundle source & its dependencies into an HTML file
@@ -53,8 +53,8 @@ _JSTest.exec = {node} {execArgs} {^}
 _JSTest.deps = JSScan($(word 1,{inIDs}))
 
 
-# JSScan(TEST): generate *and include* a makefile declaring the implicit
-#    dependencies of JavaScript file TEST, including order-only dependencies
+# JSScan(SOURCE): generate *and include* a makefile declaring the implicit
+#    dependencies of JavaScript file SOURCE, including order-only dependencies
 #    for tests of dependencies.
 #
 #    Why do we use a separate Minion instance (Make rule) to generate
@@ -70,13 +70,15 @@ _JSTest.deps = JSScan($(word 1,{inIDs}))
 #
 JSScan.inherit = _JSScan
 _JSScan.inherit = JSEnv Builder
-_JSScan.outExt = .d
+_JSScan.outExt = %.d
 # We omit the source file from {in} in order to avoid tooltree/build/makebug.mk;
 # -MTF will emit it as a dependency along with others
 _JSScan.in =
-_JSScan.hidden< = {$(_arg1).out}
-_JSScan.command = {exportPrefix} {jsdepExe} {hidden<} -MF {@} -Moo {Moo} -MT {MT} -MTF
+_JSScan.jsSource = {$(_arg1).out}
+_JSScan.command = {exportPrefix} {jsdepExe} {jsSource} -MF {@} -Moo {Moo} -MT {MT} -MTF
 _JSBundle.up = {jsdepExe}
 _JSScan.MT = {JSTest($(_argText)).out}
 _JSScan.Moo = {JSTest(^B_q.js).out}
 _JSScan.rule = {inherit}-include {@}$(\n)
+# Validity files for dependency files seems a bit excessive; no known use case
+_JSScan.vvFile =
